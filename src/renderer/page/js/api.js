@@ -19,7 +19,6 @@ req.interceptors.request.use(config => {
 /****** respone拦截器==>对响应做处理 ******/
 req.interceptors.response.use(
     response => {
-        console.log("response:", response)
         //这里根据后端提供的数据进行对应的处理
         if (response.status === 200) {
             return response.data.data;

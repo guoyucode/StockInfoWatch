@@ -38,6 +38,11 @@ const url = "http://irm.cninfo.com.cn/ircs/index/search";
 
 /*
   互动易
+  data 数据字段解析:
+  packageDate: 发布时间
+  mainContent: 问题
+  attachedContent: 答案
+
  */
 export const interactiveRequest = data => {
     if(!data) data = {}
