@@ -1,5 +1,6 @@
 //import request from 'request'
 import axios from "axios"
+import qs from "qs"
 
 /****** 创建axios实例 ******/
 const req = axios.create({
@@ -22,7 +23,7 @@ req.interceptors.response.use(
         console.log("response:", response)
         //这里根据后端提供的数据进行对应的处理
         if (response.status === 200) {
-            return response.data.data;
+            return response.data;
         } else {
             console.error(response);
         }
@@ -33,13 +34,17 @@ req.interceptors.response.use(
     }
 );
 
-const url = "https://www.cls.cn/nodeapi/telegraphs?refresh_type=0&rn=20&token=&app=CailianpressWeb&os=web&sv=6.8.0";
+const url = "http://irm.cninfo.com.cn/ircs/index/search";
 
 /*
-  财联社网页请求
+  互动易
  */
-export const caiLianSheRequest = data => {
-    return req({url: url, method: 'GET', data: data})
+export const interactiveRequest = data => {
+    if(!data) data = {}
+    data.searchTypes = "1,11,"
+    data.pageSize = 10
+    data.pageNo = data.pageNo || 0
+    return req({url: url, method: 'POST', params: qs.stringify(data)})
 }
 
 

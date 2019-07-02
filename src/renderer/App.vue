@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'electron-vue2'
+    name: '股票信息监控'
   }
 </script>
 

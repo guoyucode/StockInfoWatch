@@ -1,4 +1,4 @@
-# electron-vue2
+# StockInfoWatch
 
 > An electron-vue project
 
