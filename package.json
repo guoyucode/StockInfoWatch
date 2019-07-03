@@ -1,8 +1,8 @@
 {
   "name": "StockInfoWatch",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "guoyu <guoyumail@qq.com>",
-  "description": "An electron-vue project",
+  "description": "这个程序用于股票行情信息的监听及查看,消息是以通知方式送达",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
