@@ -162,7 +162,7 @@
                         if(number != -1 && number > 10) body = body.substring(0, number)
 
                         //通知
-	                    if(list.length <= 3) self.notification("财联社电报更新", body)
+	                    if(list.length <= 3) self.notification("财联社电报", body)
                     }
 
                     //数据长度限制
