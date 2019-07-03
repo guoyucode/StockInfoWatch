@@ -78,7 +78,7 @@ app.on('ready', () => {
 
 //托盘设置----------------------------------------------------
 const path = require('path');
-let trayIcon = path.join(__dirname, 'amex.ico');
+let trayIcon = path.join(__static, 'amex.ico');
 
 function openWindow(menuItem, browserWindow, event) {
   mainWindow.show()
