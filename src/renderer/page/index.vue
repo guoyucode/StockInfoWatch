@@ -4,34 +4,55 @@
 		<el-tabs type="border-card" :value="swithTab" @tab-click="tabClick">
 
 			<el-tab-pane name="财联社电报" v-loading="loading" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+				<!--<el-card class="box-card" key="-1" style="cursor:pointer;" >
+					<div class="text item">
+						更新中...
+					</div>
+				</el-card>-->
+
 				<el-card class="box-card" v-for="item in data" :key="item.id">
 					<div slot="header" class="clearfix">
-						<span v-text="'发布时间: ' + formatTime(item.ctime)">发布时间</span>
+						<span v-text="'发布时间: ' + formatTime(item.ctime * 1000)">发布时间</span>
 						<span style="float: right; padding: 3px 0" v-text="'阅读量: ' + item.reading_num"></span>
 					</div>
 					<div class="text item" v-text="item.brief">
 						列表内容
 					</div>
 				</el-card>
+
+				<el-card class="box-card" key="99999999" style="cursor:pointer;" >
+					<div class="text item" @click="requestData('next')">
+						<span style="margin-left: 40%;">点击加载更多</span>
+					</div>
+				</el-card>
+
 			</el-tab-pane>
 
 
 			<el-tab-pane name="互动易问答" v-loading="loading2" label="互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
-				<el-card class="box-card" v-for="item in data2" :key="item.id">
+				<el-card class="box-card" v-for="item in data2" :key="item.indexId">
 					<div slot="header" class="clearfix">
-						<span v-text="'发布时间: ' + item.packageDate">发布时间</span>
-						<span style="float: right; padding: 3px 0" v-text="'阅读量: '"></span>
+						<span >发布时间: {{formatTime(Number.parseInt(item.pubDate))}}</span>
+						<span style="padding-left: 15px;">认证公司: {{item.companyShortName}} [{{item.stockCode}}]</span>
+						<span style="padding-left: 15px;">发布者: {{item.authorName}}</span>
+						<!--<span style="float: right; padding: 3px 0" v-text="'阅读量: '"></span>-->
 					</div>
 					<div class="text item" >
-						问: {{item.mainContent}}
-
+						<a style="color: #0077E6;">问 </a>{{item.mainContent}}
 						<div class="text item" v-if="item.attachedContent">
-							<br/><br/>
-							答: {{item.attachedContent}}
+							<br/>
+							<a style="color: orange;">答 </a>{{item.attachedContent}}
 						</div>
 					</div>
 
 				</el-card>
+
+				<!--<el-card class="box-card" key="99999999" style="cursor:pointer;" @click="requestData2('next')">
+					<div class="text item">
+						<span style="margin-left: 40%;">点击加载更多</span>
+					</div>
+				</el-card>-->
+
 			</el-tab-pane>
 
 
@@ -44,7 +65,7 @@
 
 <script>
 
-    import {caiLianSheRequest} from './js/api'
+    import {caiLianSheRequest, caiLianSheUpdateRequest} from './js/api'
     import {DateFormat} from "./js/utils";
     import {interactiveRequest} from "./js/api-2";
     import {getStore} from "./js/db";
@@ -53,6 +74,9 @@
         name: 'index',
         data() {
             return {
+                cls_SetInterval: 10,
+                cls_last_time: 0,
+	            cls_next_time: 0,
                 dbCommonStore: null,
                 swithTab: "财联社电报",
                 clientHeight: 450,
@@ -77,9 +101,6 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-	        //通知
-            this.notification()
-
 	        //获得公共数据库
             getStore("common", function (dbStore) {
                 self.dbCommonStore = dbStore
@@ -89,18 +110,67 @@
         methods: {
 
             //请求财联社电报数据
-            requestData() {
+            requestData(next) {
+                console.log("requestData", next)
                 const self = this
                 self.loading = true
-                caiLianSheRequest().then(function (res) {
-                    self.data = res.roll_data
+	            let data = {}
+	            if(next && this.cls_next_time) data.cls_next_time = this.cls_next_time
+                caiLianSheRequest(data).then(function (res) {
+                    let row = res.roll_data;
+                    console.log("data", row)
+                    self.data = row
                     self.loading = false
+	                if(res && row && row.length > 0){
+                        self.cls_next_time = row[row.length -1].ctime
+	                    if(next){
+                            for (let k in row) {
+                                self.data.push(row[k])
+                            }
+	                    }else{
+                            self.cls_last_time = row[0].ctime
+                            self.clcSetInterval()
+	                    }
+	                }
+                })
+            },
+
+	        //财联社定时器
+            clcSetInterval(){
+                let self = this;
+                setInterval(function () {
+                    self.requestUpdateData(self.cls_last_time)
+                }, 10*1000)
+	        },
+
+	        //定时请求
+            requestUpdateData(cls_last_time) {
+                const self = this
+                caiLianSheUpdateRequest({cls_last_time: cls_last_time}).then(function (res) {
+                    if(!res || !res.update_num) return;
+                    let list = res.roll_data
+	                self.cls_last_time = list[0].ctime
+                    for (let i = list.length-1; i >= 0; i --) {
+                        let v = list[i];
+                        self.data.splice(0, 0, v)
+
+	                    let body = v.brief + "";
+                        let number = body.indexOf("】");
+                        if(number != -1 && number <= 10 && body.length > 10) body = body.substring(0, 10)
+
+                        //通知
+	                    if(list.length <= 3) self.notification("财联社电报更新", body)
+                    }
+
+                    //通知
+                    if(list.length > 3) self.notification("财联社电报更新", "多于三条消息.....")
+
                 })
             },
 
             //格式化时间方法
             formatTime(time) {
-                let date = new Date(time * 1000)
+                let date = new Date(time)
                 return DateFormat(date)
             },
 
@@ -114,7 +184,7 @@
                 const self = this
                 self.loading2 = true
                 interactiveRequest().then(function (res) {
-                    console.log("data2-res", res)
+                    console.log("data2", res.results)
                     self.data2 = res.results;
                     self.loading2 = false
                 })
@@ -130,9 +200,9 @@
             },
 
             //通知
-            notification() {
-                let myNotification = new Notification('标题', {
-                    body: '通知正文内容'
+            notification(title, body) {
+                let myNotification = new Notification(title, {
+                    body: body
                 })
 
                 myNotification.onclick = () => {

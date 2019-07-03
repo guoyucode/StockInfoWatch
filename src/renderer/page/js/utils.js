@@ -22,3 +22,12 @@ export const DateFormat = function (date, fmt) { //author: meizz
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
+
+/**
+ * 复制对象
+ * @param srcObj
+ * @returns {any}
+ */
+export const clone = function (srcObj) {
+    return JSON.parse(JSON.stringify(srcObj))
+}

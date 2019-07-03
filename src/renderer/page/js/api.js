@@ -1,5 +1,7 @@
 //import request from 'request'
 import axios from "axios"
+import qs from "qs"
+import {clone} from "./utils";
 
 /****** 创建axios实例 ******/
 const req = axios.create({
@@ -32,13 +34,41 @@ req.interceptors.response.use(
     }
 );
 
-const url = "https://www.cls.cn/nodeapi/telegraphs?refresh_type=0&rn=20&token=&app=CailianpressWeb&os=web&sv=6.8.0";
+const url = "https://www.cls.cn/nodeapi/telegraphs?"
+const updateUrl = "https://www.cls.cn/nodeapi/roll/get_update_roll_list?"
+const reqData = {
+    last_time: "",
+    refresh_type: 0,
+    rn: 20,
+    hasFirstVipArticle:	1,
+    app: "CailianpressWeb",
+    os: "web",
+    sv: "6.8.0",
+    token: "",
+    sign: "",
+}
 
 /*
   财联社网页请求
  */
 export const caiLianSheRequest = data => {
-    return req({url: url, method: 'GET', data: data})
+    let d = clone(reqData)
+    if(data && data.cls_next_time) {
+        d.last_time = data.cls_next_time
+        d.refresh_type = 1
+    }
+    let u = url + qs.stringify();
+    return req({url: u, method: 'GET'})
+}
+
+/*
+  财联社网页请求
+ */
+export const caiLianSheUpdateRequest = data => {
+    let d = clone(reqData)
+    d.last_time = data.cls_last_time
+    let u = updateUrl + qs.stringify(d);
+    return req({url: u, method: 'GET'})
 }
 
 
