@@ -16,47 +16,24 @@
 			</el-tab-pane>
 
 
-			<el-tab-pane name="互动易问答" v-loading="loading" label="互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
-				<div class="left-content table-list" v-for="item in data2">
-					<div class="table-head pd-20">
-						<a href="http://irm.cninfo.com.cn/ircs/company/companyDetail?stockcode=002681&amp;orgId=9900022749" target="_blank">
-							<img src="http://resstatic.cninfo.com.cn/irm//ssgs/S002681/images/002681.gif">
-							<span class="company-name m-company-name"><span class="compnay-name">奋达科技&nbsp;
-									<span class="company-code hidden-sm-and-up">(002681)</span>
-							</span>
-								<span class="company-code hidden-xs-only">[002681]</span>
-								<span class="question-time hidden-sm-and-up">{{item.packageDate}}</span></span></a>
-						<button type="button" class="el-button like-box hidden-xs-only el-button--primary el-button--mini" data-status="0"><!----><!---->
-							<span><i class="el-icon-plus"></i> <span class="attention-text">关注</span></span></button>
-						<div class="right-box hidden-xs-only hidden-sm-and-up"><span class="question-time">{{item.packageDate}}<</span></div>
+			<el-tab-pane name="互动易问答" v-loading="loading2" label="互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+				<el-card class="box-card" v-for="item in data2" :key="item.id">
+					<div slot="header" class="clearfix">
+						<span v-text="'发布时间: ' + item.packageDate">发布时间</span>
+						<span style="float: right; padding: 3px 0" v-text="'阅读量: '"></span>
 					</div>
-					<div data-id="401083177482932224" class="table-content translate-box"><!----> <a href="http://irm.cninfo.com.cn/ircs/question/questionDetail?questionId=401083177482932224" target="_blank">
-						<div class="question-content pd-20 pb-10">
-							<img src="http://ircsstatic.cninfo.com.cn/ircs//assets/images/question-icon.png" alt="" class="question-icon">
-							{{item.mainContent}}
+					<div class="text item" >
+						问: {{item.mainContent}}
+
+						<div class="text item" v-if="item.attachedContent">
+							<br/><br/>
+							答: {{item.attachedContent}}
 						</div>
-						<div class="reply-content pd-20 pb-10"><img src="http://ircsstatic.cninfo.com.cn/ircs//assets/images/reply-icon.png" alt="" class="reply-icon">
-							{{item.attachedContent}}
-							<!----></div>
-					</a></div>
-					<div class="table-footer pd-10-20"><span class="flag-title new-question-icon hidden-xs-only"><svg aria-hidden="true" width="100%" class="icon"><use xlink:href="#icon-ICON_NEW"></use></svg>
-                                    最新 ·  问答</span> <a href="http://irm.cninfo.com.cn/ircs/investorHomePage/investorInfo?userId=91818646225027072" target="_blank" class="hidden-xs-only"><span
-							class="user-name hidden-xs-only">股市西门吹雪 ·</span></a> <!----> <span class="question-time hidden-xs-only">刚刚 ·</span> <span class="question-platform hidden-xs-only">来源
-                                        &nbsp;网站</span>
-						<div class="right-box el-row"><span data-status="0" class="like-content el-col-xs-8"><i class="iconfont icon-ICON_dianzan"></i> <span class="count-number">点赞</span></span> <span><div
-								role="tooltip" id="el-popover-3327" aria-hidden="true" class="el-popover el-popper share-popover" style="display: none;" tabindex="0"><!---->
-								<p onclick="" data-clipboard-text="http://irm.cninfo.com.cn/ircs/question/questionDetail?questionId=401083177482932224"
-								   class="share-box copyBtn"><svg
-										aria-hidden="true" width="100%" class="icon"><use xlink:href="#icon-lianjie"></use></svg> <span>复制链接</span></p> <p class="share-box"><svg aria-hidden="true" width="100%"
-								                                                                                                                                                  class="icon"><use
-									xlink:href="#icon-xinlangweibo"></use></svg> <span>新浪微博</span></p> <p class="share-box"><svg aria-hidden="true" width="100%" class="icon"><use
-									xlink:href="#icon-weixin"></use></svg> <span>微信扫一扫</span></p> <p class="share-box" align="center"><img src="" alt=""></p> </div><span
-								class="like-content el-col-xs-8 shareClick el-popover__reference" aria-describedby="el-popover-3327" tabindex="0"><i class="iconfont icon-ICON_fenxiang"></i>分享</span></span> <span
-								data-status="0" class="like-content el-col-xs-8 collection "><i class="iconfont icon-ICON_shoucang"></i>
-收藏                                        </span></div>
 					</div>
-				</div>
+
+				</el-card>
 			</el-tab-pane>
+
 
 		</el-tabs>
 
@@ -93,8 +70,8 @@
             this.shortKey()
 
 	        //请求数据
-            this.requestData()
-            this.requestData2()
+            //this.requestData()
+            //this.requestData2()
 
 	        //设置窗口大小
             this.windowsResize()
@@ -166,16 +143,24 @@
             //切换tab
             swithTabs() {
                 const self = this;
-                self.dbCommonStore.select("tab", function (tab) {
-                    if (tab) self.swithTab = tab;
+                self.dbCommonStore.select("tabName", function (tab) {
+                    if (tab) self.swithTab = tab
+                    self.requestByTabName(tab)
                 });
 
             },
 
 	        //tab选中
             tabClick(tab) {
-                this.dbCommonStore.push("tab", tab.name);
-            }
+                this.dbCommonStore.push("tabName", tab.name);
+                this.requestByTabName(tab.name)
+            },
+
+	        //根据tab名字请求数据
+	        requestByTabName(name){
+                if(!name || name == "财联社电报") this.requestData()
+                else if(name == "互动易问答") this.requestData2()
+	        },
         }
     }
 </script>
