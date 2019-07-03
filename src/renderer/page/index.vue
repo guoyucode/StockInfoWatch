@@ -289,7 +289,8 @@
                 })
 
                 myNotification.onclick = () => {
-                    console.log('通知被点击')
+                    let {ipcRenderer: ipc} = require('electron')
+                    ipc.send("showWindows")
                 }
             },
 
