@@ -282,6 +282,7 @@
 
             //通知
             notification(title, body) {
+                let self = this
                 if(body.length > 50) body = body.substring(0, 50)
 
                 let myNotification = new Notification(title, {
@@ -291,6 +292,8 @@
                 myNotification.onclick = () => {
                     let {ipcRenderer: ipc} = require('electron')
                     ipc.send("showWindows")
+	                console.log("swithTab", title)
+                    self.swithTab = title
                 }
             },
 
@@ -307,6 +310,7 @@
 	        //tab选中
             tabClick(tab) {
                 this.dbCommonStore.push("tabName", tab.name);
+                this.swithTab = tab.name
                 //this.requestByTabName(tab.name)
             },
 
