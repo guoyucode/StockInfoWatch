@@ -96,7 +96,7 @@ app.on('ready', () => {
   ])
   tray.setToolTip('股票信息观察,右击打开主界面或者退出')
   tray.setContextMenu(contextMenu)
-  tray.on("double-click", function (event, bounds) {
+  tray.on("click", function (event, bounds) {
     openWindow()
   })
 })
