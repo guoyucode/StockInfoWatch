@@ -114,7 +114,6 @@
 
             //请求财联社电报数据
             requestData(next) {
-                console.log("requestData", next)
                 const self = this
                 self.loading = true
 	            let data = {}
@@ -141,7 +140,11 @@
 	        //财联社定时器
             clcSetInterval(){
                 let self = this;
-                setInterval(function () {
+                if(self.clcSetInterval_val){
+                    clearInterval(self.clcSetInterval_val)
+                    self.clcSetInterval_val = undefined
+                }
+                self.clcSetInterval_val = setInterval(function () {
                     self.requestUpdateData(self.cls_last_time)
                 }, self.setInterval_time*1000)
 	        },
@@ -258,7 +261,11 @@
             //互动易定时器
             hdySetInterval(){
                 let self = this;
-                setInterval(function () {
+                if(self.hdySetInterval_val){
+                    clearInterval(self.hdySetInterval_val)
+                    self.hdySetInterval_val = undefined
+                }
+                self.hdySetInterval_val = setInterval(function () {
                     let formatTime = DateFormat(new Date());
                     let refreshTime = formatTime.replace(" ", "+")
                     interactiveUnReadRequest({refreshTime: refreshTime}).then(res => {
@@ -276,7 +283,7 @@
                 const self = this;
                 const globalShortcut = require('electron').remote.globalShortcut
                 globalShortcut.register('F5', () => {
-                    self.requestData()
+                    self.requestByTabName(self.swithTab)
                 })
             },
 
