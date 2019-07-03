@@ -28,12 +28,15 @@ req.interceptors.response.use(
         }
     },
     error => {  //响应错误处理
-        console.log('error: ', error)
+        console.error('error: ', error)
         return error
     }
 );
 
 const url = "http://irm.cninfo.com.cn/ircs/index/search";
+
+//查询未读
+const unReadUrl = "http://irm.cninfo.com.cn/ircs/index/unread"
 
 /*
   互动易
@@ -49,6 +52,14 @@ export const interactiveRequest = data => {
     data.pageSize = 10
     data.pageNo = data.pageNo || 0
     return req({url: url, method: 'POST', params: qs.stringify(data)})
+}
+
+//查询刷新数据
+export const interactiveUnReadRequest = data => {
+    data.souceType = "1,11,"
+    data.refreshTime = data.refreshTime
+    let params = qs.stringify(data);
+    return req({url: unReadUrl, method: 'POST', data: params})
 }
 
 

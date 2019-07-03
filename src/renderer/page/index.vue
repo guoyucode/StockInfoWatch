@@ -20,21 +20,21 @@
 					</div>
 				</el-card>
 
-				<el-card class="box-card" key="99999999" style="cursor:pointer;" >
+				<!--<el-card class="box-card" key="99999999" style="cursor:pointer;" >
 					<div class="text item" @click="requestData('next')">
 						<span style="margin-left: 40%;">点击加载更多</span>
 					</div>
-				</el-card>
+				</el-card>-->
 
 			</el-tab-pane>
 
 
-			<el-tab-pane name="互动易问答" v-loading="loading2" label="互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+			<el-tab-pane name="深交所互动易问答" v-loading="loading2" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
 				<el-card class="box-card" v-for="item in data2" :key="item.indexId">
 					<div slot="header" class="clearfix">
 						<span >发布时间: {{formatTime(Number.parseInt(item.pubDate))}}</span>
-						<span style="padding-left: 15px;">认证公司: {{item.companyShortName}} [{{item.stockCode}}]</span>
-						<span style="padding-left: 15px;">发布者: {{item.authorName}}</span>
+						<span style="padding-left: 15px;">公司: {{item.companyShortName}} [{{item.stockCode}}]</span>
+						<span style="padding-left: 15px;">发布人: {{item.authorName}}</span>
 						<!--<span style="float: right; padding: 3px 0" v-text="'阅读量: '"></span>-->
 					</div>
 					<div class="text item" >
@@ -67,13 +67,16 @@
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './js/api'
     import {DateFormat} from "./js/utils";
-    import {interactiveRequest} from "./js/api-2";
+    import {interactiveRequest, interactiveUnReadRequest} from "./js/api-2";
     import {getStore} from "./js/db";
 
     export default {
         name: 'index',
         data() {
             return {
+                setInterval_time: 30,
+                hdy_refreshTime: 0,
+
                 cls_SetInterval: 10,
                 cls_last_time: 0,
 	            cls_next_time: 0,
@@ -94,8 +97,8 @@
             this.shortKey()
 
 	        //请求数据
-            //this.requestData()
-            //this.requestData2()
+            this.requestData()
+            this.requestData2()
 
 	        //设置窗口大小
             this.windowsResize()
@@ -140,7 +143,7 @@
                 let self = this;
                 setInterval(function () {
                     self.requestUpdateData(self.cls_last_time)
-                }, 10*1000)
+                }, self.setInterval_time*1000)
 	        },
 
 	        //定时请求
@@ -156,17 +159,30 @@
 
 	                    let body = v.brief + "";
                         let number = body.indexOf("】");
-                        if(number != -1 && number <= 10 && body.length > 10) body = body.substring(0, 10)
+                        if(number != -1 && number > 10) body = body.substring(0, number)
 
                         //通知
 	                    if(list.length <= 3) self.notification("财联社电报更新", body)
                     }
 
+                    //数据长度限制
+                    self.dataLenthLimit(self.data)
+
                     //通知
-                    if(list.length > 3) self.notification("财联社电报更新", "多于三条消息.....")
+                    if(list.length > 3) self.notification("财联社电报", "多于三条消息,请进入应用中查看 !")
 
                 })
             },
+
+	        //数据长度限制
+	        dataLenthLimit(data){
+                if(data.length > 100){
+                    for (let i = data.length-1; i >= 0; i --){
+                        data.splice(i, 1)
+                        if(i <= 100) break
+                    }
+                }
+	        },
 
             //格式化时间方法
             formatTime(time) {
@@ -180,14 +196,79 @@
             },
 
             //互动易请求
-            requestData2() {
+            requestData2(next) {
                 const self = this
-                self.loading2 = true
+	            if(!next) self.loading2 = true
                 interactiveRequest().then(function (res) {
-                    console.log("data2", res.results)
-                    self.data2 = res.results;
+                    let rows = res.results;
+                    console.log("data2", rows)
+
                     self.loading2 = false
+
+	                /*if(rows && rows.length >0){
+                        let pubDate = rows[0].pubDate
+                        let number = Number.parseInt(pubDate);
+                        let formatTime = self.formatTime(number)
+                        let formatTime = DateFormat(new Date());
+                        let refreshTime = formatTime.replace(" ", "+")
+                        self.hdy_refreshTime = refreshTime
+	                }*/
+
+	                if(!next){
+                        self.data2 = rows;
+	                    self.hdySetInterval()
+	                }else{
+
+	                    let data2 = self.data2;
+	                    label:
+                        for (let i = rows.length-1; i >= 0; i --) {
+                            let row = rows[i];
+                            for (let data2Key in data2) {
+                                let data2Element = data2[data2Key];
+                                if(row.indexId == data2Element.indexId){
+                                    rows.splice(i, 1)
+	                                continue label
+                                }
+                            }
+                            if(rows[i]){
+                                data2.splice(0, 0, rows[i])
+                            }
+                        }
+
+
+                        if(rows.length > 3) self.notification("深交所互动易问答", "多于三条消息,请进入应用中查看 !")
+		                else{
+                            for (let i = rows.length-1; i >= 0; i --){
+                                let row = rows[i];
+                                let mainContent = row.companyShortName + ": " + row.mainContent + "";
+
+                                //通知
+	                            self.notification("深交所互动易问答", mainContent)
+                            }
+                        }
+
+	                }
+
+                    //数据长度限制
+                    self.dataLenthLimit(self.data2)
+
                 })
+            },
+
+            //互动易定时器
+            hdySetInterval(){
+                let self = this;
+                setInterval(function () {
+                    let formatTime = DateFormat(new Date());
+                    let refreshTime = formatTime.replace(" ", "+")
+                    interactiveUnReadRequest({refreshTime: refreshTime}).then(res => {
+                        if(res.statusCode != 200) return
+                        if(res.data == 0) return
+	                    console.log("interactiveUnReadRequest", res)
+	                    self.requestData2("hdySetInterval");
+                        console.log("互动易请求-刷新到新数据: ", res.data)
+                    })
+                }, self.setInterval_time*1000)
             },
 
             //设置快捷键
@@ -201,6 +282,8 @@
 
             //通知
             notification(title, body) {
+                if(body.length > 50) body = body.substring(0, 50)
+
                 let myNotification = new Notification(title, {
                     body: body
                 })
@@ -215,7 +298,7 @@
                 const self = this;
                 self.dbCommonStore.select("tabName", function (tab) {
                     if (tab) self.swithTab = tab
-                    self.requestByTabName(tab)
+                    //self.requestByTabName(tab)
                 });
 
             },
@@ -223,13 +306,13 @@
 	        //tab选中
             tabClick(tab) {
                 this.dbCommonStore.push("tabName", tab.name);
-                this.requestByTabName(tab.name)
+                //this.requestByTabName(tab.name)
             },
 
 	        //根据tab名字请求数据
 	        requestByTabName(name){
                 if(!name || name == "财联社电报") this.requestData()
-                else if(name == "互动易问答") this.requestData2()
+                else if(name == "深交所互动易问答") this.requestData2()
 	        },
         }
     }
