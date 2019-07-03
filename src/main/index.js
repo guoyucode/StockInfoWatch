@@ -29,6 +29,10 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  mainWindow.on('minimize', () => {
+    mainWindow.hide()
+  })
 }
 
 app.on('ready', createWindow)
@@ -64,3 +68,33 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
  */
+
+
+
+//托盘设置----------------------------------------------------
+const path = require('path');
+let trayIcon = path.join(__dirname, 'amex.ico');
+
+function openWindow(menuItem, browserWindow, event) {
+  mainWindow.show()
+}
+function exit(menuItem, browserWindow, event) {
+  app.quit()
+}
+const { Menu, Tray } = require("electron")
+let tray = null
+app.on('ready', () => {
+  tray = new Tray(trayIcon)
+  const contextMenu = Menu.buildFromTemplate([
+    { label: '打开主界面', type: 'normal', checked: true, click: openWindow},
+    { label: '退出', type: 'normal', checked: true , click: exit},
+  ])
+  tray.setToolTip('股票信息观察,右击打开主界面或者退出')
+  tray.setContextMenu(contextMenu)
+  tray.on("double-click", function (event, bounds) {
+    openWindow()
+  })
+})
+//托盘设置----------------------------------------------------
+
+
