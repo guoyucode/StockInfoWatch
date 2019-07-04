@@ -26,6 +26,7 @@
 
     import {xuangubaoRequest} from './api/xuangubao'
     import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
+    let markData = null //下次提交的记号数据
 
     export default {
         name: 'xuangubao',
@@ -34,6 +35,7 @@
         },
         data() {
             return {
+
                 setInterval_time: 30,
                 data: [],
                 loading: true,
@@ -54,10 +56,17 @@
                 const self = this
                 if(!next || next != "setInterval") self.loading == true
                 let data = {}
-                if(next && next == "next") data.page = ++self.page
+                if(next && next == "next" && markData && markData.TailMsgId) {
+                    data.TailMark = markData.TailMark
+                    data.TailMsgId = markData.TailMsgId
+                }
                 xuangubaoRequest(data).then(function (res) {
                     self.loading = false
                     if(!res || res.NewMsgs.length === 0) return
+
+	                //记号数据
+                    markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}
+
                     let rows = res.NewMsgs;
                     console.log("选股宝 res-data", rows)
 
@@ -68,21 +77,27 @@
                         }
 	                }
 
-                    //刷新,或者定时刷新的逻辑
-                    else if(next && next == "refresh") {
-
+                    //定时刷新的逻辑
+                    else if(next && next == "setInterval"){
                         //合并数据
-	                    if(!self.data || self.data.length === 0) self.data = rows
+                        if(!self.data || self.data.length === 0) self.data = rows
                         else mergeData(rows, self.data, "id")
 
-	                    if(rows.length > 0) notification("第一财经直播区", "多于三条消息,请进入应用中查看 !", self.tabClick)
+                        if(rows.length > 0) notification("第一财经直播区", "多于三条消息,请进入应用中查看 !", self.tabClick)
                         else{
                             for (let k in rows) {
                                 let row = rows[k];
                                 notification("第一财经直播区", item.newcontent, self.tabClick)
                             }
                         }
+	                }
 
+                    //手动刷新
+                    else if(next && next == "refresh") {
+
+                        //合并数据
+	                    if(!self.data || self.data.length === 0) self.data = rows
+                        else mergeData(rows, self.data, "id")
                     }
                     else{
                         self.data = rows

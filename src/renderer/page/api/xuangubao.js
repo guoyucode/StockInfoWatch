@@ -47,8 +47,9 @@ const reqData = {
  */
 export const xuangubaoRequest = data => {
     let d = clone(reqData)
-    if(data && data.page) {
-        d.page = data.page
+    if(data && data.TailMsgId) {
+        d.tailmark = data.TailMark
+        d.msgIdMark = data.TailMsgId
     }
     let u = url + qs.stringify(d)
     return req({url: u, method: 'GET'})
