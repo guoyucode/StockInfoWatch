@@ -11,7 +11,9 @@ const req = axios.create({
 
 /*请求拦截器*/
 req.interceptors.request.use(config => {
-    config.headers['Access-Control-Allow-Origin'] = '*';
+    config.headers['Accept'] = '*/*';
+    config.headers['Referer'] = 'https://www.cls.cn/'
+    config.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
     return config;
 }, error => {  //请求错误处理
     Promise.reject(error)
@@ -37,27 +39,31 @@ req.interceptors.response.use(
 const url = "https://www.cls.cn/nodeapi/telegraphs?"
 const updateUrl = "https://www.cls.cn/nodeapi/roll/get_update_roll_list?"
 const reqData = {
-    last_time: "",
     refresh_type: 0,
     rn: 20,
-    hasFirstVipArticle:	1,
+    last_time: "",
     app: "CailianpressWeb",
     os: "web",
     sv: "6.8.0",
-    token: "",
-    sign: "",
+    //token: "",
+    //sign: "",
 }
 
 /*
   财联社网页请求
+
+  https://www.cls.cn/nodeapi/telegraphs?last_time=1562241006&refresh_type=1&rn=20&hasFirstVipArticle=1&app=CailianpressWeb&os=web&sv=6.8.0&token=&sign=
  */
 export const caiLianSheRequest = data => {
     let d = clone(reqData)
-    if(data && data.cls_next_time) {
-        d.last_time = data.cls_next_time
+
+    //获得下一页数据传参
+    if(data && data.last_time) {
+        d.last_time = data.last_time
         d.refresh_type = 1
     }
-    let u = url + qs.stringify();
+    let u = url + qs.stringify(d);
+    console.log("财联社网页请求-url", u)
     return req({url: u, method: 'GET'})
 }
 
@@ -66,7 +72,7 @@ export const caiLianSheRequest = data => {
  */
 export const caiLianSheUpdateRequest = data => {
     let d = clone(reqData)
-    d.last_time = data.cls_last_time
+    d.last_time = data.last_time
     let u = updateUrl + qs.stringify(d);
     return req({url: u, method: 'GET'})
 }

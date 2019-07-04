@@ -10,20 +10,20 @@
 				列表内容
 			</div>
 		</el-card>
+		<el-card class="box-card" key="99999999" style="cursor:pointer;" >
+			<div v-if="!loading" class="text item" @click="requestData('next')">
+				<span style="margin-left: 40%;">点击加载更多</span>
+			</div>
+		</el-card>
 	</div>
 
-		<!--<el-card class="box-card" key="-1" style="cursor:pointer;" >
+		<!--
+		<el-card class="box-card" key="-1" style="cursor:pointer;" >
 			<div class="text item">
 				更新中...
 			</div>
-		</el-card>-->
-
-		<!--<el-card class="box-card" key="99999999" style="cursor:pointer;" >
-			<div class="text item" @click="requestData('next')">
-				<span style="margin-left: 40%;">点击加载更多</span>
-			</div>
-		</el-card>-->
-
+		</el-card>
+		-->
 
 </template>
 
@@ -40,9 +40,7 @@
         data() {
             return {
                 setInterval_time: 50,
-                cls_last_time: 0,
-                cls_next_time: 0,
-                data: null,
+                data: [],
                 loading: true,
             }
         },
@@ -59,27 +57,28 @@
             requestData(next) {
                 const self = this
                 self.loading = true
+
+	            //下一页,点击更多时
                 let data = {}
-                if(next && this.cls_next_time) data.cls_next_time = this.cls_next_time
+                if(next && next == "next" && this.data && this.data.length>0){
+                    data.last_time = this.data[this.data.length-1].ctime
+                }
+
                 caiLianSheRequest(data).then(function (res) {
+
                     self.loading = false
                     if(!res || !res.roll_data || res.roll_data.length === 0) return
 
                     let row = res.roll_data;
                     console.log("财联网 res-data", row)
 
-                    self.data = row
-
-                    if(res && row && row.length > 0){
-                        self.cls_next_time = row[row.length -1].ctime
-                        if(next){
-                            for (let k in row) {
-                                self.data.push(row[k])
-                            }
-                        }else{
-                            self.cls_last_time = row[0].ctime
-                            self.clcSetInterval()
+                    if (next && next == "next") {
+                        for (let k in row) {
+                            self.data.push(row[k])
                         }
+                    } else {
+                        self.data = row
+                        self.clcSetInterval()
                     }
                 })
             },
@@ -89,14 +88,15 @@
                 let self = this;
                 if(self.clcSetInterval_val) return
                 self.clcSetInterval_val = setInterval(function () {
-                    self.requestUpdateData(self.cls_last_time)
+                    if(self.data && self.data.length > 0)
+                        self.requestUpdateData(self.data[0].ctime)
                 }, self.setInterval_time*1000)
             },
 
             //定时请求
-            requestUpdateData(cls_last_time) {
+            requestUpdateData(last_time) {
                 const self = this
-                caiLianSheUpdateRequest({cls_last_time: cls_last_time}).then(function (res) {
+                caiLianSheUpdateRequest({last_time: last_time}).then(function (res) {
                     if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
                     let list = res.roll_data
 
