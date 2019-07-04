@@ -30,7 +30,7 @@
 <script>
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
-    import {dataLenthLimit, DateFormat, notification} from "./common-js/utils";
+    import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
 
     export default {
         name: 'cls',
@@ -39,7 +39,7 @@
         },
         data() {
             return {
-                cls_SetInterval: 50,
+                setInterval_time: 50,
                 cls_last_time: 0,
                 cls_next_time: 0,
                 data: null,
@@ -62,10 +62,14 @@
                 let data = {}
                 if(next && this.cls_next_time) data.cls_next_time = this.cls_next_time
                 caiLianSheRequest(data).then(function (res) {
+                    self.loading = false
+                    if(!res || !res.roll_data || res.roll_data.length === 0) return
+
                     let row = res.roll_data;
                     console.log("财联网 res-data", row)
+
                     self.data = row
-                    self.loading = false
+
                     if(res && row && row.length > 0){
                         self.cls_next_time = row[row.length -1].ctime
                         if(next){
@@ -83,10 +87,7 @@
             //财联社定时器
             clcSetInterval(){
                 let self = this;
-                if(self.clcSetInterval_val){
-                    clearInterval(self.clcSetInterval_val)
-                    self.clcSetInterval_val = undefined
-                }
+                if(self.clcSetInterval_val) return
                 self.clcSetInterval_val = setInterval(function () {
                     self.requestUpdateData(self.cls_last_time)
                 }, self.setInterval_time*1000)
@@ -96,26 +97,29 @@
             requestUpdateData(cls_last_time) {
                 const self = this
                 caiLianSheUpdateRequest({cls_last_time: cls_last_time}).then(function (res) {
-                    if(!res || !res.update_num) return;
+                    if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
                     let list = res.roll_data
+
                     self.cls_last_time = list[0].ctime
-                    for (let i = list.length-1; i >= 0; i --) {
-                        let v = list[i];
-                        self.data.splice(0, 0, v)
 
-                        let body = v.brief + "";
-                        let number = body.indexOf("】");
-                        if(number != -1 && number > 10) body = body.substring(0, number)
+	                //合并数据
+                    if(!self.data || self.data.length === 0) self.data = list;
+                    else mergeData(list, self.data, "id")
 
-                        //通知
-                        if(list.length <= 3) notification("财联社电报", body, self.tabClick)
+	                //发送通知
+                    if(list.length > 3) notification("财联社电报", "多于三条消息,请进入应用中查看 !", self.tabClick)
+	                else{
+                        for (let i = list.length-1; i >= 0; i --) {
+                            let v = list[i];
+                            let body = v.brief + "";
+                            let number = body.indexOf("】");
+                            if(number != -1 && number > 10) body = body.substring(0, number+1)
+                            if(list.length <= 3) notification("财联社电报", body, self.tabClick)
+                        }
                     }
 
                     //数据长度限制
                     dataLenthLimit(self.data)
-
-                    //通知
-                    if(list.length > 3) notification("财联社电报", "多于三条消息,请进入应用中查看 !", self.tabClick)
 
                 })
             },

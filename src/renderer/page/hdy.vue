@@ -26,7 +26,7 @@
 
 <script>
 
-    import {DateFormat, notification} from "./common-js/utils";
+    import {DateFormat, mergeData, notification} from "./common-js/utils";
     import {interactiveRequest, interactiveUnReadRequest} from "./api/hdy";
 
     export default {
@@ -39,7 +39,7 @@
             return {
                 setInterval_time: 30,
                 hdy_refreshTime: 0,
-                data: null,
+                data: [],
                 loading: true,
             }
         },
@@ -75,8 +75,8 @@
                 interactiveRequest().then(function (res) {
                     let rows = res.results;
                     console.log("互动易 res-data", rows)
-
                     self.loading = false
+                    if(!rows || rows.length === 0) return
 
                     /*if(rows && rows.length >0){
 						let pubDate = rows[0].pubDate
@@ -92,30 +92,15 @@
                         self.hdySetInterval()
                     } else {
 
-                        let data = self.data;
-                        label:
-                            for (let i = rows.length - 1; i >= 0; i--) {
-                                let row = rows[i];
-                                for (let dataKey in data) {
-                                    let dataElement = data[dataKey];
-                                    if (row.indexId == dataElement.indexId) {
-                                        rows.splice(i, 1)
-                                        continue label
-                                    }
-                                }
-                                if (rows[i]) {
-                                    data.splice(0, 0, rows[i])
-                                }
-                            }
+                        if(!self.data || self.data.length === 0) self.data = rows;
+                        else mergeData(rows, self.data, "indexId")
 
-
+                        //通知
                         if (rows.length > 3) notification("深交所互动易问答", "多于三条消息,请进入应用中查看 !", self.tabClick)
                         else {
                             for (let i = rows.length - 1; i >= 0; i--) {
                                 let row = rows[i];
                                 let mainContent = row.companyShortName + ": " + row.mainContent + "";
-
-                                //通知
                                 notification("深交所互动易问答", mainContent, self.tabClick)
                             }
                         }

@@ -30,7 +30,7 @@
 <script>
 
     import {dycjRequest} from './api/dycj'
-    import {dataLenthLimit, DateFormat, notification} from "./common-js/utils";
+    import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
 
     export default {
         name: 'dycj',
@@ -39,8 +39,8 @@
         },
         data() {
             return {
-                cls_SetInterval: 5,
-                data: null,
+                setInterval_time: 30,
+                data: [],
                 loading: true,
             }
         },
@@ -60,12 +60,27 @@
                 let data = {}
                 if(next && this.page) data.page = this.page
                 dycjRequest(data).then(function (res) {
-                    let row = res;
-                    console.log("第一财经 res-data", next, row)
-                    self.data = row
                     self.loading = false
+                    if(!res || res.length === 0) return
+                    let rows = res;
+                    console.log("第一财经 res-data", rows)
+
+                    if(next && next == "refresh") {
+
+                        //合并数据
+	                    if(!self.data || self.data.length === 0) self.data = rows
+                        else mergeData(rows, self.data, "id")
+
+                        //数据长度限制
+                        dataLenthLimit(self.data)
+                    }
+                    else{
+                        self.data = rows
+                        self.mySetInterval()
+                    }
+
                 })
-                if(!next) self.mySetInterval()
+
             },
 
             //请求定时器
@@ -73,7 +88,7 @@
                 let self = this;
                 if(self.setInterval_val) return
                 self.setInterval_val = setInterval(function () {
-                    //self.requestData("refresh")
+                    self.requestData("refresh")
                 }, self.setInterval_time*1000)
             },
 

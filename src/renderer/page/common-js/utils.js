@@ -57,3 +57,25 @@ export const notification = function(title, body, clickCallback) {
         if(clickCallback) clickCallback(title)
     }
 }
+
+/**
+ * 合并数据, 新数据添加到target, 旧数据移除
+ */
+export const mergeData = function (src, target, key) {
+    if(!target) target = []
+    if(!src || src.length === 0) return
+
+    for (let i = src.length - 1; i >= 0; i--) {
+        let row = src[i];
+        for (let k2 in target) {
+            let d2 = target[k2];
+            if (row[key] == d2[key]) {
+                src[i] = undefined
+            }
+        }
+        if (src[i]) {
+            target.splice(0, 0, src[i])
+        }
+        src.splice(i, 1)
+    }
+}
