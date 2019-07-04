@@ -29,18 +29,17 @@
 
 <script>
 
-    import {caiLianSheRequest, caiLianSheUpdateRequest} from './js/api-cls'
-    import {dataLenthLimit, DateFormat, notification} from "./js/utils";
+    import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
+    import {dataLenthLimit, DateFormat, notification} from "./common-js/utils";
 
     export default {
         name: 'cls',
         props: {
-            refreshFun: Function,//刷新方法
             tabClick: Function, //点击通知消息功换到该消息的tab中去
         },
         data() {
             return {
-                cls_SetInterval: 10,
+                cls_SetInterval: 50,
                 cls_last_time: 0,
                 cls_next_time: 0,
                 data: null,
@@ -64,7 +63,7 @@
                 if(next && this.cls_next_time) data.cls_next_time = this.cls_next_time
                 caiLianSheRequest(data).then(function (res) {
                     let row = res.roll_data;
-                    console.log("data", row)
+                    console.log("财联网 res-data", row)
                     self.data = row
                     self.loading = false
                     if(res && row && row.length > 0){
@@ -132,12 +131,4 @@
 </script>
 
 <style scoped>
-	.box-card {
-		margin-bottom: 18px;
-		margin-right: 15px;
-	}
-
-	.el-card__body2 {
-		padding: 13px !important;
-	}
 </style>

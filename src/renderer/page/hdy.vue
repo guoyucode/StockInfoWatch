@@ -26,8 +26,8 @@
 
 <script>
 
-    import {DateFormat, notification} from "./js/utils";
-    import {interactiveRequest, interactiveUnReadRequest} from "./js/api-hdy";
+    import {DateFormat, notification} from "./common-js/utils";
+    import {interactiveRequest, interactiveUnReadRequest} from "./api/hdy";
 
     export default {
         name: 'hdy',
@@ -74,7 +74,7 @@
                 if (!next) self.loading = true
                 interactiveRequest().then(function (res) {
                     let rows = res.results;
-                    console.log("data", rows)
+                    console.log("互动易 res-data", rows)
 
                     self.loading = false
 
@@ -153,14 +153,4 @@
 </script>
 
 <style scoped>
-	.box-card {
-		margin-bottom: 18px;
-		margin-right: 15px;
-	}
-
-	.el-card__body2 {
-		padding: 13px !important;
-	}
-
-
 </style>

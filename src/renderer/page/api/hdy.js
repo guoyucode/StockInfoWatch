@@ -1,4 +1,4 @@
-//import request from 'request'
+//互动易
 import axios from "axios"
 import qs from "qs"
 

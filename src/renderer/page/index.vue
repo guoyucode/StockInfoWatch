@@ -1,12 +1,20 @@
 <template>
 	<div>
 		<el-tabs type="border-card" :value="swithTab" @tab-click="tabClick">
+
 			<el-tab-pane name="财联杜电报" label="财联杜电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
 				<cls ref="cls" :tabClick="tabClick"></cls>
 			</el-tab-pane>
+
 			<el-tab-pane name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
 				<hdy ref="hdy" :tabClick="tabClick"></hdy>
 			</el-tab-pane>
+
+			<el-tab-pane name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+				<dycj ref="dycj" :tabClick="tabClick"></dycj>
+			</el-tab-pane>
+
+
 		</el-tabs>
 	</div>
 </template>
@@ -14,13 +22,14 @@
 
 <script>
 
-    import {getStore} from "./js/db";
+    import {getStore} from "./common-js/db";
     import Cls from "./cls";
     import Hdy from "./hdy";
+    import Dycj from "./dycj";
 
     export default {
         name: 'index',
-        components: {Hdy, Cls},
+        components: {Dycj, Hdy, Cls},
         data() {
             return {
                 dbCommonStore: null,
@@ -61,7 +70,6 @@
                 })
             },
 
-
             //切换tab
             swithTabs() {
                 const self = this;
@@ -83,9 +91,20 @@
             requestByTabName(name) {
                 if (!name || name == "财联社电报") this.$refs.cls.requestData()
                 else if (name == "深交所互动易问答")  this.$refs.hdy.requestData()
+                else if (name == "第一财经直播区")  this.$refs.dycj.requestData()
+
             },
         }
     }
 </script>
 
-<style scoped></style>
+<style >
+	.box-card {
+		margin-bottom: 18px;
+		margin-right: 15px;
+	}
+
+	.el-card__body2 {
+		padding: 13px !important;
+	}
+</style>

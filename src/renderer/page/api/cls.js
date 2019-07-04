@@ -1,7 +1,7 @@
-//import request from 'request'
+//财联网
 import axios from "axios"
 import qs from "qs"
-import {clone} from "./utils";
+import {clone} from "../common-js/utils";
 
 /****** 创建axios实例 ******/
 const req = axios.create({
