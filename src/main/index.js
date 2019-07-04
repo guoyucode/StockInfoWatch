@@ -18,9 +18,8 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    //webPreferences: {webSecurity: false},
     webPreferences: {
-      devTools: true, //Whether to enable DevTools.
+      //devTools: true, //Whether to enable DevTools.
       nodeIntegration: true,//是否完整的支持 node. 默认值为true.
       webSecurity: false,
     },
@@ -35,9 +34,15 @@ function createWindow () {
     mainWindow = null
   })
 
+  //最小化是隐藏
   mainWindow.on('minimize', () => {
     mainWindow.hide()
   })
+
+  //非开发环境隐藏工具栏
+  if (process.env.NODE_ENV !== 'development'){
+    mainWindow.setMenu(null)
+  }
 }
 
 app.on('ready', createWindow)
