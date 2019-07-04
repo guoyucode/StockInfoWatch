@@ -18,6 +18,10 @@
 				<xuangubao ref="xuangubao" :tabClick="tabClick"></xuangubao>
 			</el-tab-pane>
 
+			<el-tab-pane name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+				<yuncaijing ref="yuncaijing" :tabClick="tabClick"></yuncaijing>
+			</el-tab-pane>
+
 
 		</el-tabs>
 	</div>
@@ -31,10 +35,11 @@
     import Hdy from "./hdy";
     import Dycj from "./dycj";
     import Xuangubao from "./xuangubao";
+    import Yuncaijing from "./yuncaijing";
 
     export default {
         name: 'index',
-        components: {Xuangubao, Dycj, Hdy, Cls},
+        components: {Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
                 dbCommonStore: null,
@@ -98,7 +103,7 @@
                 else if (name == "深交所互动易问答")  this.$refs.hdy.requestData()
                 else if (name == "第一财经直播区")  this.$refs.dycj.requestData()
                 else if (name == "选股宝")  this.$refs.xuangubao.requestData()
-
+                else if (name == "云财经")  this.$refs.yuncaijing.requestData()
             },
         }
     }
