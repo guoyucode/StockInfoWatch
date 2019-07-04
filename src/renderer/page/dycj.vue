@@ -71,6 +71,14 @@
 	                    if(!self.data || self.data.length === 0) self.data = rows
                         else mergeData(rows, self.data, "id")
 
+	                    if(rows.length > 0) notification("第一财经直播区", "多于三条消息,请进入应用中查看 !", self.tabClick)
+                        else{
+                            for (let k in rows) {
+                                let row = rows[k];
+                                notification("第一财经直播区", item.newcontent, self.tabClick)
+                            }
+                        }
+
                         //数据长度限制
                         dataLenthLimit(self.data)
                     }
