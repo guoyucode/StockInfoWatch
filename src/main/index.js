@@ -19,6 +19,11 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     //webPreferences: {webSecurity: false},
+    webPreferences: {
+      devTools: true, //Whether to enable DevTools.
+      nodeIntegration: true,//是否完整的支持 node. 默认值为true.
+      webSecurity: false,
+    },
     height: 563,
     useContentSize: true,
     width: 1000
