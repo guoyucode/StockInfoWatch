@@ -10,21 +10,12 @@
 				列表内容
 			</div>
 		</el-card>
-	</div>
-
-		<!--<el-card class="box-card" key="-1" style="cursor:pointer;" >
-			<div class="text item">
-				更新中...
-			</div>
-		</el-card>-->
-
-		<!--<el-card class="box-card" key="99999999" style="cursor:pointer;" >
+		<el-card v-if="!loading" class="box-card" key="99999999" style="cursor:pointer;" >
 			<div class="text item" @click="requestData('next')">
 				<span style="margin-left: 40%;">点击加载更多</span>
 			</div>
-		</el-card>-->
-
-
+		</el-card>
+	</div>
 </template>
 
 <script>
@@ -42,6 +33,7 @@
                 setInterval_time: 30,
                 data: [],
                 loading: true,
+	            page: 1,
             }
         },
         watch: {},
@@ -53,19 +45,25 @@
         },
         methods: {
 
-            //请求财联社电报数据
+            //请求数据
             requestData(next) {
                 const self = this
                 self.loading = true
                 let data = {}
-                if(next && this.page) data.page = this.page
+                if(next && next == "next") data.page = ++self.page
                 dycjRequest(data).then(function (res) {
                     self.loading = false
                     if(!res || res.length === 0) return
                     let rows = res;
                     console.log("第一财经 res-data", rows)
 
-                    if(next && next == "refresh") {
+	                if(next && next == "next"){
+                        for (let k in rows) {
+	                        self.data.push(rows[k])
+                        }
+	                }
+
+                    else if(next && next == "refresh") {
 
                         //合并数据
 	                    if(!self.data || self.data.length === 0) self.data = rows
@@ -79,13 +77,14 @@
                             }
                         }
 
-                        //数据长度限制
-                        dataLenthLimit(self.data)
                     }
                     else{
                         self.data = rows
                         self.mySetInterval()
                     }
+
+                    //数据长度限制
+                    dataLenthLimit(self.data)
 
                 })
 

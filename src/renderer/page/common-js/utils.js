@@ -33,11 +33,12 @@ export const clone = function (srcObj) {
 }
 
 //数据长度限制
-export const dataLenthLimit =function (arr) {
-    if (arr.length > 100) {
+export const dataLenthLimit =function (arr, limit) {
+    if(!limit) limit = 500
+    if (arr.length > limit) {
         for (let i = arr.length - 1; i >= 0; i--) {
             arr.splice(i, 1)
-            if (i <= 100) break
+            if (i <= limit) break
         }
     }
 }

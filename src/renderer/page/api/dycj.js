@@ -49,6 +49,6 @@ export const dycjRequest = data => {
     if(data && data.page) {
         d.page = data.page
     }
-    let u = url + qs.stringify();
+    let u = url + qs.stringify(d)
     return req({url: u, method: 'GET'})
 }
