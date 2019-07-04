@@ -28,7 +28,6 @@
 
     import {DateFormat, notification} from "./js/utils";
     import {interactiveRequest, interactiveUnReadRequest} from "./js/api-hdy";
-    import {getStore} from "./js/db";
 
     export default {
         name: 'hdy',

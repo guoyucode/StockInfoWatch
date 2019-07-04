@@ -31,7 +31,6 @@
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './js/api-cls'
     import {dataLenthLimit, DateFormat, notification} from "./js/utils";
-    import {getStore} from "./js/db";
 
     export default {
         name: 'cls',
