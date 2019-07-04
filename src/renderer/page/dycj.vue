@@ -48,7 +48,7 @@
             //请求数据
             requestData(next) {
                 const self = this
-                self.loading = true
+                if(!next || next != "setInterval") self.loading == true
                 let data = {}
                 if(next && next == "next") data.page = ++self.page
                 dycjRequest(data).then(function (res) {
@@ -57,12 +57,14 @@
                     let rows = res;
                     console.log("第一财经 res-data", rows)
 
+	                //加载更多的逻辑
 	                if(next && next == "next"){
                         for (let k in rows) {
 	                        self.data.push(rows[k])
                         }
 	                }
 
+                    //刷新,或者定时刷新的逻辑
                     else if(next && next == "refresh") {
 
                         //合并数据
@@ -95,7 +97,7 @@
                 let self = this;
                 if(self.setInterval_val) return
                 self.setInterval_val = setInterval(function () {
-                    self.requestData("refresh")
+                    self.requestData("setInterval")
                 }, self.setInterval_time*1000)
             },
 

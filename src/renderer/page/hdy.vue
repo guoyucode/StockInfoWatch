@@ -1,5 +1,6 @@
 <template><!--深交所互动易问答-->
 	<div v-loading="loading">
+
 		<el-card class="box-card" v-for="item in data" :key="item.indexId">
 			<div slot="header" class="clearfix">
 				<span>发布时间: {{formatTime(Number.parseInt(item.pubDate))}}</span>
@@ -14,19 +15,21 @@
 				</div>
 			</div>
 		</el-card>
+
+		<el-card v-if="!loading" class="box-card" key="99999999" style="cursor:pointer;" >
+			<div class="text item" @click="requestData('next')">
+				<span style="margin-left: 40%;">点击加载更多</span>
+			</div>
+		</el-card>
+
 	</div>
 
-	<!--<el-card class="box-card" key="99999999" style="cursor:pointer;" @click="requestData('next')">
-		<div class="text item">
-			<span style="margin-left: 40%;">点击加载更多</span>
-		</div>
-	</el-card>-->
 </template>
 
 
 <script>
 
-    import {DateFormat, mergeData, notification} from "./common-js/utils";
+    import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
     import {interactiveRequest, interactiveUnReadRequest} from "./api/hdy";
 
     export default {
@@ -37,6 +40,7 @@
         },
         data() {
             return {
+                page: 1,
                 setInterval_time: 30,
                 hdy_refreshTime: 0,
                 data: [],
@@ -52,16 +56,6 @@
         },
         methods: {
 
-            //数据长度限制
-            dataLenthLimit(data) {
-                if (data.length > 100) {
-                    for (let i = data.length - 1; i >= 0; i--) {
-                        data.splice(i, 1)
-                        if (i <= 100) break
-                    }
-                }
-            },
-
             //格式化时间方法
             formatTime(time) {
                 let date = new Date(time)
@@ -72,7 +66,12 @@
             requestData(next) {
                 const self = this
                 if (!next) self.loading = true
-                interactiveRequest().then(function (res) {
+	            var data = {}
+	            if (next && next == "next") {
+                    self.loading = true
+	                data.page = ++self.page
+                }
+                interactiveRequest(data).then(function (res) {
                     let rows = res.results;
                     console.log("互动易 res-data", rows)
                     self.loading = false
@@ -87,7 +86,14 @@
 						self.hdy_refreshTime = refreshTime
 					}*/
 
-                    if (!next) {
+                    //加载更多的逻辑
+                    if(next && next == "next"){
+                        for (let k in rows) {
+                            self.data.push(rows[k])
+                        }
+                    }
+
+                    else if (!next) {
                         self.data = rows;
                         self.hdySetInterval()
                     } else {
@@ -108,7 +114,7 @@
                     }
 
                     //数据长度限制
-                    self.dataLenthLimit(self.data)
+                    dataLenthLimit(self.data)
 
                 })
             },

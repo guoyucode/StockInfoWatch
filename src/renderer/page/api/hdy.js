@@ -47,11 +47,11 @@ const unReadUrl = "http://irm.cninfo.com.cn/ircs/index/unread"
 
  */
 export const interactiveRequest = data => {
-    if(!data) data = {}
-    data.searchTypes = "1,11,"
-    data.pageSize = 10
-    data.pageNo = data.pageNo || 0
-    return req({url: url, method: 'POST', params: qs.stringify(data)})
+    const d = {}
+    d.searchTypes = "1,11,"
+    d.pageSize = 20
+    d.pageNo = data.page || 1
+    return req({url: url, method: 'POST', data: qs.stringify(d)})
 }
 
 //查询刷新数据
