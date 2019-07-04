@@ -4,7 +4,7 @@
 		<el-card class="box-card" v-for="item in data" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + formatTime(item.ctime * 1000)">发布时间</span>
-				<span style="float: right; padding: 3px 0" v-text="'阅读量: ' + item.reading_num"></span>
+				<!--<span style="float: right; padding: 3px 0" v-text="'阅读量: ' + item.reading_num"></span>-->
 			</div>
 			<div class="text item" v-text="item.brief">
 				列表内容
@@ -114,10 +114,7 @@
 	                else{
                         for (let i = list.length-1; i >= 0; i --) {
                             let v = list[i];
-                            let body = v.brief + "";
-                            let number = body.indexOf("】");
-                            if(number != -1 && number > 10) body = body.substring(0, number+1)
-                            if(list.length <= 3) notification("财联社电报", body, self.tabClick)
+                            if(list.length <= 3) notification("财联社电报", v.title, self.tabClick)
                         }
                     }
 

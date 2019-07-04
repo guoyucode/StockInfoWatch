@@ -84,7 +84,7 @@
                         else{
                             for (let k in rows) {
                                 let row = rows[k];
-                                notification("云财经", item.title, self.tabClick)
+                                notification("云财经", row.title, self.tabClick)
                             }
                         }
 	                }

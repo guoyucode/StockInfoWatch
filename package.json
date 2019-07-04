@@ -1,7 +1,7 @@
 {
   "name": "StockInfoWatch",
-  "version": "0.2.1",
-  "author": "guoyu <guoyumail@qq.com>",
+  "version": "0.3.0",
+  "author": "guoyu",
   "description": "这个程序用于股票行情信息的监听及查看,消息是以通知方式送达",
   "license": null,
   "main": "./dist/electron/main.js",
@@ -18,7 +18,7 @@
   },
   "build": {
     "productName": "股票信息观察",
-    "appId": "guoyu.link",
+    "appId": "StockInfoWatch",
     "directories": {
       "output": "build"
     },
