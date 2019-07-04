@@ -29,7 +29,7 @@
 
 <script>
 
-    import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
+    import {dataLenthLimit, DateFormat, mergeData, notification} from "./js/utils";
     import {interactiveRequest, interactiveUnReadRequest} from "./api/hdy";
 
     export default {

@@ -26,7 +26,7 @@
 
 <script>
 
-    import {getStore} from "./common-js/db";
+    import {getStore} from "./js/db";
     import Cls from "./cls";
     import Hdy from "./hdy";
     import Dycj from "./dycj";

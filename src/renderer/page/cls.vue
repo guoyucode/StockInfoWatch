@@ -30,7 +30,7 @@
 <script>
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
-    import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
+    import {dataLenthLimit, DateFormat, mergeData, notification} from "./js/utils";
 
     export default {
         name: 'cls',
@@ -65,8 +65,9 @@
                 }
 
                 caiLianSheRequest(data).then(function (res) {
-
                     self.loading = false
+                    if(!res || res.error != 0) return;
+                    res = res.data;
                     if(!res || !res.roll_data || res.roll_data.length === 0) return
 
                     let row = res.roll_data;
@@ -97,6 +98,8 @@
             requestUpdateData(last_time) {
                 const self = this
                 caiLianSheUpdateRequest({last_time: last_time}).then(function (res) {
+                    if(!res || res.error != 0) return;
+                    res = res.data;
                     if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
                     let list = res.roll_data
 

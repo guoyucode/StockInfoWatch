@@ -25,7 +25,7 @@
 <script>
 
     import {xuangubaoRequest} from './api/xuangubao'
-    import {dataLenthLimit, DateFormat, mergeData, notification} from "./common-js/utils";
+    import {dataLenthLimit, DateFormat, mergeData, notification} from "./js/utils";
     let markData = null //下次提交的记号数据
 
     export default {
