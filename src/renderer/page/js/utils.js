@@ -31,3 +31,29 @@ export const DateFormat = function (date, fmt) { //author: meizz
 export const clone = function (srcObj) {
     return JSON.parse(JSON.stringify(srcObj))
 }
+
+//数据长度限制
+export const dataLenthLimit =function (arr) {
+    if (arr.length > 100) {
+        for (let i = arr.length - 1; i >= 0; i--) {
+            arr.splice(i, 1)
+            if (i <= 100) break
+        }
+    }
+}
+
+//通知
+export const notification = function(title, body, clickCallback) {
+    let self = this
+    if (body.length > 50) body = body.substring(0, 50)
+
+    let myNotification = new Notification(title, {
+        body: body
+    })
+
+    myNotification.onclick = () => {
+        let {ipcRenderer: ipc} = require('electron')
+        ipc.send("showWindows")
+        if(clickCallback) clickCallback(title)
+    }
+}
