@@ -14,8 +14,8 @@
 			</div>
 		</el-card>
 
-		<el-card v-if="!loading" class="box-card" key="99999999" style="cursor:pointer;" >
-			<div class="text item" @click="requestData('next')">
+		<el-card v-if="!loading" class="box-card" key="99999999" style="cursor:pointer;" @click.native="requestData('next')">
+			<div class="text item" >
 				<span style="margin-left: 40%;">点击加载更多</span>
 			</div>
 		</el-card>
