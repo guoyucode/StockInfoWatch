@@ -24,7 +24,7 @@
 
 			<el-tab-pane :closable="true" v-if="!settingClose" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
-				<setting ref="yuncaijing" :refs="$refs" :enable-tab="enableTab"></setting>
+				<setting :refs="$refs" :enable-tab="enableTab"></setting>
 			</el-tab-pane>
 
 		</el-tabs>
@@ -79,7 +79,7 @@
                 deep: true
             },
             swithTab: function (cur) {
-                if(cur != "设置") this.dbStore.push("tabName", cur)
+                this.dbStore.push("tabName", cur)
                 if(cur == "设置") this.settingClose = false
             }
         },
