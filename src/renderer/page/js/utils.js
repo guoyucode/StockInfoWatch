@@ -132,3 +132,16 @@ export const generalHandlerData = function (self, next, newRows, dataKey, notifi
     //数据长度限制
     dataLenthLimit(self.data)
 }
+
+/**
+ * 延迟器
+ */
+export const delayer = function(action, delay = 1500) {
+    let timer = -1;
+    return nv => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            action(nv);
+        }, delay);
+    };
+}

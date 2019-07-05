@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<el-row>
-
 			<el-col :span="cardWidth" :key="0" :offset="cardOffset">
 				<el-card class="box-card" >
 					<div slot="header" class="clearfix">
@@ -9,37 +8,41 @@
 					</div>
 					<div class="text item" >
 						刷新快捷键设置
-
 					</div>
 					<div class="text item" style="" >
 
 					</div>
 				</el-card>
 			</el-col>
-
 			<el-col :span="cardWidth" :key="1" :offset="cardOffset">
 				<el-card class="box-card" >
 					<div slot="header" class="clearfix">
 						<span>
 							财联社电报&nbsp;&nbsp;
-							<el-switch
-									v-model="enableTab.cls"
-									:active-value="true"
-									:inactive-value="false"
-									active-color="#13ce66"
-									inactive-color="#ff4949">
+							<el-switch v-model="enableTab.cls" :active-value="true" :inactive-value="false" active-color="#13ce66" inactive-color="#ff4949">
 							</el-switch>
 						</span>
 					</div>
-					<div class="text item" >
-
-					</div>
-					<div class="text item" style="" >
-						新闻描述
-					</div>
+					<diV v-if="enableTab.cls">
+						<div class="text item" >
+							<el-row>
+								<label>定时刷新频率</label>
+								<el-input style="float: right; width: 66%;"  size="mini" v-model="refs.cls.setInterval_time" placeholder="请输入内容"></el-input>
+							</el-row>
+						</div>
+						<br/>
+						<div class="text item">
+							<el-row>
+								<label>通知开关</label>
+								<el-switch style="margin-left: 45px;" v-model="refs.cls.enableNotice" :active-value="true" :inactive-value="false" > </el-switch>
+							</el-row>
+						</div>
+					</diV>
 				</el-card>
 			</el-col>
+		</el-row>
 
+		<el-row>
 			<el-col :span="cardWidth" :key="2" :offset="cardOffset">
 				<el-card class="box-card" >
 					<div slot="header" class="clearfix">
@@ -61,7 +64,6 @@
 					</div>
 				</el-card>
 			</el-col>
-
 			<el-col :span="cardWidth" :key="3" :offset="cardOffset">
 				<el-card class="box-card" >
 					<div slot="header" class="clearfix">
@@ -83,7 +85,6 @@
 					</div>
 				</el-card>
 			</el-col>
-
 		</el-row>
 
 		<el-row>
@@ -108,7 +109,6 @@
 					</div>
 				</el-card>
 			</el-col>
-
 			<el-col :span="cardWidth" :key="5" :offset="cardOffset">
 				<el-card class="box-card" >
 					<div slot="header" class="clearfix">
@@ -140,7 +140,7 @@
         name: "setting",
 	    data(){
             return {
-                cardWidth: 5,
+                cardWidth: 10,
                 cardOffset: 1,
             }
 	    },
@@ -149,7 +149,7 @@
             enableTab: Object, // {cls: true, dycj: true, ...}
 	    },
 	    mounted() {
-            console.log("设置页-refs", this.refs)
+            //console.log("设置页-refs", this.refs)
         }
     }
 </script>

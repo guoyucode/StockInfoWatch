@@ -30,7 +30,6 @@ export const caiLianSheRequest = data => {
         d.refresh_type = 1
     }
     let u = url + qs.stringify(d);
-    console.log("财联社网页请求-url", u)
     return req({url: u, method: 'GET'})
 }
 

@@ -36,7 +36,7 @@
 
 <script>
 
-    import {getStore} from "./js/db";
+    import {getDBStore} from "./js/db";
     import Cls from "./cls";
     import Hdy from "./hdy";
     import Dycj from "./dycj";
@@ -59,7 +59,7 @@
         data() {
             return {
                 settingClose: true,
-                dbCommonStore: null,
+                dbStore: null,
                 swithTab: "财联社电报",
                 clientHeight: 450,
                 enableTab: {
@@ -74,12 +74,12 @@
         watch: {
             enableTab: {
                 handler: function(cur) {
-                    this.dbCommonStore.push("enableTab", cur)
+                    this.dbStore.push("enableTab", cur)
                 },
                 deep: true
             },
             swithTab: function (cur) {
-                this.dbCommonStore.push("tabName", cur)
+                this.dbStore.push("tabName", cur)
                 if(cur == "设置") this.settingClose = false
             }
         },
@@ -93,9 +93,9 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-            //获得公共数据库
-            getStore("common", function (dbStore) {
-                self.dbCommonStore = dbStore
+            //获得数据库
+            getDBStore(function (dbStore) {
+                self.dbStore = dbStore
                 self.readDbAfterinit(dbStore)
             })
         },

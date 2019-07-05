@@ -21,7 +21,7 @@
 <script>
 
     import {dycjRequest} from './api/dycj'
-    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
+    import {DateFormat, generalHandlerData} from "./js/utils";
     let page = 1
 
     export default {

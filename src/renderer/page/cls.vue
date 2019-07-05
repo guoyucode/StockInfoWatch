@@ -30,7 +30,9 @@
 <script>
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
-    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, delayer, generalHandlerData, mergeData, notification} from "./js/utils";
+    import {getDBStore} from "./js/db";
+	let vue = null
 
     export default {
         name: 'cls',
@@ -42,20 +44,44 @@
                 setInterval_time: 50,
                 data: [],
                 loading: true,
+                enableNotice: true,
+                dbStore: null,
             }
         },
-        watch: {},
+        watch: {
+            setInterval_time: delayer(cur => {
+                vue.dbStore.push("cls.setInterval_time", cur)
+	            vue.setInterval()
+            }),
+            enableNotice: delayer(cur => {
+                vue.dbStore.push("cls.enableNotice", cur)
+            }),
+        },
+	    created(){
+          vue = this;
+	    },
         mounted() {
-            const self = this;
-            self.clcSetInterval()
-            self.requestData()
+            getDBStore(readDBStore => {
+                vue.dbStore = readDBStore
+                vue.initDB()
+            })
+            vue.setInterval()
+            vue.requestData()
         },
         methods: {
 
+            initDB(){
+                this.dbStore.select("cls.setInterval_time", v => {
+                    if(v != undefined) vue.setInterval_time = v;
+                })
+                this.dbStore.select("cls.enableNotice", v => {
+                    if(v != undefined) vue.enableNotice = v;
+                })
+            },
+
             //请求财联社电报数据
             requestData(next) {
-                const self = this
-                self.loading = true
+                vue.loading = true
 
 	            //下一页,点击更多时
                 let data = {}
@@ -64,35 +90,36 @@
                 }
 
                 caiLianSheRequest(data).then(function (res) {
-                    self.loading = false
+                    vue.loading = false
                     if(!res || res.error != 0) return;
                     res = res.data;
                     if(!res || !res.roll_data || res.roll_data.length === 0) return
                     let rows = res.roll_data;
                     console.log("财联网 res-data", rows)
-                    generalHandlerData(self, next, rows, "id", "财联社电报", "title")
+                    generalHandlerData(vue, next, rows, "id", "财联社电报", "title")
                 })
             },
 
             //财联社定时器
-            clcSetInterval(){
-                let self = this;
-                if(self.clcSetInterval_val) return
-                self.clcSetInterval_val = setInterval(function () {
-                    self.requestUpdateData("setInterval")
-                }, self.setInterval_time*1000)
+            setInterval(){
+                if(vue.setInterval_val) {
+                    clearInterval(vue.setInterval_val)
+                    vue.setInterval_val = null
+                }
+                vue.setInterval_val = setInterval(function () {
+                    vue.requestUpdateData("setInterval")
+                }, vue.setInterval_time*1000)
             },
 
             //定时请求
             requestUpdateData(next) {
-                const self = this
-                if(!self.data && self.data.length == 0) return self.requestData("refresh")
-                caiLianSheUpdateRequest({last_time: self.data[0].ctime}).then(function (res) {
+                if(!vue.data && vue.data.length == 0) return vue.requestData("refresh")
+                caiLianSheUpdateRequest({last_time: vue.data[0].ctime}).then(function (res) {
                     if(!res || res.error != 0) return;
                     res = res.data;
                     if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
                     let rows = res.roll_data
-                    generalHandlerData(self, next, rows, "id", "财联社电报", "title")
+                    generalHandlerData(vue, next, rows, "id", "财联社电报", "title")
                 })
             },
 

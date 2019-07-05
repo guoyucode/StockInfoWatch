@@ -1,14 +1,14 @@
 //数据库访问js文件
-const db_name = "have-read-db"
-const db_version = 2
-
+const db_name = "db1"
+const db_version = 1
+const storeName = "store1"
 
 /**
  * 获得 indexedDB 数据仓库
  * @param dbStoreName
  * @returns {IDBObjectStore}
  */
-export const getStore = function (storeName, callback) {
+export const getDBStore = function (callback) {
 
     const request = window.indexedDB.open(db_name, db_version);
     request.onerror = function (event) {
