@@ -79,7 +79,7 @@
                     if(!res || !res.data || res.data.length === 0) return
                     let rows = res.data;
                     console.log("云财经 res-data", rows)
-                    generalHandlerData(self, next, rows, "id", "云财经", "title")
+                    generalHandlerData(self, next, rows, "id", (vue.enableNotice?"云财经":false), "title")
                     if(next && next == "next") page+=1
                 })
 

@@ -75,7 +75,7 @@
                     console.log("第一财经 res-data", res)
                     if(!res || !(res instanceof Array) || res.length === 0) return
                     let rows = res;
-                    generalHandlerData(self, next, rows, "id", "第一财经直播区", "newcontent")
+                    generalHandlerData(self, next, rows, "id", (vue.enableNotice?"第一财经直播区":false), "newcontent")
                     if(next && next == "next") page += 1
                 })
             },

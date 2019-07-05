@@ -83,7 +83,7 @@
                     if(!res || !res.NewMsgs || res.NewMsgs.length === 0) return
                     let rows = res.NewMsgs;
                     console.log("选股宝 res-data", rows)
-                    generalHandlerData(self, next, rows, "id", "第一财经直播区", "newcontent")
+                    generalHandlerData(self, next, rows, "id", (vue.enableNotice?"第一财经直播区":false), "newcontent")
                     markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
                 })
             },

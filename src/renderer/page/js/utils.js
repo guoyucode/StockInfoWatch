@@ -114,8 +114,8 @@ export const generalHandlerData = function (self, next, newRows, dataKey, notifi
             mergeData(newRows, self.data, dataKey)
         }
 
-        //只有定时任务才推送通知
-        if(next == "setInterval"){
+        //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
+        if(next == "setInterval" && notificationTitle){
             if(newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !", self.tabClick)
             else{
                 for (let k in newRows) {

@@ -79,7 +79,7 @@
                 deep: true
             },
             swithTab: function (cur) {
-                this.dbStore.push("tabName", cur)
+                if(cur != "设置") this.dbStore.push("tabName", cur)
                 if(cur == "设置") this.settingClose = false
             }
         },

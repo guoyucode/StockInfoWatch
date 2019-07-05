@@ -36,7 +36,7 @@
 					<diV v-if="enableTab.cls">
 						<div class="text item">
 							<el-row>
-								<label>定时刷新频率</label>
+								<label>定时刷新频率(秒)</label>
 								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.cls.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
@@ -65,7 +65,7 @@
 					<diV v-if="enableTab.hdy">
 						<div class="text item">
 							<el-row>
-								<label>定时刷新频率</label>
+								<label>定时刷新频率(秒)</label>
 								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.hdy.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
@@ -95,7 +95,7 @@
 					<diV v-if="enableTab.dycj">
 						<div class="text item">
 							<el-row>
-								<label>定时刷新频率</label>
+								<label>定时刷新频率(秒)</label>
 								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.dycj.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
@@ -128,7 +128,7 @@
 					<diV v-if="enableTab.xuangubao">
 						<div class="text item">
 							<el-row>
-								<label>定时刷新频率</label>
+								<label>定时刷新频率(秒)</label>
 								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
@@ -158,7 +158,7 @@
 					<diV v-if="enableTab.yuncaijing">
 						<div class="text item">
 							<el-row>
-								<label>定时刷新频率</label>
+								<label>定时刷新频率(秒)</label>
 								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>

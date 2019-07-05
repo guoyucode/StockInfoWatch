@@ -91,7 +91,7 @@
                     if(!res || !res.results || res.results.length === 0) return
                     let rows = res.results;
                     console.log("互动易 res-data", rows)
-                    generalHandlerData(self, next, rows, "indexId", "深交所互动易问答", {keyEval: 'row.companyShortName + ": " + row.mainContent + ""'})
+                    generalHandlerData(self, next, rows, "indexId", (vue.enableNotice?"深交所互动易问答":false), {keyEval: 'row.companyShortName + ": " + row.mainContent + ""'})
                     if (next && next == "next") page+=1
                 })
             },
