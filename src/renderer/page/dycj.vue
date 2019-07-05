@@ -21,8 +21,11 @@
 <script>
 
     import {dycjRequest} from './api/dycj'
-    import {DateFormat, generalHandlerData} from "./js/utils";
+    import {DateFormat, generalHandlerData, delayer} from "./js/utils";
+    import {getDBStore} from "./js/db";
+    import {initDB} from "./js/project";
     let page = 1
+    let vue = null
 
     export default {
         name: 'dycj',
@@ -31,15 +34,32 @@
         },
         data() {
             return {
-                setInterval_time: 30,
+                setInterval_time: 50,
                 data: [],
                 loading: true,
+                enableNotice: true,
+                dbStore: null,
             }
         },
-        watch: {},
+        watch: {
+            setInterval_time: delayer(cur => {
+                vue.dbStore.push("dycj.setInterval_time", cur)
+                vue.setInterval()
+            }),
+            enableNotice: delayer(cur => {
+                vue.dbStore.push("dycj.enableNotice", cur)
+            }),
+        },
+        created(){
+            vue = this;
+        },
         mounted() {
             const self = this;
-            self.mySetInterval()
+            getDBStore(readDBStore => {
+                vue.dbStore = readDBStore
+                initDB(vue, "dycj")
+                vue.setInterval()
+            })
             self.requestData()
         },
         methods: {
@@ -61,7 +81,7 @@
             },
 
             //请求定时器
-            mySetInterval(){
+            setInterval(){
                 let self = this;
                 if(self.setInterval_val) return
                 self.setInterval_val = setInterval(function () {

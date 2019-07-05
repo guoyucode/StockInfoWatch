@@ -32,6 +32,7 @@
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
     import {dataLenthLimit, DateFormat, delayer, generalHandlerData, mergeData, notification} from "./js/utils";
     import {getDBStore} from "./js/db";
+    import {initDB} from "./js/project";
 	let vue = null
 
     export default {
@@ -63,21 +64,12 @@
         mounted() {
             getDBStore(readDBStore => {
                 vue.dbStore = readDBStore
-                vue.initDB()
+                initDB(vue, "cls")
+                vue.setInterval()
             })
-            vue.setInterval()
             vue.requestData()
         },
         methods: {
-
-            initDB(){
-                this.dbStore.select("cls.setInterval_time", v => {
-                    if(v != undefined) vue.setInterval_time = v;
-                })
-                this.dbStore.select("cls.enableNotice", v => {
-                    if(v != undefined) vue.enableNotice = v;
-                })
-            },
 
             //请求财联社电报数据
             requestData(next) {
@@ -100,7 +92,7 @@
                 })
             },
 
-            //财联社定时器
+            //定时器
             setInterval(){
                 if(vue.setInterval_val) {
                     clearInterval(vue.setInterval_val)

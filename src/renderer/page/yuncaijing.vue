@@ -24,9 +24,11 @@
 
 <script>
 
-    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, generalHandlerData, delayer, notification} from "./js/utils";
     import {yuncaijingRequest} from "./api/yuncaijing";
-
+    import {getDBStore} from "./js/db";
+    import {initDB} from "./js/project";
+    let vue = null
     let page = 1
 
     export default {
@@ -36,16 +38,32 @@
         },
         data() {
             return {
-
-                setInterval_time: 30,
+                setInterval_time: 50,
                 data: [],
                 loading: true,
+                enableNotice: true,
+                dbStore: null,
             }
         },
-        watch: {},
+        watch: {
+            setInterval_time: delayer(cur => {
+                vue.dbStore.push("yuncaijing.setInterval_time", cur)
+                vue.setInterval()
+            }),
+            enableNotice: delayer(cur => {
+                vue.dbStore.push("yuncaijing.enableNotice", cur)
+            }),
+        },
+        created(){
+            vue = this;
+        },
         mounted() {
             const self = this;
-            self.mySetInterval()
+            getDBStore(readDBStore => {
+                vue.dbStore = readDBStore
+                initDB(vue, "yuncaijing")
+                vue.setInterval()
+            })
             self.requestData()
         },
         methods: {
@@ -68,7 +86,7 @@
             },
 
             //请求定时器
-            mySetInterval(){
+            setInterval(){
                 let self = this;
                 if(self.setInterval_val) return
                 self.setInterval_val = setInterval(function () {

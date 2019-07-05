@@ -25,8 +25,11 @@
 <script>
 
     import {xuangubaoRequest} from './api/xuangubao'
-    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, generalHandlerData, delayer, notification} from "./js/utils";
+    import {getDBStore} from "./js/db";
+    import {initDB} from "./js/project";
     let markData = null //下次提交的记号数据
+    let vue = null
 
     export default {
         name: 'xuangubao',
@@ -35,16 +38,33 @@
         },
         data() {
             return {
-
-                setInterval_time: 30,
+                setInterval_time: 50,
                 data: [],
                 loading: true,
+                enableNotice: true,
+                dbStore: null,
             }
         },
-        watch: {},
+        created(){
+            vue = this;
+        },
+        watch: {
+            setInterval_time: delayer(cur => {
+                vue.dbStore.push("xuangubao.setInterval_time", cur)
+                vue.setInterval()
+            }),
+            enableNotice: delayer(cur => {
+                vue.dbStore.push("xuangubao.enableNotice", cur)
+            }),
+        },
         mounted() {
             const self = this;
-            self.mySetInterval()
+            getDBStore(readDBStore => {
+                vue.dbStore = readDBStore
+                initDB(vue, "xuangubao")
+                vue.setInterval()
+            })
+
             self.requestData()
         },
         methods: {
@@ -69,7 +89,7 @@
             },
 
             //请求定时器
-            mySetInterval(){
+            setInterval(){
                 let self = this;
                 if(self.setInterval_val) return
                 self.setInterval_val = setInterval(function () {

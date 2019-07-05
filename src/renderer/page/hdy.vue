@@ -29,9 +29,12 @@
 
 <script>
 
-    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, generalHandlerData, delayer, notification} from "./js/utils";
     import {interactiveRequest} from "./api/hdy";
+    import {getDBStore} from "./js/db";
+    import {initDB} from "./js/project";
     let page = 1
+    let vue = null
 
     export default {
         name: 'hdy',
@@ -41,16 +44,32 @@
         },
         data() {
             return {
-                setInterval_time: 30,
-                hdy_refreshTime: 0,
+                setInterval_time: 50,
                 data: [],
                 loading: true,
+                enableNotice: true,
+                dbStore: null,
             }
         },
-        watch: {},
+        watch: {
+            setInterval_time: delayer(cur => {
+                vue.dbStore.push("hdy.setInterval_time", cur)
+                vue.setInterval()
+            }),
+            enableNotice: delayer(cur => {
+                vue.dbStore.push("hdy.enableNotice", cur)
+            }),
+        },
+        created(){
+            vue = this;
+        },
         mounted() {
             const self = this;
-            self.setInterval()
+            getDBStore(readDBStore => {
+                vue.dbStore = readDBStore
+                initDB(vue, "hdy")
+                vue.setInterval()
+            })
             self.requestData()
         },
         methods: {
