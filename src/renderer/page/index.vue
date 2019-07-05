@@ -1,30 +1,30 @@
 <template>
 	<div>
-		<el-tabs type="border-card" v-model="swithTab" @tab-click="tabClick" @tab-remove="tabRemove">
+		<el-tabs type="border-card" ref="tabs" v-model="swithTab" @tab-click="tabClick" @tab-remove="tabRemove">
 
-			<el-tab-pane name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="enableTab.cls" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<cls ref="cls" :tabClick="tabClick"></cls>
 			</el-tab-pane>
 
-			<el-tab-pane name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="enableTab.hdy" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<hdy ref="hdy" :tabClick="tabClick"></hdy>
 			</el-tab-pane>
 
-			<el-tab-pane name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="enableTab.dycj" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<dycj ref="dycj" :tabClick="tabClick"></dycj>
 			</el-tab-pane>
 
-			<el-tab-pane name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<xuangubao ref="xuangubao" :tabClick="tabClick"></xuangubao>
+			<el-tab-pane v-if="enableTab.xuangubao" name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<xuangubao ref="xuangubao"  :tabClick="tabClick"></xuangubao>
 			</el-tab-pane>
 
-			<el-tab-pane name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+			<el-tab-pane v-if="enableTab.yuncaijing" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
 				<yuncaijing ref="yuncaijing" :tabClick="tabClick"></yuncaijing>
 			</el-tab-pane>
 
 			<el-tab-pane :closable="true" v-if="!settingClose" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
-				<setting ref="yuncaijing" :refs="$refs"></setting>
+				<setting ref="yuncaijing" :refs="$refs" :enable-tab="enableTab"></setting>
 			</el-tab-pane>
 
 		</el-tabs>
@@ -43,6 +43,15 @@
     import Xuangubao from "./xuangubao";
     import Yuncaijing from "./yuncaijing";
     import Setting from "./setting";
+    import {clone} from "./js/utils";
+
+    const enableTab_bak = {
+        cls: true,
+        hdy: true,
+        dycj: true,
+        xuangubao: true,
+        yuncaijing: true,
+    }
 
     export default {
         name: 'index',
@@ -53,9 +62,27 @@
                 dbCommonStore: null,
                 swithTab: "财联社电报",
                 clientHeight: 450,
+                enableTab: {
+                    cls: false,
+                    hdy: false,
+                    dycj: false,
+                    xuangubao: false,
+                    yuncaijing: false,
+                },
             }
         },
-        watch: {},
+        watch: {
+            enableTab: {
+                handler: function(cur) {
+                    this.dbCommonStore.push("enableTab", cur)
+                },
+                deep: true
+            },
+            swithTab: function (cur) {
+                this.dbCommonStore.push("tabName", cur)
+                if(cur == "设置") this.settingClose = false
+            }
+        },
         mounted() {
             const self = this;
 
@@ -69,10 +96,23 @@
             //获得公共数据库
             getStore("common", function (dbStore) {
                 self.dbCommonStore = dbStore
-                self.dbCommonStore.select("tabName", function (tab) {if(tab) self.tabClick(tab)})
+                self.readDbAfterinit(dbStore)
             })
         },
         methods: {
+
+            readDbAfterinit(dbStore){
+                const self = this;
+
+                dbStore.select("enableTab", function (enableTab) {
+                    if(enableTab) self.enableTab = enableTab
+	                else self.enableTab = clone(enableTab_bak)
+
+                    dbStore.select("tabName", function (tab) {
+                        if(tab) self.tabClick(tab)
+                    })
+                })
+            },
 
             //调整窗口大小时触发此方法
             windowsResize() {
@@ -88,18 +128,33 @@
                 })
             },
 
-            //tab选中
+            // 点击tab, 或者点击通知打开tab,那么需要这个tab存在才切换到该tab
             tabClick(tab) {
                 let name = tab.name || tab
-                this.dbCommonStore.push("tabName", name);
-                this.swithTab = name
-	            if(name == "设置") this.settingClose = false
-                //this.requestByTabName(tab.name)
+	            if(name == "设置") this.swithTab = name
+                let childrens = this.$refs.tabs.$children
+                for(let k = childrens.length-1; k >= 0; k--){
+                    let idStr = childrens[k].$el.id;
+                    if(idStr && idStr.indexOf(name) != -1){
+                        this.swithTab = name
+	                    return
+                    }
+                }
             },
 
+	        // 关闭设置,打开最后一个tab
             tabRemove(tab) {
-                this.tabClick("财联社电报")
-                this.settingClose = true
+                let childrens = this.$refs.tabs.$children
+                for(let k = childrens.length-1; k >= 0; k--){
+                    let idStr = childrens[k].$el.id;
+                    if(idStr && idStr.indexOf("设置") == -1){
+                        let id = idStr.split("-")[1]
+                        this.tabClick(id)
+                        this.settingClose = true
+						return
+                    }
+                }
+	            alert("全部关闭将不能显示任何数据")
             },
 
             //根据tab名字请求数据

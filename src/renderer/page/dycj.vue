@@ -1,6 +1,6 @@
 <template><!--第一财经直播区-->
 
-	<div v-loading.fullscreen.lock="loading">
+	<div v-loading.lock="loading">
 		<el-card class="box-card" v-for="item in data" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + item.datekey + ' '+ item.hm">发布时间</span>

@@ -1,6 +1,6 @@
 <template><!--选股宝-->
 
-	<div v-loading.fullscreen.lock="loading">
+	<div v-loading.lock="loading">
 		<el-card class="box-card" v-for="item in data" :key="item.Id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + formatTime(item.CreatedAt)">发布时间</span>

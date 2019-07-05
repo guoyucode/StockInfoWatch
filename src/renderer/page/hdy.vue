@@ -1,5 +1,5 @@
 <template><!--深交所互动易问答-->
-	<div v-loading.fullscreen.lock="loading">
+	<div v-loading.lock="loading">
 
 		<el-card class="box-card" v-for="item in data" :key="item.indexId">
 			<div slot="header" class="clearfix">
