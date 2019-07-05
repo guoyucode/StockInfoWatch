@@ -11,14 +11,14 @@
 						<div class="text item">
 							<el-row>
 								<label>刷新快捷键</label>
-								<el-input style="float: right; width: 66%;" size="mini"  placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini"  placeholder="功能暂时没有实现"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>数据显示条数</label>
-								<el-input style="float: right; width: 66%;" size="mini"  placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini"  placeholder="功能暂时没有实现"></el-input>
 							</el-row>
 						</div>
 					</diV>
