@@ -24,14 +24,5 @@ export const interactiveRequest = data => {
     return req({url: url, method: 'POST', data: qs.stringify(d)})
 }
 
-//查询刷新数据
-export const interactiveUnReadRequest = data => {
-    data.souceType = "1,11,"
-    data.refreshTime = data.refreshTime
-    let params = qs.stringify(data);
-    return req({url: unReadUrl, method: 'POST', data: params})
-}
-
-
 //const app = require('electron').remote.app
 

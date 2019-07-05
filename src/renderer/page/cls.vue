@@ -30,7 +30,7 @@
 <script>
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
-    import {dataLenthLimit, DateFormat, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
 
     export default {
         name: 'cls',
@@ -47,9 +47,8 @@
         watch: {},
         mounted() {
             const self = this;
-
-            //请求数据
-            this.requestData()
+            self.clcSetInterval()
+            self.requestData()
         },
         methods: {
 
@@ -69,18 +68,9 @@
                     if(!res || res.error != 0) return;
                     res = res.data;
                     if(!res || !res.roll_data || res.roll_data.length === 0) return
-
-                    let row = res.roll_data;
-                    console.log("财联网 res-data", row)
-
-                    if (next && next == "next") {
-                        for (let k in row) {
-                            self.data.push(row[k])
-                        }
-                    } else {
-                        self.data = row
-                        self.clcSetInterval()
-                    }
+                    let rows = res.roll_data;
+                    console.log("财联网 res-data", rows)
+                    generalHandlerData(self, next, rows, "id", "财联社电报", "title")
                 })
             },
 
@@ -89,38 +79,20 @@
                 let self = this;
                 if(self.clcSetInterval_val) return
                 self.clcSetInterval_val = setInterval(function () {
-                    if(self.data && self.data.length > 0)
-                        self.requestUpdateData(self.data[0].ctime)
+                    self.requestUpdateData("setInterval")
                 }, self.setInterval_time*1000)
             },
 
             //定时请求
-            requestUpdateData(last_time) {
+            requestUpdateData(next) {
                 const self = this
-                caiLianSheUpdateRequest({last_time: last_time}).then(function (res) {
+                if(!self.data && self.data.length == 0) return self.requestData("refresh")
+                caiLianSheUpdateRequest({last_time: self.data[0].ctime}).then(function (res) {
                     if(!res || res.error != 0) return;
                     res = res.data;
                     if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
-                    let list = res.roll_data
-
-                    self.cls_last_time = list[0].ctime
-
-	                //合并数据
-                    if(!self.data || self.data.length === 0) self.data = list;
-                    else mergeData(list, self.data, "id")
-
-	                //发送通知
-                    if(list.length > 3) notification("财联社电报", "多于三条消息,请进入应用中查看 !", self.tabClick)
-	                else{
-                        for (let i = list.length-1; i >= 0; i --) {
-                            let v = list[i];
-                            if(list.length <= 3) notification("财联社电报", v.title, self.tabClick)
-                        }
-                    }
-
-                    //数据长度限制
-                    dataLenthLimit(self.data)
-
+                    let rows = res.roll_data
+                    generalHandlerData(self, next, rows, "id", "财联社电报", "title")
                 })
             },
 

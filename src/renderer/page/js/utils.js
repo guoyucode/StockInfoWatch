@@ -80,3 +80,50 @@ export const mergeData = function (src, target, key) {
         src.splice(i, 1)
     }
 }
+
+/**
+ * 通用处理数据
+ * @param self vue实例=this
+ * @param next 请求数据类型: "refresh" = 刷新, "setInterval" = 定时器, "next" = 下一页
+ * @param newRows 新数据
+ * @param dataKey 合并数据时根据哪个key
+ * @param notificationTitle 通知标题
+ * @param notificationContent_key 通知内容的key
+ */
+export const generalHandlerData = function (self, next, newRows, dataKey, notificationTitle, notificationContent_key) {
+    if(!next){
+        self.data = newRows
+    }
+
+    // 定时刷新的逻辑,手动刷新,下一页
+    // (next && (next == "refresh" || next == "setInterval" || next == "next")
+    else {
+
+        //合并数据, 加载更多与别的方式合并数据不一样
+        if(next == "next"){
+            for (let k in newRows) {
+                self.data.push(newRows[k])
+            }
+        } else {
+            //合并新数据
+            mergeData(newRows, self.data, dataKey)
+        }
+
+        //只有定时任务才推送通知
+        if(next == "setInterval"){
+            if(newRows.length > 0) notification(notificationTitle, "多于三条消息,请进入应用中查看 !", self.tabClick)
+            else{
+                for (let k in newRows) {
+                    let row = newRows[k];
+                    let content = "通知内容"
+                    if(notificationContent_key.keyEval) content = eval(notificationContent_key.keyEval)
+                    else content = row[notificationContent_key]
+                    notification(notificationTitle, content, self.tabClick)
+                }
+            }
+        }
+    }
+
+    //数据长度限制
+    dataLenthLimit(self.data)
+}

@@ -10,8 +10,8 @@
 				列表内容
 			</div>
 		</el-card>
-		<el-card v-if="!loading" class="box-card" key="99999999" style="cursor:pointer;" >
-			<div class="text item" @click="requestData('next')">
+		<el-card class="box-card" key="99999999" style="cursor:pointer;" >
+			<div v-if="!loading" class="text item" @click="requestData('next')">
 				<span style="margin-left: 40%;">点击加载更多</span>
 			</div>
 		</el-card>
@@ -21,7 +21,7 @@
 <script>
 
     import {dycjRequest} from './api/dycj'
-    import {dataLenthLimit, DateFormat, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
 
     export default {
         name: 'dycj',
@@ -39,9 +39,8 @@
         watch: {},
         mounted() {
             const self = this;
-
-            //请求数据
-            this.requestData()
+            self.mySetInterval()
+            self.requestData()
         },
         methods: {
 
@@ -56,40 +55,8 @@
                     if(!res || res.length === 0) return
                     let rows = res;
                     console.log("第一财经 res-data", rows)
-
-	                //加载更多的逻辑
-	                if(next && next == "next"){
-                        for (let k in rows) {
-	                        self.data.push(rows[k])
-                        }
-	                }
-
-                    //刷新,或者定时刷新的逻辑
-                    else if(next && next == "refresh") {
-
-                        //合并数据
-	                    if(!self.data || self.data.length === 0) self.data = rows
-                        else mergeData(rows, self.data, "id")
-
-	                    if(rows.length > 0) notification("第一财经直播区", "多于三条消息,请进入应用中查看 !", self.tabClick)
-                        else{
-                            for (let k in rows) {
-                                let row = rows[k];
-                                notification("第一财经直播区", item.newcontent, self.tabClick)
-                            }
-                        }
-
-                    }
-                    else{
-                        self.data = rows
-                        self.mySetInterval()
-                    }
-
-                    //数据长度限制
-                    dataLenthLimit(self.data)
-
+                    generalHandlerData(self, next, rows, "id", "第一财经直播区", "newcontent")
                 })
-
             },
 
             //请求定时器

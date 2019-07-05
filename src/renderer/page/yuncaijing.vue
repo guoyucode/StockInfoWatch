@@ -24,7 +24,7 @@
 
 <script>
 
-    import {dataLenthLimit, DateFormat, mergeData, notification} from "./js/utils";
+    import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
     import {yuncaijingRequest} from "./api/yuncaijing";
 
     let page = 1
@@ -45,9 +45,8 @@
         watch: {},
         mounted() {
             const self = this;
-
-            //请求数据
-            this.requestData()
+            self.mySetInterval()
+            self.requestData()
         },
         methods: {
 
@@ -62,48 +61,9 @@
                 yuncaijingRequest(data).then(function (res) {
                     self.loading = false
                     if(!res || !res.data || res.data.length === 0) return
-
-
                     let rows = res.data;
                     console.log("云财经 res-data", rows)
-
-	                //加载更多的逻辑
-	                if(next && next == "next"){
-                        for (let k in rows) {
-	                        self.data.push(rows[k])
-                        }
-	                }
-
-                    //定时刷新的逻辑
-                    else if(next && next == "setInterval"){
-                        //合并数据
-                        if(!self.data || self.data.length === 0) self.data = rows
-                        else mergeData(rows, self.data, "id")
-
-                        if(rows.length > 0) notification("云财经", "多于三条消息,请进入应用中查看 !", self.tabClick)
-                        else{
-                            for (let k in rows) {
-                                let row = rows[k];
-                                notification("云财经", row.title, self.tabClick)
-                            }
-                        }
-	                }
-
-                    //手动刷新
-                    else if(next && next == "refresh") {
-
-                        //合并数据
-	                    if(!self.data || self.data.length === 0) self.data = rows
-                        else mergeData(rows, self.data, "id")
-                    }
-                    else{
-                        self.data = rows
-                        self.mySetInterval()
-                    }
-
-                    //数据长度限制
-                    dataLenthLimit(self.data)
-
+                    generalHandlerData(self, next, rows, "id", "云财经", "title")
                 })
 
             },

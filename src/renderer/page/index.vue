@@ -99,11 +99,12 @@
 
             //根据tab名字请求数据
             requestByTabName(name) {
-                if (!name || name == "财联社电报") this.$refs.cls.requestData()
-                else if (name == "深交所互动易问答")  this.$refs.hdy.requestData()
-                else if (name == "第一财经直播区")  this.$refs.dycj.requestData()
-                else if (name == "选股宝")  this.$refs.xuangubao.requestData()
-                else if (name == "云财经")  this.$refs.yuncaijing.requestData()
+                const arg = "refresh"
+                if (!name || name == "财联社电报") this.$refs.cls.requestData(arg)
+                else if (name == "深交所互动易问答")  this.$refs.hdy.requestData(arg)
+                else if (name == "第一财经直播区")  this.$refs.dycj.requestData(arg)
+                else if (name == "选股宝")  this.$refs.xuangubao.requestData(arg)
+                else if (name == "云财经")  this.$refs.yuncaijing.requestData(arg)
             },
         }
     }
