@@ -1,6 +1,6 @@
 <template><!--选股宝-->
 
-	<div v-loading="loading">
+	<div v-loading.fullscreen.lock="loading">
 		<el-card class="box-card" v-for="item in data" :key="item.Id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + formatTime(item.CreatedAt)">发布时间</span>
@@ -39,7 +39,6 @@
                 setInterval_time: 30,
                 data: [],
                 loading: true,
-	            page: 1,
             }
         },
         watch: {},
@@ -53,7 +52,7 @@
             //请求数据
             requestData(next) {
                 const self = this
-                if(!next || next != "setInterval") self.loading == true
+                if(!next || next != "setInterval") self.loading = true
                 let data = {}
                 if(next && next == "next" && markData && markData.TailMsgId) {
                     data.TailMark = markData.TailMark
@@ -62,10 +61,10 @@
                 xuangubaoRequest(data).then(function (res) {
                     self.loading = false
                     if(!res || !res.NewMsgs || res.NewMsgs.length === 0) return
-                    markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
                     let rows = res.NewMsgs;
                     console.log("选股宝 res-data", rows)
                     generalHandlerData(self, next, rows, "id", "第一财经直播区", "newcontent")
+                    markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
                 })
             },
 

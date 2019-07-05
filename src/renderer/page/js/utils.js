@@ -68,6 +68,10 @@ export const mergeData = function (src, target, key) {
 
     for (let i = src.length - 1; i >= 0; i--) {
         let row = src[i];
+        if(!row) {
+            src.splice(i, 1)
+            continue
+        }
         for (let k2 in target) {
             let d2 = target[k2];
             if (row[key] == d2[key]) {
@@ -77,7 +81,8 @@ export const mergeData = function (src, target, key) {
         if (src[i]) {
             target.splice(0, 0, src[i])
         }
-        src.splice(i, 1)
+
+        if(src[i] == undefined) src.splice(i, 1)
     }
 }
 
@@ -111,7 +116,7 @@ export const generalHandlerData = function (self, next, newRows, dataKey, notifi
 
         //只有定时任务才推送通知
         if(next == "setInterval"){
-            if(newRows.length > 0) notification(notificationTitle, "多于三条消息,请进入应用中查看 !", self.tabClick)
+            if(newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !", self.tabClick)
             else{
                 for (let k in newRows) {
                     let row = newRows[k];

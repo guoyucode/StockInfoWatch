@@ -1,6 +1,6 @@
 <template><!--云财经-->
 
-	<div v-loading="loading">
+	<div v-loading.fullscreen.lock="loading">
 		<el-card class="box-card" v-for="item in data" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + formatTime(item.inputtime)">发布时间</span>
@@ -53,17 +53,16 @@
             //请求数据
             requestData(next) {
                 const self = this
-                if(!next || next != "setInterval") self.loading == true
+                if(!next || next != "setInterval") self.loading = true
                 let data = {}
-                if(next && next == "next") {
-                    data.page = ++page
-                }
+                if(next && next == "next") data.page = page+1
                 yuncaijingRequest(data).then(function (res) {
                     self.loading = false
                     if(!res || !res.data || res.data.length === 0) return
                     let rows = res.data;
                     console.log("云财经 res-data", rows)
                     generalHandlerData(self, next, rows, "id", "云财经", "title")
+                    if(next && next == "next") page+=1
                 })
 
             },

@@ -1,6 +1,6 @@
 <template><!--财联社电报-->
 
-	<div v-loading="loading">
+	<div v-loading.fullscreen.lock="loading">
 		<el-card class="box-card" v-for="item in data" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + formatTime(item.ctime * 1000)">发布时间</span>

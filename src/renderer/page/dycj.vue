@@ -1,6 +1,6 @@
 <template><!--第一财经直播区-->
 
-	<div v-loading="loading">
+	<div v-loading.fullscreen.lock="loading">
 		<el-card class="box-card" v-for="item in data" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-text="'发布时间: ' + item.datekey + ' '+ item.hm">发布时间</span>
@@ -22,6 +22,7 @@
 
     import {dycjRequest} from './api/dycj'
     import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
+    let page = 1
 
     export default {
         name: 'dycj',
@@ -33,7 +34,6 @@
                 setInterval_time: 30,
                 data: [],
                 loading: true,
-	            page: 1,
             }
         },
         watch: {},
@@ -47,15 +47,16 @@
             //请求数据
             requestData(next) {
                 const self = this
-                if(!next || next != "setInterval") self.loading == true
+                if(!next || next != "setInterval") self.loading = true
                 let data = {}
-                if(next && next == "next") data.page = ++self.page
+                if(next && next == "next") data.page = page+1
                 dycjRequest(data).then(function (res) {
                     self.loading = false
-                    if(!res || res.length === 0) return
+                    console.log("第一财经 res-data", res)
+                    if(!res || !(res instanceof Array) || res.length === 0) return
                     let rows = res;
-                    console.log("第一财经 res-data", rows)
                     generalHandlerData(self, next, rows, "id", "第一财经直播区", "newcontent")
+                    if(next && next == "next") page += 1
                 })
             },
 

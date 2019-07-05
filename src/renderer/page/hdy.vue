@@ -1,5 +1,5 @@
 <template><!--深交所互动易问答-->
-	<div v-loading="loading">
+	<div v-loading.fullscreen.lock="loading">
 
 		<el-card class="box-card" v-for="item in data" :key="item.indexId">
 			<div slot="header" class="clearfix">
@@ -31,6 +31,7 @@
 
     import {dataLenthLimit, DateFormat, generalHandlerData, mergeData, notification} from "./js/utils";
     import {interactiveRequest} from "./api/hdy";
+    let page = 1
 
     export default {
         name: 'hdy',
@@ -40,7 +41,6 @@
         },
         data() {
             return {
-                page: 1,
                 setInterval_time: 30,
                 hdy_refreshTime: 0,
                 data: [],
@@ -66,16 +66,14 @@
                 const self = this
                 if (!next || next != "setInterval") self.loading = true
 	            var data = {}
-	            if (next && next == "next") {
-                    self.loading = true
-	                data.page = ++self.page
-                }
+	            if (next && next == "next") data.page = page+1
                 interactiveRequest(data).then(function (res) {
                     self.loading = false
                     if(!res || !res.results || res.results.length === 0) return
                     let rows = res.results;
                     console.log("互动易 res-data", rows)
                     generalHandlerData(self, next, rows, "indexId", "深交所互动易问答", {keyEval: 'row.companyShortName + ": " + row.mainContent + ""'})
+                    if (next && next == "next") page+=1
                 })
             },
 
