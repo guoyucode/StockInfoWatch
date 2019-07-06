@@ -22,14 +22,14 @@
 				<yuncaijing ref="yuncaijing" :tabClick="tabClick"></yuncaijing>
 			</el-tab-pane>
 
-			<el-tab-pane :closable="true" v-if="!settingClose" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
+			<el-tab-pane :closable="true" v-if="enableTab.setting" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
-				<setting :refs="$refs" :enable-tab="enableTab"></setting>
+				<setting :refs="$refs" :enable-tab="enableTab" :set-short-key="shortKey"></setting>
 			</el-tab-pane>
 
 		</el-tabs>
 
-		<i class="el-icon-setting" v-if="settingClose" @click="settingClose = false; tabClick('设置') " style="position: absolute; float: right;top: 21px;right: 27px; cursor:pointer;"></i>
+		<i class="el-icon-setting" v-if="settingClose" @click="enableTab.setting = true; tabClick('设置') " style="position: absolute; float: right;top: 21px;right: 27px; cursor:pointer;"></i>
 	</div>
 </template>
 
@@ -44,6 +44,9 @@
     import Yuncaijing from "./yuncaijing";
     import Setting from "./setting";
     import {clone} from "./js/utils";
+    import {remote} from 'electron'
+
+    let vue = null;
 
     const enableTab_bak = {
         cls: true,
@@ -51,6 +54,7 @@
         dycj: true,
         xuangubao: true,
         yuncaijing: true,
+        setting: false,
     }
 
     export default {
@@ -58,6 +62,7 @@
         components: {Setting, Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
+                hotKey: "F5",
                 settingClose: true,
                 dbStore: null,
                 swithTab: "财联社电报",
@@ -68,6 +73,7 @@
                     dycj: false,
                     xuangubao: false,
                     yuncaijing: false,
+                    setting: false,
                 },
             }
         },
@@ -80,9 +86,11 @@
             },
             swithTab: function (cur) {
                 this.dbStore.push("tabName", cur)
-                if(cur == "设置") this.settingClose = false
             }
         },
+	    created(){
+            vue = this;
+	    },
         mounted() {
             const self = this;
 
@@ -105,12 +113,20 @@
                 const self = this;
 
                 dbStore.select("enableTab", function (enableTab) {
+
+                    // 兼容代码: 因为setting字段是后来加的,所以如果读取数据库没有值的话会因为vue的特性以后都保存不了, 所以加上这句代码
+                    if(enableTab && enableTab.setting == undefined) enableTab.setting = false
+
                     if(enableTab) self.enableTab = enableTab
 	                else self.enableTab = clone(enableTab_bak)
 
                     dbStore.select("tabName", function (tab) {
                         if(tab) self.tabClick(tab)
                     })
+                })
+
+                dbStore.select("hotKey", v => {
+                    vue.shortKey((v || vue.hotKey))
                 })
             },
 
@@ -119,19 +135,14 @@
                 this.clientHeight = document.documentElement.clientHeight - 90
             },
 
-            //设置刷新快捷键
-            shortKey() {
-                const self = this;
-                const globalShortcut = require('electron').remote.globalShortcut
-                globalShortcut.register('F5', () => {
-                    self.requestByTabName(self.swithTab)
-                })
-            },
-
             // 点击tab, 或者点击通知打开tab,那么需要这个tab存在才切换到该tab
             tabClick(tab) {
                 let name = tab.name || tab
-	            if(name == "设置") this.swithTab = name
+	            if(name == "设置") {
+	                this.swithTab = name
+		            this.enableTab.setting = true
+		            return;
+                }
                 let childrens = this.$refs.tabs.$children
                 for(let k = childrens.length-1; k >= 0; k--){
                     let idStr = childrens[k].$el.id;
@@ -150,21 +161,25 @@
                     if(idStr && idStr.indexOf("设置") == -1){
                         let id = idStr.split("-")[1]
                         this.tabClick(id)
-                        this.settingClose = true
+                        this.enableTab.setting = false
 						return
                     }
                 }
 	            alert("全部关闭将不能显示任何数据")
             },
 
-            //根据tab名字请求数据
-            requestByTabName(name) {
-                const arg = "refresh"
-                if (!name || name == "财联社电报") this.$refs.cls.requestData(arg)
-                else if (name == "深交所互动易问答")  this.$refs.hdy.requestData(arg)
-                else if (name == "第一财经直播区")  this.$refs.dycj.requestData(arg)
-                else if (name == "选股宝")  this.$refs.xuangubao.requestData(arg)
-                else if (name == "云财经")  this.$refs.yuncaijing.requestData(arg)
+            //设置刷新快捷键
+            shortKey(keyhot) {
+                console.log("keyhot", keyhot, remote)
+                return
+                remote.globalShortcut.register(keyhot, () => {
+                    const arg = "refresh"
+                    if (!name || name == "财联社电报") vue.$refs.cls.requestData(arg)
+                    else if (name == "深交所互动易问答") vue.$refs.hdy.requestData(arg)
+                    else if (name == "第一财经直播区") vue.$refs.dycj.requestData(arg)
+                    else if (name == "选股宝") vue.$refs.xuangubao.requestData(arg)
+                    else if (name == "云财经") vue.$refs.yuncaijing.requestData(arg)
+                })
             },
         }
     }

@@ -11,7 +11,16 @@
 						<div class="text item">
 							<el-row>
 								<label>刷新快捷键</label>
-								<el-input style="float: right; width: 66%;" size="mini"  placeholder="功能暂时没有实现"></el-input>
+								<el-select v-model="hotKey" placeholder="快捷键选择">
+									<el-option
+											style="float: right;"
+											v-for="item in ['F1', 'F2', 'F3', 'F4', 'F5','F6','F7','F8','F9','F10','F11','F12']"
+											:key="item"
+											:label="item"
+											:value="item">
+									</el-option>
+								</el-select>
+								<!--<el-input style="float: right; width: 66%;" size="mini"  placeholder="功能暂时没有实现"></el-input>-->
 							</el-row>
 						</div>
 						<br/>
@@ -177,6 +186,10 @@
 </template>
 
 <script>
+	import {getDBStore} from "./js/db";
+
+    let vue = null
+
     export default {
         name: "setting",
         data() {
@@ -188,13 +201,28 @@
         props: {
             refs: Object,
             enableTab: Object, // {cls: true, dycj: true, ...}
+            setShortKey: Function,
         },
+	    created() {
+          vue = this
+	    },
         mounted() {
             //console.log("设置页-refs", this.refs)
-        }
+            //获得数据库
+            getDBStore(function (dbStore) {
+                vue.dbStore = dbStore
+
+            })
+        },
+	    methods: {
+
+	    }
     }
 </script>
 
 <style scoped>
-
+.el-select{
+	float: right !important;
+	width: 66%;
+}
 </style>
