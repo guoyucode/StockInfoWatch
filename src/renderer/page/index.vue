@@ -24,7 +24,7 @@
 
 			<el-tab-pane :closable="true" v-if="enableTab.setting" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
-				<setting :refs="$refs" :enable-tab="enableTab" :set-short-key="shortKey"></setting>
+				<setting :refs="$refs" :enable-tab="enableTab" ></setting>
 			</el-tab-pane>
 
 		</el-tabs>
@@ -62,7 +62,6 @@
         components: {Setting, Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
-                hotKey: "F5",
                 settingClose: true,
                 dbStore: null,
                 swithTab: "财联社电报",
@@ -94,9 +93,6 @@
         mounted() {
             const self = this;
 
-            //快捷键设置
-            this.shortKey()
-
             //设置窗口大小
             this.windowsResize()
             window.onresize = this.windowsResize
@@ -106,6 +102,8 @@
                 self.dbStore = dbStore
                 self.readDbAfterinit(dbStore)
             })
+
+            //this.setHotKey(cur)
         },
         methods: {
 
@@ -126,7 +124,7 @@
                 })
 
                 dbStore.select("hotKey", v => {
-                    vue.shortKey((v || vue.hotKey))
+                    //vue.setHotKey(v || vue.hotKey)
                 })
             },
 
@@ -168,19 +166,7 @@
 	            alert("全部关闭将不能显示任何数据")
             },
 
-            //设置刷新快捷键
-            shortKey(keyhot) {
-                console.log("keyhot", keyhot, remote)
-                return
-                remote.globalShortcut.register(keyhot, () => {
-                    const arg = "refresh"
-                    if (!name || name == "财联社电报") vue.$refs.cls.requestData(arg)
-                    else if (name == "深交所互动易问答") vue.$refs.hdy.requestData(arg)
-                    else if (name == "第一财经直播区") vue.$refs.dycj.requestData(arg)
-                    else if (name == "选股宝") vue.$refs.xuangubao.requestData(arg)
-                    else if (name == "云财经") vue.$refs.yuncaijing.requestData(arg)
-                })
-            },
+
         }
     }
 </script>

@@ -14,7 +14,7 @@
 								<el-select v-model="hotKey" placeholder="快捷键选择">
 									<el-option
 											style="float: right;"
-											v-for="item in ['F1', 'F2', 'F3', 'F4', 'F5','F6','F7','F8','F9','F10','F11','F12']"
+											v-for="item in ['无', 'F1', 'F2', 'F3', 'F4', 'F5','F6','F7','F8','F9','F10','F11','F12']"
 											:key="item"
 											:label="item"
 											:value="item">
@@ -187,6 +187,7 @@
 
 <script>
 	import {getDBStore} from "./js/db";
+    import { mapState, mapActions } from "vuex"
 
     let vue = null
 
@@ -194,14 +195,21 @@
         name: "setting",
         data() {
             return {
+                hotKey: "无",
                 cardWidth: 11,
                 cardOffset: 1,
             }
         },
+	    watch: {
+            hotKey: function (cur) {
+                console.log("watch.hotKey", cur)
+                vue.setHotKey(cur)
+	            this.dbStore.push("hotKey", cur)
+            }
+	    },
         props: {
             refs: Object,
             enableTab: Object, // {cls: true, dycj: true, ...}
-            setShortKey: Function,
         },
 	    created() {
           vue = this
@@ -212,11 +220,17 @@
             getDBStore(function (dbStore) {
                 vue.dbStore = dbStore
 
+                dbStore.select("hotKey", hotKey_read => {
+                    if(hotKey_read) {
+	                    vue.hotKey = hotKey_read
+                    }
+                })
             })
+
         },
 	    methods: {
-
-	    }
+            ...mapActions(["setHotKey"]),
+        },
     }
 </script>
 

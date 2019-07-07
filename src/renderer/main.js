@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import axios from 'axios'
 
+import '../renderer/store'
+
 import App from './App'
 import router from './router'
 import store from './store'
+import "./store"
+
 
 //饿了么UI
 import ElementUI from 'element-ui'
