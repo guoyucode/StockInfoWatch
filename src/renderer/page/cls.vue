@@ -118,7 +118,7 @@
                     res = res.data;
                     if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
                     let rows = res.roll_data
-                    generalHandlerData(vue, next, rows, "id", "财联社电报", "title")
+                    generalHandlerData(vue, next, rows, "id", (vue.enableNotice?"财联社电报":false), "title")
                 })
             },
 

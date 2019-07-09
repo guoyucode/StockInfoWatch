@@ -1,6 +1,6 @@
 {
   "name": "StockInfoWatch",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "guoyu",
   "description": "这个程序用于股票行情信息的监听及查看,消息是以通知方式送达",
   "license": null,

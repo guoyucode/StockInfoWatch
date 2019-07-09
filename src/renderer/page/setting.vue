@@ -6,9 +6,12 @@
 				<template slot="title">
 					版本信息: {{version}}
 				</template>
-<!--
+
 				<div style="color: green">当前版本更新: </div>
-				<div>新增功能: 关键词订阅功能, 只有订阅的栏目数据才进行推送</div>
+				<div>修复bug: 互动易不能保存通知开关的问题</div>
+				<div>修复bug: 财联社电报通知开关保存后依然无效的问题</div>
+
+<!--				<div>新增功能: 关键词订阅功能, 只有订阅的栏目数据才进行推送</div>
 -->
 
 				<br/>

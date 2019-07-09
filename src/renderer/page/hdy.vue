@@ -67,8 +67,12 @@
             const self = this;
             getDBStore(dbStore => {
                 vue.dbStore = dbStore
-                dbStore.select("hdy.setInterval_time", v => vue.setInterval_time = v || vue.setInterval_time)
-                dbStore.select("hdy.enableNotice", v => vue.enableNotice = v || vue.enableNotice)
+                dbStore.select("hdy.setInterval_time", v => {
+                    if(v != undefined) vue.setInterval_time = v
+                })
+                dbStore.select("hdy.enableNotice", v => {
+                    if(v != undefined)  vue.enableNotice = v
+                })
             })
             self.requestData()
         },
