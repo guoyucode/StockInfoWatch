@@ -38,7 +38,7 @@
         },
         data() {
             return {
-                setInterval_time: 50,
+                setInterval_time: 25,
                 data: [],
                 loading: true,
                 enableNotice: true,
