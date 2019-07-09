@@ -27,7 +27,7 @@
     import {dataLenthLimit, DateFormat, generalHandlerData, delayer, notification} from "./js/utils";
     import {yuncaijingRequest} from "./api/yuncaijing";
     import {getDBStore} from "./js/db";
-    import {initDB} from "./js/project";
+    import {readData} from "./js/project";
     let vue = null
     let page = 1
 
@@ -59,10 +59,14 @@
         },
         mounted() {
             const self = this;
-            getDBStore(readDBStore => {
-                vue.dbStore = readDBStore
-                initDB(vue, "yuncaijing")
-                vue.setInterval()
+            getDBStore(dbStore => {
+                vue.dbStore = dbStore
+                dbStore.select("yuncaijing.setInterval_time", v => {
+                    if(v != undefined) vue.setInterval_time = v
+                })
+                dbStore.select("yuncaijing.enableNotice", v => {
+                    if(v != undefined) vue.enableNotice = v
+                })
             })
             self.requestData()
         },

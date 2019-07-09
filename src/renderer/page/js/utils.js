@@ -32,9 +32,11 @@ export const clone = function (srcObj) {
     return JSON.parse(JSON.stringify(srcObj))
 }
 
+export let config = {dataLimit: 500, dataLimit_bak: 500}
+
 //数据长度限制
-export const dataLenthLimit =function (arr, limit) {
-    if(!limit) limit = 500
+export const dataLenthLimit =function (arr, limit = 500) {
+    if(config.dataLimit) limit = config.dataLimit
     if (arr.length > limit) {
         for (let i = arr.length - 1; i >= 0; i--) {
             arr.splice(i, 1)

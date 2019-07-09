@@ -43,10 +43,9 @@
     import Xuangubao from "./xuangubao";
     import Yuncaijing from "./yuncaijing";
     import Setting from "./setting";
-    import {clone} from "./js/utils";
-    import {remote} from 'electron'
-    import { mapState, mapActions } from "vuex"
-    import {initAlert, refreshAction} from "./js/project";
+    import {clone, config} from "./js/utils";
+    import {mapActions} from "vuex"
+    import {initAlert, readData, refreshAction} from "./js/project";
 
     let vue = null;
 
@@ -64,6 +63,7 @@
         components: {Setting, Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
+                dataLimit: 500,
                 settingClose: true,
                 dbStore: null,
                 swithTab: "财联社电报",
@@ -79,15 +79,12 @@
             }
         },
         watch: {
+            dataLimit: cur => config.dataLimit = cur,
             enableTab: {
-                handler: function(cur) {
-                    this.dbStore.push("enableTab", cur)
-                },
+                handler: cur => vue.dbStore.push("enableTab", cur),
                 deep: true
             },
-            swithTab: function (cur) {
-                this.dbStore.push("tabName", cur)
-            }
+            swithTab: cur => vue.dbStore.push("tabName", cur),
         },
 	    created(){
             vue = this;
@@ -116,7 +113,7 @@
             readDbAfterinit(dbStore){
                 const self = this;
 
-                dbStore.select("enableTab", function (enableTab) {
+                dbStore.select("enableTab", enableTab => {
 
                     // 兼容代码: 因为setting字段是后来加的,所以如果读取数据库没有值的话会因为vue的特性以后都保存不了, 所以加上这句代码
                     if(enableTab && enableTab.setting == undefined) enableTab.setting = false
@@ -124,12 +121,18 @@
                     if(enableTab) self.enableTab = enableTab
 	                else self.enableTab = clone(enableTab_bak)
 
-                    dbStore.select("tabName", function (tab) {
+                    dbStore.select("tabName", tab => {
                         if(tab) self.tabClick(tab)
                     })
                 })
 
-                dbStore.select("hotKey", vue.setHotKey)
+                dbStore.select("hotKey", v => {
+                    if(v == undefined) v = "F5"
+                    vue.setHotKey(v)
+                })
+	            dbStore.select("dataLimit", v => {
+                    if(v != undefined) vue.dataLimit = v
+                })
             },
 
             //调整窗口大小时触发此方法

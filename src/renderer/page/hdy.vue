@@ -32,7 +32,7 @@
     import {dataLenthLimit, DateFormat, generalHandlerData, delayer, notification} from "./js/utils";
     import {interactiveRequest} from "./api/hdy";
     import {getDBStore} from "./js/db";
-    import {initDB} from "./js/project";
+    import {readData} from "./js/project";
     let page = 1
     let vue = null
 
@@ -65,10 +65,10 @@
         },
         mounted() {
             const self = this;
-            getDBStore(readDBStore => {
-                vue.dbStore = readDBStore
-                initDB(vue, "hdy")
-                vue.setInterval()
+            getDBStore(dbStore => {
+                vue.dbStore = dbStore
+                dbStore.select("hdy.setInterval_time", v => vue.setInterval_time = v || vue.setInterval_time)
+                dbStore.select("hdy.enableNotice", v => vue.enableNotice = v || vue.enableNotice)
             })
             self.requestData()
         },

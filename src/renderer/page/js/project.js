@@ -1,16 +1,29 @@
+import {getDBStore} from "./db";
+
 let {ipcRenderer: ipc} = require('electron')
 
+
 /**
- * 初始化数据库数据
- * @param vue vue实例
- * @param key 唯一的key,例如: cls
+ * 读取数据库数据
+ * @param key
+ * @param callback
  */
-export const initDB = function(vue, key){
-    vue.dbStore.select(key + ".setInterval_time", v => {
-        if(v != undefined) vue.setInterval_time = v;
+export const readData = function(key, callback){
+    getDBStore(dbStore => {
+        dbStore.select(key, v => {
+            if(v != undefined) callback(v);
+        })
     })
-    vue.dbStore.select(key + ".enableNotice", v => {
-        if(v != undefined) vue.enableNotice = v;
+}
+
+/**
+ * 写入数据库数据
+ * @param key
+ * @param v
+ */
+export const insertData = function(key, v){
+    getDBStore(function (dbStore) {
+        dbStore.push(key, v)
     })
 }
 

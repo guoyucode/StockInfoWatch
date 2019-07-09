@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: '股票信息监控'
+    name: 'StockInfoWatch'
   }
 </script>
 

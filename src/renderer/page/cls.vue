@@ -32,7 +32,8 @@
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
     import {dataLenthLimit, DateFormat, delayer, generalHandlerData, mergeData, notification} from "./js/utils";
     import {getDBStore} from "./js/db";
-    import {initDB} from "./js/project";
+    import {readData} from "./js/project";
+
 	let vue = null
 
     export default {
@@ -62,11 +63,17 @@
           vue = this;
 	    },
         mounted() {
-            getDBStore(readDBStore => {
-                vue.dbStore = readDBStore
-                initDB(vue, "cls")
-                vue.setInterval()
+
+            getDBStore(dbStore => {
+                vue.dbStore = dbStore
+	            dbStore.select("cls.setInterval_time", v => {
+                    if(v != undefined) vue.setInterval_time = v
+                })
+	            dbStore.select("cls.enableNotice", v => {
+                    if(v != undefined) vue.enableNotice = v
+                })
             })
+
             vue.requestData()
         },
         methods: {

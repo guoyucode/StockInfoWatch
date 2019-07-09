@@ -27,7 +27,7 @@
 						<div class="text item">
 							<el-row>
 								<label>数据显示条数</label>
-								<el-input style="float: right; width: 66%;" size="mini"  placeholder="功能暂时没有实现"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model="dataLimit"  placeholder="功能暂时没有实现"></el-input>
 							</el-row>
 						</div>
 					</diV>
@@ -188,6 +188,8 @@
 <script>
 	import {getDBStore} from "./js/db";
     import { mapState, mapActions } from "vuex"
+    import {config, delayer} from "./js/utils"
+    import {insertData} from "./js/project";
 
     let vue = null
 
@@ -198,13 +200,22 @@
                 hotKey: "无",
                 cardWidth: 11,
                 cardOffset: 1,
+                dataLimit: config.dataLimit,
             }
         },
 	    watch: {
+            dataLimit: delayer(cur =>{
+                if(isNaN(cur)) {
+                    vue.dataLimit = 500
+	                return
+                }
+                config.dataLimit = cur
+                vue.dbStore.push("dataLimit", cur)
+            }),
             hotKey: function (cur) {
                 console.log("watch.hotKey", cur)
                 vue.setHotKey(cur)
-	            this.dbStore.push("hotKey", cur)
+	            vue.dbStore.push("hotKey", cur)
             }
 	    },
         props: {
@@ -216,17 +227,18 @@
 	    },
         mounted() {
             //console.log("设置页-refs", this.refs)
-            //获得数据库
-            getDBStore(function (dbStore) {
-                vue.dbStore = dbStore
 
-                dbStore.select("hotKey", hotKey_read => {
-                    if(hotKey_read) {
-	                    vue.hotKey = hotKey_read
-                    }
+            //获得数据库
+            getDBStore(dbStore => {
+                vue.dbStore = dbStore
+                vue.hotKey = vue.$store.getters.getHotKey
+                dbStore.select("hotKey", v =>  {
+                    if(v != undefined) vue.hotKey = v
+                })
+                dbStore.select("dataLimit", v => {
+                    if(v != undefined) vue.dataLimit = v
                 })
             })
-
         },
 	    methods: {
             ...mapActions(["setHotKey"]),

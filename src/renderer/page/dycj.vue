@@ -23,7 +23,7 @@
     import {dycjRequest} from './api/dycj'
     import {DateFormat, generalHandlerData, delayer} from "./js/utils";
     import {getDBStore} from "./js/db";
-    import {initDB} from "./js/project";
+    import {readData} from "./js/project";
     let page = 1
     let vue = null
 
@@ -55,10 +55,14 @@
         },
         mounted() {
             const self = this;
-            getDBStore(readDBStore => {
-                vue.dbStore = readDBStore
-                initDB(vue, "dycj")
-                vue.setInterval()
+            getDBStore(dbStore => {
+                vue.dbStore = dbStore
+                dbStore.select("dycj.setInterval_time", v => {
+                    if(v != undefined) vue.setInterval_time = v
+                })
+                dbStore.select("dycj.enableNotice", v => {
+                    if(v != undefined) vue.enableNotice = v
+                })
             })
             self.requestData()
         },
