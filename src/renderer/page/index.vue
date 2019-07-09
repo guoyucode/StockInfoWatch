@@ -45,6 +45,8 @@
     import Setting from "./setting";
     import {clone} from "./js/utils";
     import {remote} from 'electron'
+    import { mapState, mapActions } from "vuex"
+    import {initAlert, refreshAction} from "./js/project";
 
     let vue = null;
 
@@ -93,6 +95,8 @@
         mounted() {
             const self = this;
 
+            initAlert(vue)
+
             //设置窗口大小
             this.windowsResize()
             window.onresize = this.windowsResize
@@ -103,9 +107,11 @@
                 self.readDbAfterinit(dbStore)
             })
 
+            refreshAction(vue.refreshAction_request)
             //this.setHotKey(cur)
         },
         methods: {
+            ...mapActions(["setHotKey"]),
 
             readDbAfterinit(dbStore){
                 const self = this;
@@ -123,9 +129,7 @@
                     })
                 })
 
-                dbStore.select("hotKey", v => {
-                    //vue.setHotKey(v || vue.hotKey)
-                })
+                dbStore.select("hotKey", vue.setHotKey)
             },
 
             //调整窗口大小时触发此方法
@@ -166,7 +170,14 @@
 	            alert("全部关闭将不能显示任何数据")
             },
 
-
+            refreshAction_request(){
+                let name = vue.swithTab;
+                if(name == "财联社电报") this.$refs.cls.requestData("refresh")
+                else if(name == "深交所互动易问答") this.$refs.hdy.requestData("refresh")
+                else if(name == "第一财经直播区") this.$refs.dycj.requestData("refresh")
+                else if(name == "选股宝") this.$refs.xuangubao.requestData("refresh")
+                else if(name == "云财经") this.$refs.yuncaijing.requestData("refresh")
+            }
         }
     }
 </script>
