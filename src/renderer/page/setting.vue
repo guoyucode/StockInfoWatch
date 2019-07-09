@@ -1,5 +1,32 @@
 <template>
 	<div>
+
+		<el-collapse class="version" v-model="activeNames" @change="handleChange" style="">
+			<el-collapse-item  name="1" >
+				<template slot="title">
+					版本信息: {{version}}
+				</template>
+<!--
+				<div style="color: green">当前版本更新: </div>
+				<div>新增功能: 关键词订阅功能, 只有订阅的栏目数据才进行推送</div>
+-->
+
+				<br/>
+				<div style="color: blue">近期版本更新: </div>
+				<div>新增功能: 完成快捷键设置, 数据条数等各种开关设置功能</div>
+				<div>新增功能: 新一财经,选股宝,云财经数据展示,及定时器定时拉取新数据</div>
+				<div>新增功能: 财联社电报,深交所互动易问答 数据展示,及定时器定时拉取新数据</div>
+				<div></div>
+
+				<br/>
+				<div style="color: darkviolet">程序说明: </div>
+				<div>实时查看股票行信息数据</div>
+				<div>程序设置理念：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
+				<div></div>
+
+			</el-collapse-item>
+		</el-collapse>
+
 		<el-row>
 			<el-col :span="cardWidth" :key="0" :offset="cardOffset">
 				<el-card class="box-card">
@@ -186,10 +213,13 @@
 </template>
 
 <script>
-	import {getDBStore} from "./js/db";
-    import { mapState, mapActions } from "vuex"
+
+    const packageInfo = require('../../../package.json');
+    const fs = require('fs');
+
+    import {getDBStore} from "./js/db";
+    import {mapActions} from "vuex"
     import {config, delayer} from "./js/utils"
-    import {insertData} from "./js/project";
 
     let vue = null
 
@@ -197,6 +227,7 @@
         name: "setting",
         data() {
             return {
+                version: packageInfo.version,
                 hotKey: "无",
                 cardWidth: 11,
                 cardOffset: 1,
@@ -228,6 +259,10 @@
         mounted() {
             //console.log("设置页-refs", this.refs)
 
+            /*fs.readFile("version", function (err, v) {
+	            vue.version = v;
+            })*/
+
             //获得数据库
             getDBStore(dbStore => {
                 vue.dbStore = dbStore
@@ -247,8 +282,14 @@
 </script>
 
 <style scoped>
-.el-select{
-	float: right !important;
-	width: 66%;
-}
+	.el-select {
+		float: right !important;
+		width: 66%;
+	}
+
+	.version {
+		margin-right: 16px;
+		margin-left: 40px;
+		margin-bottom: 13px;
+	}
 </style>
