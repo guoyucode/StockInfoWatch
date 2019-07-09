@@ -99,8 +99,11 @@
             //互动易定时器
             setInterval() {
                 let self = this;
-                if (self.hdySetInterval_val) return
-                self.hdySetInterval_val = setInterval(function () {
+                if(vue.setInterval_val) {
+                    clearInterval(vue.setInterval_val)
+                    vue.setInterval_val = null
+                }
+                self.setInterval_val = setInterval(function () {
                     self.requestData("setInterval");
                     /*let formatTime = DateFormat(new Date());
                     let refreshTime = formatTime.replace(" ", "+")

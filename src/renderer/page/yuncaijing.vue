@@ -88,7 +88,10 @@
             //请求定时器
             setInterval(){
                 let self = this;
-                if(self.setInterval_val) return
+                if(vue.setInterval_val) {
+                    clearInterval(vue.setInterval_val)
+                    vue.setInterval_val = null
+                }
                 self.setInterval_val = setInterval(function () {
                     self.requestData("setInterval")
                 }, self.setInterval_time*1000)
