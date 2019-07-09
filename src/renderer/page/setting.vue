@@ -2,7 +2,7 @@
 	<div>
 
 		<el-collapse class="version" >
-			<el-collapse-item  name="1" >
+			<el-collapse-item  name="1"><!--style="max-height: 260px; overflow-y: auto;"-->
 				<template slot="title">
 					版本信息: {{version}}
 				</template>
@@ -11,11 +11,10 @@
 				<div>修复bug: 互动易不能保存通知开关的问题</div>
 				<div>修复bug: 财联社电报通知开关保存后依然无效的问题</div>
 
-<!--				<div>新增功能: 关键词订阅功能, 只有订阅的栏目数据才进行推送</div>
--->
 
 				<br/>
 				<div style="color: blue">近期版本更新: </div>
+
 				<div>新增功能: 完成快捷键设置, 数据条数等各种开关设置功能</div>
 				<div>新增功能: 新一财经,选股宝,云财经数据展示,及定时器定时拉取新数据</div>
 				<div>新增功能: 财联社电报,深交所互动易问答 数据展示,及定时器定时拉取新数据</div>
