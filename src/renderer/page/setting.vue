@@ -1,7 +1,7 @@
 <template>
 	<div>
 
-		<el-collapse class="version" v-model="activeNames" @change="handleChange" style="">
+		<el-collapse class="version" >
 			<el-collapse-item  name="1" >
 				<template slot="title">
 					版本信息: {{version}}
