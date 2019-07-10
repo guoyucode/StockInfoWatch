@@ -1,3 +1,5 @@
+import store from "../../store"
+
 // 对Date的扩展，将 Date 转化为指定格式的String
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
 // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
@@ -32,11 +34,12 @@ export const clone = function (srcObj) {
     return JSON.parse(JSON.stringify(srcObj))
 }
 
-export let config = {dataLimit: 500, dataLimit_bak: 500}
+
 
 //数据长度限制
 export const dataLenthLimit =function (arr, limit = 500) {
-    if(config.dataLimit) limit = config.dataLimit
+    let li = store.getters.get_dataLimit
+    if(li) limit = li
     if (arr.length > limit) {
         for (let i = arr.length - 1; i >= 0; i--) {
             arr.splice(i, 1)
@@ -46,7 +49,7 @@ export const dataLenthLimit =function (arr, limit = 500) {
 }
 
 //通知
-export const notification = function(title, body, clickCallback) {
+export const notification = function(title, body) {
     let self = this
     if (body.length > 50) body = body.substring(0, 50)
 
@@ -57,7 +60,9 @@ export const notification = function(title, body, clickCallback) {
     myNotification.onclick = () => {
         let {ipcRenderer: ipc} = require('electron')
         ipc.send("showWindows")
-        if(clickCallback) clickCallback(title)
+
+        // 切换tab
+        store.commit("set_tabName", title)
     }
 }
 
@@ -118,14 +123,14 @@ export const generalHandlerData = function (self, next, newRows, dataKey, notifi
 
         //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
         if(next == "setInterval" && notificationTitle){
-            if(newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !", self.tabClick)
+            if(newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !")
             else{
                 for (let k in newRows) {
                     let row = newRows[k];
                     let content = "通知内容"
                     if(notificationContent_key.keyEval) content = eval(notificationContent_key.keyEval)
                     else content = row[notificationContent_key]
-                    notification(notificationTitle, content, self.tabClick)
+                    notification(notificationTitle, content)
                 }
             }
         }

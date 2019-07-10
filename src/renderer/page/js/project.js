@@ -10,9 +10,7 @@ let {ipcRenderer: ipc} = require('electron')
  */
 export const readData = function(key, callback){
     getDBStore(dbStore => {
-        dbStore.select(key, v => {
-            if(v != undefined) callback(v);
-        })
+        dbStore.select(key, callback)
     })
 }
 

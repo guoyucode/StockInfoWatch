@@ -74,6 +74,8 @@
                 })
             })
 
+	        let refsConfig = vue.$store.getters.get_refsConfig.cls;
+
             vue.requestData()
         },
         methods: {

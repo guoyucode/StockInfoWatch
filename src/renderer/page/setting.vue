@@ -36,7 +36,7 @@
 						<span>公共配置</span>
 					</div>
 
-					<diV v-if="enableTab.cls">
+					<diV>
 						<div class="text item">
 							<el-row>
 								<label>刷新快捷键</label>
@@ -75,14 +75,14 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.cls.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model="refsConfig.cls.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="refs.cls.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" v-model="refsConfig.cls.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -104,14 +104,14 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.hdy.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model="refsConfig.hdy.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="refs.hdy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" v-model="refsConfig.hdy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -134,14 +134,14 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.dycj.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model="refsConfig.dycj.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="refs.dycj.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" v-model="refsConfig.dycj.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -167,14 +167,14 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model="refsConfig.xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="refs.xuangubao.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" v-model="refsConfig.xuangubao.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -197,14 +197,14 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="refs.yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model="refsConfig.yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="refs.yuncaijing.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" v-model="refsConfig.yuncaijing.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -217,11 +217,7 @@
 <script>
 
     const packageInfo = require('../../../package.json');
-    const fs = require('fs');
-
-    import {getDBStore} from "./js/db";
-    import {mapActions} from "vuex"
-    import {config, delayer} from "./js/utils"
+    import {clone, delayer} from "./js/utils"
 
     let vue = null
 
@@ -230,55 +226,42 @@
         data() {
             return {
                 version: packageInfo.version,
-                hotKey: "无",
                 cardWidth: 11,
                 cardOffset: 1,
-                dataLimit: config.dataLimit,
+                enableTab: {},
+                refsConfig: {},
             }
         },
-	    watch: {
-            dataLimit: delayer(cur =>{
-                if(isNaN(cur)) {
-                    vue.dataLimit = 500
-	                return
-                }
-                config.dataLimit = cur
-                vue.dbStore.push("dataLimit", cur)
-            }),
-            hotKey: function (cur) {
-                console.log("watch.hotKey", cur)
-                vue.setHotKey(cur)
-	            vue.dbStore.push("hotKey", cur)
-            }
-	    },
+        computed: {
+            hotKey: {
+                get: () => {return vue.$store.getters.get_hotKey},
+                set: (v) => {vue.$store.commit("set_hotKey", v)},
+            },
+            dataLimit: {
+                get: () => {return vue.$store.getters.get_dataLimit},
+                set: (v) => {vue.$store.commit("set_dataLimit", v)},
+            },
+        },
+        watch: {
+            refsConfig: {
+                deep: true,
+                handler: cur => vue.$store.commit("set_refsConfig", clone(cur)),
+            },
+            enableTab: {
+                deep: true,
+                handler: cur => vue.$store.commit("set_enableTab", clone(cur)),
+            },
+        },
         props: {
-            refs: Object,
-            enableTab: Object, // {cls: true, dycj: true, ...}
         },
-	    created() {
-          vue = this
-	    },
+        created() {
+            vue = this
+            vue.refsConfig = clone(vue.$store.getters.get_refsConfig)
+            vue.enableTab = clone(vue.$store.getters.get_enableTab)
+        },
         mounted() {
-            //console.log("设置页-refs", this.refs)
-
-            /*fs.readFile("version", function (err, v) {
-	            vue.version = v;
-            })*/
-
-            //获得数据库
-            getDBStore(dbStore => {
-                vue.dbStore = dbStore
-                vue.hotKey = vue.$store.getters.getHotKey
-                dbStore.select("hotKey", v =>  {
-                    if(v != undefined) vue.hotKey = v
-                })
-                dbStore.select("dataLimit", v => {
-                    if(v != undefined) vue.dataLimit = v
-                })
-            })
         },
-	    methods: {
-            ...mapActions(["setHotKey"]),
+        methods: {
         },
     }
 </script>
