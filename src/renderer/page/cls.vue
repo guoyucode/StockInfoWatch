@@ -31,8 +31,6 @@
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
     import {dataLenthLimit, DateFormat, delayer, generalHandlerData, mergeData, notification} from "./js/utils";
-    import {getDBStore} from "./js/db";
-    import {readData} from "./js/project";
 
 	let vue = null
 
@@ -43,39 +41,19 @@
         },
         data() {
             return {
-                setInterval_time: 30,
                 data: [],
                 loading: true,
-                enableNotice: true,
-                dbStore: null,
+                config: {},
             }
         },
         watch: {
-            setInterval_time: delayer(cur => {
-                vue.dbStore.push("cls.setInterval_time", cur)
-	            vue.setInterval()
-            }),
-            enableNotice: delayer(cur => {
-                vue.dbStore.push("cls.enableNotice", cur)
-            }),
+            "config.setInterval_time": delayer(cur => { vue.setInterval(cur) }),
         },
 	    created(){
           vue = this;
+          vue.config = vue.$configData.cls
 	    },
         mounted() {
-
-            getDBStore(dbStore => {
-                vue.dbStore = dbStore
-	            dbStore.select("cls.setInterval_time", v => {
-                    if(v != undefined) vue.setInterval_time = v
-                })
-	            dbStore.select("cls.enableNotice", v => {
-                    if(v != undefined) vue.enableNotice = v
-                })
-            })
-
-	        let refsConfig = vue.$store.getters.get_refsConfig.cls;
-
             vue.requestData()
         },
         methods: {
@@ -102,14 +80,14 @@
             },
 
             //定时器
-            setInterval(){
+            setInterval(setInterval_time){
                 if(vue.setInterval_val) {
                     clearInterval(vue.setInterval_val)
                     vue.setInterval_val = null
                 }
                 vue.setInterval_val = setInterval(function () {
                     vue.requestUpdateData("setInterval")
-                }, vue.setInterval_time*1000)
+                }, setInterval_time*1000)
             },
 
             //定时请求
@@ -117,10 +95,11 @@
                 if(!vue.data && vue.data.length == 0) return vue.requestData("refresh")
                 caiLianSheUpdateRequest({last_time: vue.data[0].ctime}).then(function (res) {
                     if(!res || res.error != 0) return;
+                    console.log("cls-requestUpdateData", res.data)
                     res = res.data;
                     if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
                     let rows = res.roll_data
-                    generalHandlerData(vue, next, rows, "id", (vue.enableNotice?"财联社电报":false), "title")
+                    generalHandlerData(vue, next, rows, "id", (vue.config.enableNotice?"财联社电报":false), "title")
                 })
             },
 

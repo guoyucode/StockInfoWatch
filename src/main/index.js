@@ -1,6 +1,5 @@
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 //import store from '../renderer/store/index'
-import {DateFormat} from "../renderer/page/js/utils";
 
 /**
  * Set `__static` path to static files in production
@@ -134,14 +133,12 @@ const setHotKeyFun = function (hotKey) {
   let bool = globalShortcut.register(hotKey, () => {
     mainWindow.send("refresh-shortcut", hotKey)
     if(state.callback){
-      console.log(DateFormat(new Date()), "刷新生效了!", hotKey)
       state.callback()
     }
   })
 
   if (bool) {
     let msg = "设置快捷键成功: " + hotKey
-    console.debug(DateFormat(new Date()), msg)
     if(state.hotKey_val) mainWindow.send("show-success-message", msg)
     state.hotKey_val = hotKey + "";
   } else {

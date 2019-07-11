@@ -1,35 +1,35 @@
 <template>
 	<div>
-		<el-tabs type="border-card" ref="tabs" v-model="swithTab" @tab-click="tabClick" @tab-remove="tabRemove">
+		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
-			<el-tab-pane v-if="enableTab.cls" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.cls.enable" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<cls ref="cls" ></cls>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.hdy" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.hdy.enable" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<hdy ref="hdy" ></hdy>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.dycj" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.dycj.enable" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<dycj ref="dycj" ></dycj>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.xuangubao" name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.xuangubao.enable" name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<xuangubao ref="xuangubao"  ></xuangubao>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.yuncaijing" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+			<el-tab-pane v-if="configData.yuncaijing.enable" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
 				<yuncaijing ref="yuncaijing" ></yuncaijing>
 			</el-tab-pane>
 
-			<el-tab-pane :closable="true" v-if="enableTab.setting" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
+			<el-tab-pane :closable="true" v-if="configData.setting.enable" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
 				<setting :refs="$refs" ></setting>
 			</el-tab-pane>
 
 		</el-tabs>
 
-		<i class="el-icon-setting" v-if="settingClose" @click="enableTab.setting = true; tabClick('设置') " style="position: absolute; float: right;top: 21px;right: 27px; cursor:pointer;"></i>
+		<i class="el-icon-setting" v-if="!configData.setting.enable" @click="configData.setting.enable = true; tabClick('设置') " style="position: absolute; float: right;top: 21px;right: 27px; cursor:pointer;"></i>
 	</div>
 </template>
 
@@ -55,28 +55,19 @@
         components: {Setting, Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
+                configData: {},
                 settingClose: true,
                 dbStore: null,
                 clientHeight: 450,
-                enableTab: {},
             }
         },
 	    computed: {
-            swithTab: {
-                get(){return vue.$store.getters.get_tabName},
-                set(v){vue.$store.commit("set_tabName", v)},
-            },
 	    },
         watch: {
-            enableTab: {
-                deep: true,
-                handler: cur => vue.$store.commit("set_enableTab", clone(cur)),
-            },
         },
 	    created(){
             vue = this;
-            vue.$store.dispatch("initTabsData")
-            vue.enableTab = clone(vue.$store.getters.get_enableTab)
+            vue.configData = vue.$configData
 	    },
         mounted() {
             const self = this;
@@ -103,15 +94,15 @@
                 console.log("点击tab", tab)
                 let name = tab.name || tab
 	            if(name == "设置") {
-	                this.swithTab = name
-		            this.enableTab.setting = true
+	                this.configData.common.tabName = name
+                    this.configData.setting.enable = true
 		            return;
                 }
                 let childrens = this.$refs.tabs.$children
                 for(let k = childrens.length-1; k >= 0; k--){
                     let idStr = childrens[k].$el.id;
                     if(idStr && idStr.indexOf(name) != -1){
-                        this.swithTab = name
+                        this.configData.common.tabName = name
 	                    return
                     }
                 }
@@ -125,7 +116,7 @@
                     if(idStr && idStr.indexOf("设置") == -1){
                         let id = idStr.split("-")[1]
                         this.tabClick(id)
-                        this.enableTab.setting = false
+                        this.configData.setting.enable = false
 						return
                     }
                 }

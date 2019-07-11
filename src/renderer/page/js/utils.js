@@ -1,4 +1,5 @@
 import store from "../../store"
+import configData from "./config_data"
 
 // 对Date的扩展，将 Date 转化为指定格式的String
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
@@ -38,7 +39,7 @@ export const clone = function (srcObj) {
 
 //数据长度限制
 export const dataLenthLimit =function (arr, limit = 500) {
-    let li = store.getters.get_dataLimit
+    let li = configData.common.dataLimit
     if(li) limit = li
     if (arr.length > limit) {
         for (let i = arr.length - 1; i >= 0; i--) {
@@ -62,7 +63,7 @@ export const notification = function(title, body) {
         ipc.send("showWindows")
 
         // 切换tab
-        store.commit("set_tabName", title)
+        configData.common.tabName = title
     }
 }
 

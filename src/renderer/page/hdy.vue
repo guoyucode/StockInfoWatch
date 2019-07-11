@@ -44,24 +44,18 @@
         },
         data() {
             return {
-                setInterval_time: 15,
                 data: [],
                 loading: true,
-                enableNotice: true,
                 dbStore: null,
+                config: {},
             }
         },
         watch: {
-            setInterval_time: delayer(cur => {
-                vue.dbStore.push("hdy.setInterval_time", cur)
-                vue.setInterval()
-            }),
-            enableNotice: delayer(cur => {
-                vue.dbStore.push("hdy.enableNotice", cur)
-            }),
+            "config.setInterval_time": delayer(cur => { vue.setInterval(cur) }),
         },
         created(){
             vue = this;
+            vue.config = vue.$configData.hdy
         },
         mounted() {
             const self = this;
@@ -95,13 +89,13 @@
                     if(!res || !res.results || res.results.length === 0) return
                     let rows = res.results;
                     console.log("互动易 res-data", rows)
-                    generalHandlerData(self, next, rows, "indexId", (vue.enableNotice?"深交所互动易问答":false), {keyEval: 'row.companyShortName + ": " + row.mainContent + ""'})
+                    generalHandlerData(self, next, rows, "indexId", (vue.config.enableNotice?"深交所互动易问答":false), {keyEval: 'row.companyShortName + ": " + row.mainContent + ""'})
                     if (next && next == "next") page+=1
                 })
             },
 
             //互动易定时器
-            setInterval() {
+            setInterval(setInterval_time) {
                 let self = this;
                 if(vue.setInterval_val) {
                     clearInterval(vue.setInterval_val)
@@ -116,7 +110,7 @@
                         if (res.data == 0) return
                         self.requestData("setInterval");
                     })*/
-                }, self.setInterval_time * 1000)
+                }, setInterval_time * 1000)
             },
 
         }
