@@ -124,7 +124,7 @@
             },
 
             refreshAction_request(){
-                let name = vue.swithTab;
+                let name = vue.configData.common.tabName;
                 if(name == "财联社电报") this.$refs.cls.requestData("refresh")
                 else if(name == "深交所互动易问答") this.$refs.hdy.requestData("refresh")
                 else if(name == "第一财经直播区") this.$refs.dycj.requestData("refresh")

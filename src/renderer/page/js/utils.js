@@ -1,5 +1,6 @@
 import store from "../../store"
 import configData from "./config_data"
+let {ipcRenderer: ipc} = require('electron')
 
 // 对Date的扩展，将 Date 转化为指定格式的String
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
@@ -59,7 +60,6 @@ export const notification = function(title, body) {
     })
 
     myNotification.onclick = () => {
-        let {ipcRenderer: ipc} = require('electron')
         ipc.send("showWindows")
 
         // 切换tab
