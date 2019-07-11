@@ -1,35 +1,35 @@
 <template>
 	<div>
-		<el-tabs type="border-card" ref="tabs" v-model="swithTab" @tab-click="tabClick" @tab-remove="tabRemove">
+		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
-			<el-tab-pane v-if="enableTab.cls" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<cls ref="cls" :tabClick="tabClick"></cls>
+			<el-tab-pane v-if="configData.cls.enable" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<cls ref="cls" ></cls>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.hdy" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<hdy ref="hdy" :tabClick="tabClick"></hdy>
+			<el-tab-pane v-if="configData.hdy.enable" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<hdy ref="hdy" ></hdy>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.dycj" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<dycj ref="dycj" :tabClick="tabClick"></dycj>
+			<el-tab-pane v-if="configData.dycj.enable" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<dycj ref="dycj" ></dycj>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.xuangubao" name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<xuangubao ref="xuangubao"  :tabClick="tabClick"></xuangubao>
+			<el-tab-pane v-if="configData.xuangubao.enable" name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<xuangubao ref="xuangubao"  ></xuangubao>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="enableTab.yuncaijing" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
-				<yuncaijing ref="yuncaijing" :tabClick="tabClick"></yuncaijing>
+			<el-tab-pane v-if="configData.yuncaijing.enable" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
+				<yuncaijing ref="yuncaijing" ></yuncaijing>
 			</el-tab-pane>
 
-			<el-tab-pane :closable="true" v-if="enableTab.setting" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
+			<el-tab-pane :closable="true" v-if="configData.setting.enable" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
-				<setting :refs="$refs" :enable-tab="enableTab" ></setting>
+				<setting :refs="$refs" ></setting>
 			</el-tab-pane>
 
 		</el-tabs>
 
-		<i class="el-icon-setting" v-if="settingClose" @click="enableTab.setting = true; tabClick('设置') " style="position: absolute; float: right;top: 21px;right: 27px; cursor:pointer;"></i>
+		<i class="el-icon-setting" v-if="!configData.setting.enable" @click="configData.setting.enable = true; tabClick('设置') " style="position: absolute; float: right;top: 21px;right: 27px; cursor:pointer;"></i>
 	</div>
 </template>
 
@@ -44,50 +44,30 @@
     import Yuncaijing from "./yuncaijing";
     import Setting from "./setting";
     import {clone, config} from "./js/utils";
-    import {mapActions} from "vuex"
+    import {mapMutations, mapGetters, mapState} from "vuex"
     import {initAlert, readData, refreshAction} from "./js/project";
+    import store from "../store"
 
     let vue = null;
-
-    const enableTab_bak = {
-        cls: true,
-        hdy: true,
-        dycj: true,
-        xuangubao: true,
-        yuncaijing: true,
-        setting: false,
-    }
 
     export default {
         name: 'index',
         components: {Setting, Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
-                dataLimit: 500,
+                configData: {},
                 settingClose: true,
                 dbStore: null,
-                swithTab: "财联社电报",
                 clientHeight: 450,
-                enableTab: {
-                    cls: false,
-                    hdy: false,
-                    dycj: false,
-                    xuangubao: false,
-                    yuncaijing: false,
-                    setting: false,
-                },
             }
         },
+	    computed: {
+	    },
         watch: {
-            dataLimit: cur => config.dataLimit = cur,
-            enableTab: {
-                handler: cur => vue.dbStore.push("enableTab", cur),
-                deep: true
-            },
-            swithTab: cur => vue.dbStore.push("tabName", cur),
         },
 	    created(){
             vue = this;
+            vue.configData = vue.$configData
 	    },
         mounted() {
             const self = this;
@@ -98,42 +78,11 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-            //获得数据库
-            getDBStore(function (dbStore) {
-                self.dbStore = dbStore
-                self.readDbAfterinit(dbStore)
-            })
-
             refreshAction(vue.refreshAction_request)
             //this.setHotKey(cur)
         },
         methods: {
-            ...mapActions(["setHotKey"]),
 
-            readDbAfterinit(dbStore){
-                const self = this;
-
-                dbStore.select("enableTab", enableTab => {
-
-                    // 兼容代码: 因为setting字段是后来加的,所以如果读取数据库没有值的话会因为vue的特性以后都保存不了, 所以加上这句代码
-                    if(enableTab && enableTab.setting == undefined) enableTab.setting = false
-
-                    if(enableTab) self.enableTab = enableTab
-	                else self.enableTab = clone(enableTab_bak)
-
-                    dbStore.select("tabName", tab => {
-                        if(tab) self.tabClick(tab)
-                    })
-                })
-
-                dbStore.select("hotKey", v => {
-                    if(v == undefined) v = "F5"
-                    vue.setHotKey(v)
-                })
-	            dbStore.select("dataLimit", v => {
-                    if(v != undefined) vue.dataLimit = v
-                })
-            },
 
             //调整窗口大小时触发此方法
             windowsResize() {
@@ -142,17 +91,18 @@
 
             // 点击tab, 或者点击通知打开tab,那么需要这个tab存在才切换到该tab
             tabClick(tab) {
+                console.log("点击tab", tab)
                 let name = tab.name || tab
 	            if(name == "设置") {
-	                this.swithTab = name
-		            this.enableTab.setting = true
+	                this.configData.common.tabName = name
+                    this.configData.setting.enable = true
 		            return;
                 }
                 let childrens = this.$refs.tabs.$children
                 for(let k = childrens.length-1; k >= 0; k--){
                     let idStr = childrens[k].$el.id;
                     if(idStr && idStr.indexOf(name) != -1){
-                        this.swithTab = name
+                        this.configData.common.tabName = name
 	                    return
                     }
                 }
@@ -166,7 +116,7 @@
                     if(idStr && idStr.indexOf("设置") == -1){
                         let id = idStr.split("-")[1]
                         this.tabClick(id)
-                        this.enableTab.setting = false
+                        this.configData.setting.enable = false
 						return
                     }
                 }

@@ -29,6 +29,32 @@ export const getDBStore = function (callback) {
     }
 }
 
+
+async function getAllData() {
+    const db = await window.indexedDB.open(db_name, db_version);
+    let tx = db.transaction(storeName, 'readonly');
+    let store = tx.objectStore(storeName);
+    let allSavedItems = await store.getAll();
+    console.log(allSavedItems);
+    db.close()
+}
+
+/**
+ * 获得数据库数据
+ * @param key
+ * @returns {Promise<*>}
+ */
+export async function getDataSync(key) {
+    const db = await window.indexedDB.open(db_name, db_version);
+    let tx = db.transaction(storeName, 'readonly');
+    let store = tx.objectStore(storeName);
+    let v = key ? await store.get(key) : await store.getAll();
+    db.close()
+    console.log(v)
+    return v
+}
+
+
 const initDbStore = function (myIndexedDB, dbStore) {
 
     /**

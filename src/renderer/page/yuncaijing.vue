@@ -38,24 +38,17 @@
         },
         data() {
             return {
-                setInterval_time: 20,
                 data: [],
                 loading: true,
-                enableNotice: true,
-                dbStore: null,
+                config: {},
             }
         },
         watch: {
-            setInterval_time: delayer(cur => {
-                vue.dbStore.push("yuncaijing.setInterval_time", cur)
-                vue.setInterval()
-            }),
-            enableNotice: delayer(cur => {
-                vue.dbStore.push("yuncaijing.enableNotice", cur)
-            }),
+            "config.setInterval_time": delayer(cur => { vue.setInterval(cur) }),
         },
         created(){
             vue = this;
+            vue.config = vue.$configData.yuncaijing
         },
         mounted() {
             const self = this;
@@ -83,14 +76,14 @@
                     if(!res || !res.data || res.data.length === 0) return
                     let rows = res.data;
                     console.log("云财经 res-data", rows)
-                    generalHandlerData(self, next, rows, "id", (vue.enableNotice?"云财经":false), "title")
+                    generalHandlerData(self, next, rows, "id", (vue.config.enableNotice?"云财经":false), "title")
                     if(next && next == "next") page+=1
                 })
 
             },
 
             //请求定时器
-            setInterval(){
+            setInterval(setInterval_time){
                 let self = this;
                 if(vue.setInterval_val) {
                     clearInterval(vue.setInterval_val)
@@ -98,7 +91,7 @@
                 }
                 self.setInterval_val = setInterval(function () {
                     self.requestData("setInterval")
-                }, self.setInterval_time*1000)
+                }, setInterval_time*1000)
             },
 
             //格式化时间方法

@@ -38,24 +38,17 @@
         },
         data() {
             return {
-                setInterval_time: 25,
                 data: [],
                 loading: true,
-                enableNotice: true,
-                dbStore: null,
+                config: {},
             }
         },
         created(){
             vue = this;
+            vue.config = vue.$configData.xuangubao
         },
         watch: {
-            setInterval_time: delayer(cur => {
-                vue.dbStore.push("xuangubao.setInterval_time", cur)
-                vue.setInterval()
-            }),
-            enableNotice: delayer(cur => {
-                vue.dbStore.push("xuangubao.enableNotice", cur)
-            }),
+            "config.setInterval_time": delayer(cur => { vue.setInterval(cur) }),
         },
         mounted() {
             const self = this;
@@ -86,13 +79,13 @@
                     if(!res || !res.NewMsgs || res.NewMsgs.length === 0) return
                     let rows = res.NewMsgs;
                     console.log("选股宝 res-data", rows)
-                    generalHandlerData(self, next, rows, "id", (vue.enableNotice?"第一财经直播区":false), "newcontent")
+                    generalHandlerData(self, next, rows, "id", (vue.config.enableNotice?"第一财经直播区":false), "newcontent")
                     markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
                 })
             },
 
             //请求定时器
-            setInterval(){
+            setInterval(setInterval_time){
                 let self = this;
                 if(vue.setInterval_val) {
                     clearInterval(vue.setInterval_val)
@@ -100,7 +93,7 @@
                 }
                 self.setInterval_val = setInterval(function () {
                     self.requestData("setInterval")
-                }, self.setInterval_time*1000)
+                }, setInterval_time*1000)
             },
 
             //格式化时间方法
