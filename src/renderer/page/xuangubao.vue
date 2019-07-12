@@ -50,7 +50,7 @@
         watch: {
             "config.setInterval_time": delayer(cur => { vue.setInterval(cur) }),
         },
-        mounted() {
+        beforeMount() {
             vue.requestData()
             vue.$eventBus.$on("选股宝-refresh", () => vue.requestData("refresh"))
         },

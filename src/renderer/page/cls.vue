@@ -53,7 +53,7 @@
 	    created(){
           vue = this;
 	    },
-        mounted() {
+        beforeMount() {
             vue.requestData()
 	        vue.$eventBus.$on("财联社电报-refresh", () => vue.requestData("refresh"))
         },

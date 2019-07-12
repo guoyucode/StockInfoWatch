@@ -49,7 +49,7 @@
         created(){
             vue = this;
         },
-        mounted() {
+        beforeMount() {
             vue.requestData()
             vue.$eventBus.$on("第一财经直播区-refresh", () => vue.requestData("refresh"))
         },

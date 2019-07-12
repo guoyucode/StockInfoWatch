@@ -58,7 +58,7 @@
         created(){
             vue = this;
         },
-        mounted() {
+        beforeMount() {
             vue.requestData()
             vue.$eventBus.$on("深交所互动易问答-refresh", () => vue.requestData("refresh"))
         },

@@ -51,7 +51,7 @@
         created(){
             vue = this;
         },
-        mounted() {
+        beforeMount() {
             vue.requestData()
             vue.$eventBus.$on("云财经-refresh", () => vue.requestData("refresh"))
         },
