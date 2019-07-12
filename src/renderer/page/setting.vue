@@ -217,6 +217,7 @@
 
     const packageInfo = require('../../../package.json');
     import {clone, delayer} from "./js/utils"
+    import configData from "./js/config_data"
 
     let vue = null
 
@@ -224,17 +225,15 @@
         name: "setting",
         data() {
             return {
-                common: {},
-	            cls: {},
-                hdy: {},
-                dycj: {},
-                xuangubao: {},
-                yuncaijing: {},
+                common: configData.common,
+	            cls: configData.cls,
+                hdy: configData.hdy,
+                dycj: configData.dycj,
+                xuangubao: configData.xuangubao,
+                yuncaijing: configData.yuncaijing,
                 version: packageInfo.version,
                 cardWidth: 11,
                 cardOffset: 1,
-                enableTab: {},
-                refsConfig: {},
             }
         },
         computed: {
@@ -244,16 +243,7 @@
         props: {
         },
         created() {
-
             vue = this
-
-            vue.common = vue.$configData.common
-	        vue.cls = vue.$configData.cls
-            vue.hdy = vue.$configData.hdy
-            vue.dycj = vue.$configData.dycj
-            vue.xuangubao = vue.$configData.xuangubao
-            vue.yuncaijing = vue.$configData.yuncaijing
-
         },
         mounted() {
         },

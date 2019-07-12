@@ -24,6 +24,8 @@
     import {DateFormat, generalHandlerData, delayer} from "./js/utils";
     import {getDBStore} from "./js/db";
     import {readData} from "./js/project";
+    import configData from "./js/config_data"
+
     let page = 1
     let vue = null
 
@@ -38,7 +40,7 @@
                 data: [],
                 loading: true,
                 enableNotice: true,
-                config: {},
+                config: configData.dycj,
             }
         },
         watch: {
@@ -46,11 +48,10 @@
         },
         created(){
             vue = this;
-            vue.config = vue.$configData.dycj
         },
         mounted() {
-            const self = this;
-            self.requestData()
+            vue.requestData()
+            vue.$eventBus.$on("第一财经直播区-refresh", () => vue.requestData("refresh"))
         },
         methods: {
 
