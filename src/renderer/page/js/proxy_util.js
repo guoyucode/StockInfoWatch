@@ -1,6 +1,6 @@
 export const getProxyObject = (obj) => {
 
-    if(Object.prototype.toString.call(obj) != "[object Object]") return obj
+    if(!isObj(obj)) return obj
 
     //把 _get, _set方法设置为不可改变,不可枚举
     const config = { writable: false, enumerable: false,}
@@ -9,7 +9,7 @@ export const getProxyObject = (obj) => {
 
     Object.keys(obj).forEach(function(key) {
         let o = obj[key];
-        if(Object.prototype.toString.call(o) === "[object Object]"){
+        if(isObj(o)){
             obj[key] = getProxyObject(o)
         }
     });
@@ -25,9 +25,24 @@ export const getProxyObject = (obj) => {
         },
         set: function (target, key, value, receiver) {
             let returnVal = Reflect.set(target, key, value, receiver);
-            if(obj._set) obj._set(key, value)
+            if(obj._set){
+                if(isObj(obj) === "Array") {
+                    if(key === "length") {
+                        obj._set(key, target)
+                    }
+                }
+                else obj._set(key, value)
+            }
+
             return returnVal
         }
     })
     return returnObj
+}
+
+// 是否是一个对象和数组: [object Object],[object Array]
+const isObj = obj => {
+    if(Object.prototype.toString.call(obj) == "[object Object]") return "Object"
+    if(Object.prototype.toString.call(obj) == "[object Array]") return "Array"
+    else return false
 }

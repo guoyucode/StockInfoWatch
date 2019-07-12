@@ -24,11 +24,14 @@
 </template>
 
 <script>
+
+	import keywordData from "./js/keyword_subscription_data"
+
     export default {
         name: "keyword-subscription",
         data() {
             return {
-                keywords: ['军工'],
+                keywords: keywordData.data,
                 inputVisible: false,
                 inputValue: ''
             };

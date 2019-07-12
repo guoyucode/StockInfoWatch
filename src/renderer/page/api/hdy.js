@@ -1,7 +1,9 @@
 //互动易
 import {req} from "./common";
-import {clone} from "../js/utils";
 import qs from "qs"
+import {generalHandlerData2} from "../js/project";
+import configData from "../js/config_data";
+import {DateFormat} from "../js/utils";
 
 const url = "http://irm.cninfo.com.cn/ircs/index/search";
 
@@ -24,5 +26,50 @@ export const interactiveRequest = data => {
     return req({url: url, method: 'POST', data: qs.stringify(d)})
 }
 
-//const app = require('electron').remote.app
+
+let vue = {
+    data: [],
+    loading: true,
+    page: 1,
+    config: configData.hdy,
+}
+
+
+
+//格式化时间方法
+function formatTime(time) {
+    let date = new Date(time)
+    return DateFormat(date)
+}
+
+//互动易请求
+export function api_hdy_request(next, callback) {
+    const self = vue
+    if (!next || next != "setInterval") self.loading = true
+    var data = {}
+    if (next && next == "next") data.page = vue.page+1
+    interactiveRequest(data).then(function (res) {
+        self.loading = false
+        if(!res || !res.results || res.results.length === 0) return
+        let rows = res.results;
+
+        for(let item of rows){
+            item.id = item.indexId;
+            item.time = formatTime(Number.parseInt(item.pubDate))
+            item.content = "<a style=\"color: #0077E6;\">问 </a>" + item.mainContent;
+
+            if(item.attachedContent)
+            item.content2 = "<div class=\"text item\" v-if=\"item.attachedContent\">" +
+                " <a style=\"color: orange;\">答 </a>" + item.attachedContent + "</div>";
+        }
+
+        console.log("互动易 res-data", rows)
+        let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"深交所互动易问答":false))
+        if (next && next == "next") vue.page+=1
+        if(d && callback) {
+            callback(d)
+            vue.data = d
+        }
+    })
+}
 
