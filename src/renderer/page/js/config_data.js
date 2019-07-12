@@ -59,7 +59,6 @@ for (let k in state) {
 
     //添加set方法
     v._set = (k2, v2) => {
-        console.log("proxy.set2", k2, v2)
         if (v2 == undefined) return
         if (k2 == "hotKey") ipcRenderer.send("setHotKey", v2)
         localStorage.setItem("config_" + k, JSON.stringify(state[k]))
