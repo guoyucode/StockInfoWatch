@@ -1,5 +1,5 @@
 <template>
-	<div >
+	<div>
 		<KeywordSubscription></KeywordSubscription>
 		<el-card class="box-card" v-for="item in data2" :key="item.id">
 			<div slot="header" class="clearfix">
@@ -14,11 +14,22 @@
 				列表内容
 			</div>
 		</el-card>
-		<el-card class="box-card" key="99999999" style="cursor:pointer;" @click.native="nextPage('next')">
-			<div class="text item" >
-				<span style="margin-left: 40%;">点击加载更多</span>
-			</div>
-		</el-card>
+
+		<template v-if="!loading">
+			<el-card class="box-card" v-if="data.length == 0" key="99999998" style="cursor:pointer;" @click.native="nextPage()">
+				<div class="text item" >
+					<span style="margin-left: 40%;">网络异常, 点击刷新重试</span>
+				</div>
+			</el-card>
+
+			<el-card class="box-card" v-else key="99999999" style="cursor:pointer;" @click.native="nextPage('next')">
+				<div class="text item" >
+					<span style="margin-left: 40%;">点击加载更多</span>
+				</div>
+			</el-card>
+		</template>
+
+
 	</div>
 </template>
 
@@ -30,6 +41,7 @@
         props: {
             data: Array,
             nextPage: Function,
+	        loading: Boolean,
 	    },
 	    computed: {
             data2(){

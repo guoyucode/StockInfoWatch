@@ -84,8 +84,8 @@ export function api_cls_request(next, callback) {
 
         console.log("财联网 res-data", rows)
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "content");
-        if(d && callback) {
-            callback(d)
+        callback(d)
+        if(d) {
             vue.data = d
         }
 

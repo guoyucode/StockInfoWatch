@@ -66,8 +66,8 @@ export function api_hdy_request(next, callback) {
         console.log("互动易 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"深交所互动易问答":false))
         if (next && next == "next") vue.page+=1
-        if(d && callback) {
-            callback(d)
+        callback(d)
+        if(d) {
             vue.data = d
         }
     })

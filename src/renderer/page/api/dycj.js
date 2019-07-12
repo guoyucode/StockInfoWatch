@@ -32,6 +32,8 @@ let vue = {
     config: configData.dycj,
 }
 
+let page = 1
+
 
 //请求数据
 export function api_dycj_request(next, callback) {
@@ -51,8 +53,8 @@ export function api_dycj_request(next, callback) {
         }
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false), "content")
+        callback(d)
         if(d){
-            callback(d)
             vue.data = d
         }
         if(next && next == "next") page += 1

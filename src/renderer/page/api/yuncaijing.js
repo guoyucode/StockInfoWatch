@@ -59,7 +59,10 @@ export function api_yuncaijing_requestData(next, callback) {
     if(next && next == "next") data.page = page+1
     yuncaijingRequest(data).then(function (res) {
         self.loading = false
-        if(!res || !res.data || res.data.length === 0) return
+        if(!res || !res.data || res.data.length === 0) {
+            callback()
+            return
+        }
         let rows = res.data;
 
         for(let item of rows){
@@ -68,10 +71,10 @@ export function api_yuncaijing_requestData(next, callback) {
             item.content2 = item.description
         }
 
-        console.log("云财经 res-data", rows)
+        console.log("云财经 res-data", next, rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"云财经":false))
-        if(d && callback) {
-            callback(d)
+        callback(d)
+        if(d) {
             vue.data = d
         }
         if(next && next == "next") page+=1
