@@ -44,6 +44,12 @@ const state = {
     setting: {
         enable: true,
     },
+
+    _set: (k, v) => {
+        console.log("proxy.set1", k, v)
+        if (v == undefined) return
+        localStorage.setItem("config_" + k, JSON.stringify(v))
+    }
 }
 
 for (let k in state) {
@@ -52,8 +58,7 @@ for (let k in state) {
     let v = state[k];
 
     //添加set方法
-    v.set = (k2, v2) => {
-        console.log("proxy.set2", k2, v2)
+    v._set = (k2, v2) => {
         if (v2 == undefined) return
         if (k2 == "hotKey") ipcRenderer.send("setHotKey", v2)
         localStorage.setItem("config_" + k, JSON.stringify(state[k]))
@@ -76,17 +81,11 @@ for (let k in state) {
 
 }
 
-state["set"] = (k, v) => {
-    console.log("proxy.set1", k, v)
-    if (v == undefined) return
-    localStorage.setItem("config_" + k, JSON.stringify(v))
-    //let any = clone(v);
-    //insertData("config_" + k, any)
-}
 
 ipcRenderer.send("setHotKey", state.common.hotKey)
-
-export default getProxyObject(state)
+const configData = getProxyObject(state)
+console.log("configData", configData)
+export default configData
 
 
 //存储对象

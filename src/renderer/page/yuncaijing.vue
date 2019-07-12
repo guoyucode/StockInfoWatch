@@ -28,6 +28,8 @@
     import {yuncaijingRequest} from "./api/yuncaijing";
     import {getDBStore} from "./js/db";
     import {readData} from "./js/project";
+    import configData from "./js/config_data"
+
     let vue = null
     let page = 1
 
@@ -40,7 +42,7 @@
             return {
                 data: [],
                 loading: true,
-                config: {},
+                config: configData.yuncaijing,
             }
         },
         watch: {
@@ -48,20 +50,10 @@
         },
         created(){
             vue = this;
-            vue.config = vue.$configData.yuncaijing
         },
-        mounted() {
-            const self = this;
-            getDBStore(dbStore => {
-                vue.dbStore = dbStore
-                dbStore.select("yuncaijing.setInterval_time", v => {
-                    if(v != undefined) vue.setInterval_time = v
-                })
-                dbStore.select("yuncaijing.enableNotice", v => {
-                    if(v != undefined) vue.enableNotice = v
-                })
-            })
-            self.requestData()
+        beforeMount() {
+            vue.requestData()
+            vue.$eventBus.$on("云财经-refresh", () => vue.requestData("refresh"))
         },
         methods: {
 

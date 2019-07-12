@@ -33,6 +33,8 @@
     import {interactiveRequest} from "./api/hdy";
     import {getDBStore} from "./js/db";
     import {readData} from "./js/project";
+    import configData from "./js/config_data"
+
     let page = 1
     let vue = null
 
@@ -47,7 +49,7 @@
                 data: [],
                 loading: true,
                 dbStore: null,
-                config: {},
+                config: configData.hdy,
             }
         },
         watch: {
@@ -55,20 +57,10 @@
         },
         created(){
             vue = this;
-            vue.config = vue.$configData.hdy
         },
-        mounted() {
-            const self = this;
-            getDBStore(dbStore => {
-                vue.dbStore = dbStore
-                dbStore.select("hdy.setInterval_time", v => {
-                    if(v != undefined) vue.setInterval_time = v
-                })
-                dbStore.select("hdy.enableNotice", v => {
-                    if(v != undefined)  vue.enableNotice = v
-                })
-            })
-            self.requestData()
+        beforeMount() {
+            vue.requestData()
+            vue.$eventBus.$on("深交所互动易问答-refresh", () => vue.requestData("refresh"))
         },
         methods: {
 

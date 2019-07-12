@@ -31,6 +31,7 @@
 
     import {caiLianSheRequest, caiLianSheUpdateRequest} from './api/cls'
     import {dataLenthLimit, DateFormat, delayer, generalHandlerData, mergeData, notification} from "./js/utils";
+    import configData from "./js/config_data"
 
 	let vue = null
 
@@ -43,7 +44,7 @@
             return {
                 data: [],
                 loading: true,
-                config: {},
+                config: configData.cls,
             }
         },
         watch: {
@@ -51,10 +52,10 @@
         },
 	    created(){
           vue = this;
-          vue.config = vue.$configData.cls
 	    },
-        mounted() {
+        beforeMount() {
             vue.requestData()
+	        vue.$eventBus.$on("财联社电报-refresh", () => vue.requestData("refresh"))
         },
         methods: {
 

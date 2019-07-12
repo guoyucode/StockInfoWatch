@@ -24,7 +24,7 @@
 
 			<el-tab-pane :closable="true" v-if="configData.setting.enable" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
 				<span slot="label"><i class="el-icon-setting"></i> 设置 </span>
-				<setting :refs="$refs" ></setting>
+				<setting></setting>
 			</el-tab-pane>
 
 		</el-tabs>
@@ -47,6 +47,7 @@
     import {mapMutations, mapGetters, mapState} from "vuex"
     import {initAlert, readData, refreshAction} from "./js/project";
     import store from "../store"
+    import configData from "./js/config_data"
 
     let vue = null;
 
@@ -55,7 +56,7 @@
         components: {Setting, Yuncaijing, Xuangubao, Dycj, Hdy, Cls},
         data() {
             return {
-                configData: {},
+                configData: configData,
                 settingClose: true,
                 dbStore: null,
                 clientHeight: 450,
@@ -67,7 +68,6 @@
         },
 	    created(){
             vue = this;
-            vue.configData = vue.$configData
 	    },
         mounted() {
             const self = this;
@@ -78,8 +78,12 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-            refreshAction(vue.refreshAction_request)
-            //this.setHotKey(cur)
+            refreshAction(function () {
+                let name = vue.configData.common.tabName;
+
+                //发布刷新事件
+	            vue.$eventBus.$emit(name + "-refresh")
+            })
         },
         methods: {
 
@@ -91,7 +95,6 @@
 
             // 点击tab, 或者点击通知打开tab,那么需要这个tab存在才切换到该tab
             tabClick(tab) {
-                console.log("点击tab", tab)
                 let name = tab.name || tab
 	            if(name == "设置") {
 	                this.configData.common.tabName = name
@@ -123,14 +126,6 @@
 	            alert("全部关闭将不能显示任何数据")
             },
 
-            refreshAction_request(){
-                let name = vue.configData.common.tabName;
-                if(name == "财联社电报") this.$refs.cls.requestData("refresh")
-                else if(name == "深交所互动易问答") this.$refs.hdy.requestData("refresh")
-                else if(name == "第一财经直播区") this.$refs.dycj.requestData("refresh")
-                else if(name == "选股宝") this.$refs.xuangubao.requestData("refresh")
-                else if(name == "云财经") this.$refs.yuncaijing.requestData("refresh")
-            }
         }
     }
 </script>

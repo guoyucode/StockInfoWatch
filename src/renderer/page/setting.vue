@@ -66,22 +66,22 @@
 					<div slot="header" class="clearfix">
 						<span>
 							财联社电报&nbsp;&nbsp;
-							<el-switch v-model="cls.enable" :active-value="true" :inactive-value="false" active-color="#13ce66" inactive-color="#ff4949">
+							<el-switch v-model="cls.enable" :active-value="true" :inactive-value="false" active-color="#13ce66">
 							</el-switch>
 						</span>
 					</div>
-					<diV v-if="cls.enable">
+					<diV >
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="cls.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" :disabled="!cls.enable" v-model="cls.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="cls.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" :disabled="!cls.enable" v-model="cls.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -95,22 +95,22 @@
 					<div slot="header" class="clearfix">
 						<span>
 							互动易问答&nbsp;&nbsp;
-							<el-switch v-model="hdy.enable" :active-value="true" :inactive-value="false" active-color="#13ce66" inactive-color="#ff4949">
+							<el-switch v-model="hdy.enable" :active-value="true" :inactive-value="false" active-color="#13ce66" >
 							</el-switch>
 						</span>
 					</div>
-					<diV v-if="hdy.enable">
+					<diV>
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="hdy.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" :disabled="!hdy.enable"  size="mini" v-model="hdy.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="hdy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" :disabled="!hdy.enable" v-model="hdy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -125,22 +125,22 @@
 									:active-value="true"
 									:inactive-value="false"
 									active-color="#13ce66"
-									inactive-color="#ff4949">
+									>
 							</el-switch>
 						</span>
 					</div>
-					<diV v-if="dycj.enable">
+					<diV >
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="dycj.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" :disabled="!dycj.enable" size="mini" v-model="dycj.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="dycj.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" :disabled="!dycj.enable" v-model="dycj.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -158,22 +158,22 @@
 									:active-value="true"
 									:inactive-value="false"
 									active-color="#13ce66"
-									inactive-color="#ff4949">
+									>
 							</el-switch>
 						</span>
 					</div>
-					<diV v-if="xuangubao.enable">
+					<diV >
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" :disabled="!xuangubao.enable" v-model="xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="xuangubao.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" :disabled="!xuangubao.enable" v-model="xuangubao.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -188,22 +188,22 @@
 									:active-value="true"
 									:inactive-value="false"
 									active-color="#13ce66"
-									inactive-color="#ff4949">
+									>
 							</el-switch>
 						</span>
 					</div>
-					<diV v-if="yuncaijing.enable">
+					<diV>
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model="yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" :disabled="!yuncaijing.enable" v-model="yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
 						<div class="text item">
 							<el-row>
 								<label>通知开关</label>
-								<el-switch style="margin-left: 16%;" v-model="yuncaijing.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+								<el-switch style="margin-left: 16%;" :disabled="!yuncaijing.enable" v-model="yuncaijing.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -217,6 +217,7 @@
 
     const packageInfo = require('../../../package.json');
     import {clone, delayer} from "./js/utils"
+    import configData from "./js/config_data"
 
     let vue = null
 
@@ -224,17 +225,15 @@
         name: "setting",
         data() {
             return {
-                common: {},
-	            cls: {},
-                hdy: {},
-                dycj: {},
-                xuangubao: {},
-                yuncaijing: {},
+                common: configData.common,
+	            cls: configData.cls,
+                hdy: configData.hdy,
+                dycj: configData.dycj,
+                xuangubao: configData.xuangubao,
+                yuncaijing: configData.yuncaijing,
                 version: packageInfo.version,
                 cardWidth: 11,
                 cardOffset: 1,
-                enableTab: {},
-                refsConfig: {},
             }
         },
         computed: {
@@ -244,16 +243,7 @@
         props: {
         },
         created() {
-
             vue = this
-
-            vue.common = vue.$configData.common
-	        vue.cls = vue.$configData.cls
-            vue.hdy = vue.$configData.hdy
-            vue.dycj = vue.$configData.dycj
-            vue.xuangubao = vue.$configData.xuangubao
-            vue.yuncaijing = vue.$configData.yuncaijing
-
         },
         mounted() {
         },
