@@ -95,7 +95,6 @@
 
             // 点击tab, 或者点击通知打开tab,那么需要这个tab存在才切换到该tab
             tabClick(tab) {
-                console.log("点击tab", tab)
                 let name = tab.name || tab
 	            if(name == "设置") {
 	                this.configData.common.tabName = name
