@@ -3,7 +3,7 @@
 		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
 			<!--v-loading.lock="cls.loading" -->
-			<el-tab-pane v-if="configData.cls.enable" v-loading="cls.loading" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<news_view :data="cls.data" :loading="cls.loading" :nextPage="cls_request"></news_view>
 			</el-tab-pane>
 
@@ -85,7 +85,10 @@
 	    },
         watch: {
             "configData.cls.setInterval_time": delayer(cur => { vue.setInterval("财联社定时器", cur, vue.cls_request) }),
+            "configData.hdy.setInterval_time": delayer(cur => { vue.setInterval("深交所互动易问答", cur, vue.hdy_request) }),
             "configData.dycj.setInterval_time": delayer(cur => { vue.setInterval("第一财经", cur, vue.dycj_request) }),
+            "configData.xuangubao.setInterval_time": delayer(cur => { vue.setInterval("选股宝", cur, vue.xuangubao_request) }),
+            "configData.yuncaijing.setInterval_time": delayer(cur => { vue.setInterval("云财经", cur, vue.yuncaijing_request) }),
         },
 	    created(){
             vue = this;
@@ -103,14 +106,21 @@
                 let name = vue.configData.common.tabName;
 
                 //发布刷新事件
-	            vue.$eventBus.$emit(name + "-refresh")
+	            //vue.$eventBus.$emit(name + "-refresh")
+	            if(name == "财联社电报") vue.cls_request("refresh")
+                else if(name == "深交所互动易问答") vue.hdy_request("refresh")
+                else if(name == "第一财经") vue.dycj_request("refresh")
+                else if(name == "选股宝") vue.xuangubao_request("refresh")
+                else if(name == "云财经") vue.yuncaijing_request("refresh")
+
             })
 
-            vue.cls_request()
-	        vue.dycj_request()
-	        vue.hdy_request()
-	        vue.xuangubao_request()
-	        vue.yuncaijing_request()
+	        if(this.configData.cls.enable) vue.cls_request()
+            if(this.configData.dycj.enable) vue.dycj_request()
+            if(this.configData.hdy.enable) vue.hdy_request()
+            if(this.configData.xuangubao.enable) vue.xuangubao_request()
+            if(this.configData.yuncaijing.enable) vue.yuncaijing_request()
+
         },
         methods: {
 
