@@ -1,5 +1,5 @@
 <template>
-	<div style="margin-bottom: 15px;">
+	<div style="margin-bottom: 15px; ">
 		<label style="color: #393939">关键词订阅: </label>
 		<el-tag
 				:key="tag"
