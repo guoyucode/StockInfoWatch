@@ -1,6 +1,6 @@
 import {getDBStore} from "./db";
 import configData from "./config_data";
-import {delayer} from "./utils";
+import keywordData from "./keyword_subscription_data"
 
 let {ipcRenderer: ipc} = require('electron')
 
@@ -79,9 +79,12 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
 
     //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
     if (next == "setInterval" && notificationTitle) {
-        if (newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !")
+
+        if (keywordData.enable && newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !")
         else {
             for (let row of newRows) {
+
+                if(!isExistingKeyword(row)) continue;
 
                 //如果有一个a标签, 那么先去掉它
                 let content = row.content + ""
@@ -102,6 +105,19 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     dataLenthLimit(data)
 
     return false
+}
+
+const isExistingKeyword = (row) => {
+    if (!keywordData.enable) return true;
+
+    let keywordList = keywordData.data;
+    for (let keyword of keywordList) {
+        if (row.content.indexOf(keyword) != -1 || (row.content2 || "").indexOf(keyword) != -1) {
+            return true
+        }
+    }
+    return false
+
 }
 
 const notification = function(title, body) {

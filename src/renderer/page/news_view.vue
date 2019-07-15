@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<KeywordSubscription></KeywordSubscription>
+		<KeywordSubscription v-if="keywordData.enable"></KeywordSubscription>
 		<el-card class="box-card" v-for="item in data2" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-html="'发布时间: ' + item.time"></span>
@@ -39,7 +39,10 @@
 </template>
 
 <script>
+
     import KeywordSubscription from "./keyword_subscription";
+    import keywordData from "./js/keyword_subscription_data"
+
     export default {
         name: "news_view",
         components: {KeywordSubscription},
@@ -48,11 +51,29 @@
             nextPage: Function,
 	        loading: Boolean,
 	    },
+	    data(){
+          return {
+              keywordData: keywordData,
+          }
+	    },
 	    mounted(){
             this.nextPage()
 	    },
 	    computed: {
             data2(){
+
+                if(!this.keywordData.enable) return this.data;
+                let keywordList = this.keywordData.data;
+                for(let keyword of keywordList){
+                    for(let item of this.data){
+                        if(item["handler_keyword_" + keyword]) continue
+                        let clorA = `<a style='color: red'> [ ${keyword} ] </a>`
+                        item.content = item.content.replace(new RegExp(keyword,'g'), clorA)
+	                    if(item.content2) item.content2 = item.content2.replace(new RegExp(keyword,'g'), clorA)
+                        item["handler_keyword_" + keyword] = true
+                    }
+                }
+
                 return this.data
             }
 	    }
