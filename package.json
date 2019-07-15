@@ -1,6 +1,6 @@
 {
   "name": "StockInfoWatch",
-  "version": "0.5.2",
+  "version": "0.6.1",
   "author": "guoyu",
   "description": "这个程序用于股票行情信息的监听及查看,消息是以通知方式送达",
   "license": null,
@@ -61,7 +61,7 @@
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
-    "ajv": "^6.5.0",
+    "ajv": "^6.10.2",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -90,8 +90,8 @@
     "vue-loader": "^15.2.4",
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
-    "webpack": "^4.35.2",
-    "webpack-cli": "^3.3.5",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.7.2",
     "webpack-hot-middleware": "^2.22.2",
     "webpack-merge": "^4.1.3"

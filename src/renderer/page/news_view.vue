@@ -7,7 +7,8 @@
 				<!--<span style="float: right; padding: 3px 0" v-text="'阅读量: ' + item.reading_num"></span>-->
 
 				<!--深交所问答易-->
-				<span v-if="item.companyShortName" style="padding-left: 15px;">公司: {{item.companyShortName}} [{{item.stockCode}}]</span>
+				<span v-if="item.companyShortName" style="padding-left: 15px;"
+				      v-html="'公司: ' + item.companyShortName + ' [' + item.stockCode + ']'"></span>
 				<span v-if="item.authorName" style="padding-left: 15px;">发布人: {{item.authorName}}</span>
 
 			</div>
@@ -67,9 +68,10 @@
                 for(let keyword of keywordList){
                     for(let item of this.data){
                         if(item["handler_keyword_" + keyword]) continue
-                        let clorA = `<a style='color: red'> [ ${keyword} ] </a>`
+                        let clorA = `<a style='color: red'>${keyword}</a>`
                         item.content = item.content.replace(new RegExp(keyword,'g'), clorA)
 	                    if(item.content2) item.content2 = item.content2.replace(new RegExp(keyword,'g'), clorA)
+	                    if(item.companyShortName) item.companyShortName = item.companyShortName.replace(new RegExp(keyword,'g'), clorA)
                         item["handler_keyword_" + keyword] = true
                     }
                 }

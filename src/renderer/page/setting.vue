@@ -12,10 +12,11 @@
 						</template>
 
 						<div style="color: green">当前版本更新:</div>
-						<div>功能优化: 使用es6语法的proxy全局变量做状态管理,去掉vuex</div>
+						<div>新增功能: 订阅功能,只有新的新闻中有订阅的关键词才推送消息</div>
 
 						<br/>
 						<div style="color: blue">近期版本更新:</div>
+						<div>功能优化: 使用es6语法的proxy全局变量做状态管理,去掉vuex</div>
 						<div>修复bug: 互动易不能保存通知开关的问题</div>
 						<div>修复bug: 财联社电报通知开关保存后依然无效的问题</div>
 						<div>新增功能: 完成快捷键设置, 数据条数等各种开关设置功能</div>

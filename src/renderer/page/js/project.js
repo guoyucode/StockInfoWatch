@@ -115,6 +115,9 @@ const isExistingKeyword = (row) => {
         if (row.content.indexOf(keyword) != -1 || (row.content2 || "").indexOf(keyword) != -1) {
             return true
         }
+        if(row.companyShortName && row.companyShortName.indexOf(keyword) != -1){
+            return true
+        }
     }
     return false
 
