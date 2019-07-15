@@ -82,7 +82,18 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
         if (newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !")
         else {
             for (let row of newRows) {
-                notification(notificationTitle, row.content)
+
+                //如果有一个a标签, 那么先去掉它
+                let content = row.content + ""
+                let aIndex = content.indexOf("</a>")
+                if(aIndex != -1){
+                    content = content.substring(aIndex+4)
+                }
+
+                //如果有公司名, 先加上公司名
+                if(row.companyShortName) content = row.companyShortName + ": " + content
+
+                notification(notificationTitle, content)
             }
         }
     }

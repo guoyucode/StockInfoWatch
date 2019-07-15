@@ -5,6 +5,11 @@
 			<div slot="header" class="clearfix">
 				<span v-html="'发布时间: ' + item.time"></span>
 				<!--<span style="float: right; padding: 3px 0" v-text="'阅读量: ' + item.reading_num"></span>-->
+
+				<!--深交所问答易-->
+				<span v-if="item.companyShortName" style="padding-left: 15px;">公司: {{item.companyShortName}} [{{item.stockCode}}]</span>
+				<span v-if="item.authorName" style="padding-left: 15px;">发布人: {{item.authorName}}</span>
+
 			</div>
 			<div class="text item" v-html="item.content">
 				列表内容
