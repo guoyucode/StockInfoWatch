@@ -167,7 +167,7 @@ export function mySetInterval(title = "定时器标题", setInterval_time = 0, r
     if (!setInterval_time) return
     mySetInterval_List[title] = setInterval(function () {
         reqestFun("setInterval", (d)=>{
-            console.log(title, setInterval_time)
+            //console.log(title, setInterval_time)
         })
     }, setInterval_time * 1000)
 }

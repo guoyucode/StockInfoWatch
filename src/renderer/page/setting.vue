@@ -55,7 +55,7 @@
 						<div class="text item">
 							<el-row>
 								<label>数据显示条数</label>
-								<el-input style="float: right; width: 66%;" size="mini" v-model.lazy="common.dataLimit"  placeholder="请输入一个数字"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" v-model.number.lazy="common.dataLimit"  placeholder="请输入一个数字"></el-input>
 							</el-row>
 						</div>
 					</diV>
@@ -74,7 +74,7 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" :disabled="!cls.enable" v-model.lazy="cls.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" :disabled="!cls.enable" v-model.number.lazy="cls.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
@@ -103,7 +103,7 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" :disabled="!hdy.enable"  size="mini" v-model.lazy="hdy.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" :disabled="!hdy.enable"  size="mini" v-model.number.lazy="hdy.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
@@ -133,7 +133,7 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" :disabled="!dycj.enable" size="mini" v-model.lazy="dycj.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" :disabled="!dycj.enable" size="mini" v-model.number.lazy="dycj.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
@@ -166,7 +166,7 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" :disabled="!xuangubao.enable" v-model.lazy="xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" :disabled="!xuangubao.enable" v-model.number.lazy="xuangubao.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>
@@ -196,7 +196,7 @@
 						<div class="text item">
 							<el-row>
 								<label>定时刷新频率(秒)</label>
-								<el-input style="float: right; width: 66%;" size="mini" :disabled="!yuncaijing.enable" v-model.lazy="yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
+								<el-input style="float: right; width: 66%;" size="mini" :disabled="!yuncaijing.enable" v-model.number.lazy="yuncaijing.setInterval_time" placeholder="请输入内容"></el-input>
 							</el-row>
 						</div>
 						<br/>

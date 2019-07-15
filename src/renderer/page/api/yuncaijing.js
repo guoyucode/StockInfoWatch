@@ -85,7 +85,7 @@ export function api_yuncaijing_request(next, callback) {
             item.content2 = item.description
         }
 
-        console.log("云财经 res-data", next, rows)
+        console.log("云财经 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"云财经":false))
         callback(d)
         if(d) {
