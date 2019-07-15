@@ -1,8 +1,8 @@
 //财联网
 import qs from "qs"
-import {clone, DateFormat} from "../js/utils";
+import {clone, DateFormat, delayer} from "../js/utils";
 import {req} from "./common";
-import {generalHandlerData2} from "../js/project";
+import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../js/config_data";
 
 const url = "https://www.cls.cn/nodeapi/telegraphs?"
@@ -58,6 +58,18 @@ let vue = {
 //请求财联社电报数据
 export function api_cls_request(next, callback) {
     vue.loading = true
+
+    //定时器, 只执行一次
+    if(!vue.onece){
+        let run = delayer(time => { mySetInterval("财联社电报-定时器", time, api_cls_request) })
+        configData._watch.push({"cls.setInterval_time": run});
+        configData._watch.push({"cls.enable": (enable) => {
+            if(enable) run(configData.cls.setInterval_time);
+            else run(0);
+        }})
+        vue.onece = true;
+        run(configData.cls.setInterval_time);
+    }
 
     if(next && next == "refresh" && vue.data && vue.data.length != 0){
         requestUpdateData(next)

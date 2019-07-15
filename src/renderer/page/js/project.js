@@ -1,5 +1,6 @@
 import {getDBStore} from "./db";
 import configData from "./config_data";
+import {delayer} from "./utils";
 
 let {ipcRenderer: ipc} = require('electron')
 
@@ -92,6 +93,19 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     return false
 }
 
+const notification = function(title, body) {
+    if (body.length > 50) body = body.substring(0, 50)
+    let myNotification = new Notification(title, {
+        body: body
+    })
+    myNotification.onclick = () => {
+        ipc.send("showWindows")
+
+        // 切换tab
+        configData.common.tabName = title
+    }
+}
+
 
 /**
  * 合并数据, 新数据添加到target, 旧数据移除
@@ -128,4 +142,21 @@ const dataLenthLimit =function (arr, limit = 500) {
             if (i <= limit) break
         }
     }
+}
+
+const mySetInterval_List ={}
+
+//定时器
+export function mySetInterval(title = "定时器标题", setInterval_time = 0, reqestFun) {
+    let mySetIntervalListElement = mySetInterval_List[title];
+    if (mySetIntervalListElement) {
+        clearInterval(mySetIntervalListElement)
+        mySetInterval_List[title] = null
+    }
+    if (!setInterval_time) return
+    mySetInterval_List[title] = setInterval(function () {
+        reqestFun("setInterval", (d)=>{
+            console.log(title, setInterval_time)
+        })
+    }, setInterval_time * 1000)
 }

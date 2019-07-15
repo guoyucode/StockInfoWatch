@@ -1,9 +1,9 @@
 //互动易
 import {req} from "./common";
 import qs from "qs"
-import {generalHandlerData2} from "../js/project";
+import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../js/config_data";
-import {DateFormat} from "../js/utils";
+import {DateFormat, delayer} from "../js/utils";
 
 const url = "http://irm.cninfo.com.cn/ircs/index/search";
 
@@ -44,6 +44,19 @@ function formatTime(time) {
 
 //互动易请求
 export function api_hdy_request(next, callback) {
+
+    //定时器, 只执行一次
+    if(!vue.onece){
+        let run = delayer(time => { mySetInterval("互动易-定时器", time, api_hdy_request) })
+        configData._watch.push({"hdy.setInterval_time": run});
+        configData._watch.push({"hdy.enable": (enable) => {
+                if(enable) run(configData.hdy.setInterval_time);
+                else run(0);
+            }})
+        vue.onece = true;
+        run(configData.hdy.setInterval_time);
+    }
+
     const self = vue
     if (!next || next != "setInterval") self.loading = true
     var data = {}

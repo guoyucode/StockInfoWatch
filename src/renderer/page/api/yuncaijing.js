@@ -1,9 +1,9 @@
 //云财经
 
 import {req} from "./common";
-import {clone, DateFormat} from "../js/utils";
+import {clone, DateFormat, delayer} from "../js/utils";
 import qs from "qs"
-import {generalHandlerData2} from "../js/project";
+import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../js/config_data";
 
 const url = "https://www.yuncaijing.com/news/get_realtime_news/yapi/ajax.html"
@@ -52,7 +52,21 @@ let vue = {
 let page = 1
 
 //请求数据
-export function api_yuncaijing_requestData(next, callback) {
+export function api_yuncaijing_request(next, callback) {
+
+    //定时器, 只执行一次
+    if(!vue.onece){
+        let run = delayer(time => { mySetInterval("云财经-定时器", time, api_yuncaijing_request) })
+        configData._watch.push({"yuncaijing.setInterval_time": run});
+        configData._watch.push({"yuncaijing.enable": (enable) => {
+                if(enable) run(configData.yuncaijing.setInterval_time);
+                else run(0);
+            }})
+        vue.onece = true;
+        run(configData.yuncaijing.setInterval_time);
+    }
+
+
     const self = vue
     if(!next || next != "setInterval") self.loading = true
     let data = {}

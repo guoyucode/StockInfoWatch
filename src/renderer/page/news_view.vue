@@ -43,6 +43,9 @@
             nextPage: Function,
 	        loading: Boolean,
 	    },
+	    mounted(){
+            this.nextPage()
+	    },
 	    computed: {
             data2(){
                 return this.data

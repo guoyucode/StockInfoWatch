@@ -1,10 +1,11 @@
 //第一财经
 
 import {req} from "./common";
-import {clone, DateFormat} from "../js/utils";
+import {clone, DateFormat, delayer} from "../js/utils";
 import qs from "qs"
 import configData from "../js/config_data";
-import {generalHandlerData2} from "../js/project";
+import {generalHandlerData2, mySetInterval} from "../js/project";
+import {api_cls_request} from "./cls";
 
 const url = "https://www.yicai.com/api/ajax/getbrieflist?"
 const reqData = {
@@ -37,6 +38,19 @@ let page = 1
 
 //请求数据
 export function api_dycj_request(next, callback) {
+
+    //定时器, 只执行一次
+    if(!vue.onece){
+        let run = delayer(time => { mySetInterval("第一财经-定时器", time, api_dycj_request) })
+        configData._watch.push({"dycj.setInterval_time": run});
+        configData._watch.push({"dycj.enable": (enable) => {
+                if(enable) run(configData.dycj.setInterval_time);
+                else run(0);
+            }})
+        vue.onece = true;
+        run(configData.dycj.setInterval_time);
+    }
+
     const self = vue
     if(!next || next != "setInterval") self.loading = true
     let data = {}

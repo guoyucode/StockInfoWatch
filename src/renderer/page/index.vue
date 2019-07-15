@@ -46,7 +46,7 @@
     import {delayer} from "./js/utils"
     import {api_hdy_request} from "./api/hdy";
     import {api_xuangubao_request} from "./api/xuangubao";
-    import {api_yuncaijing_requestData} from "./api/yuncaijing";
+    import {api_yuncaijing_request} from "./api/yuncaijing";
 
     let vue = null;
 
@@ -83,13 +83,7 @@
         },
 	    computed: {
 	    },
-        watch: {
-            "configData.cls.setInterval_time": delayer(cur => { vue.setInterval("财联社定时器", cur, vue.cls_request) }),
-            "configData.hdy.setInterval_time": delayer(cur => { vue.setInterval("深交所互动易问答", cur, vue.hdy_request) }),
-            "configData.dycj.setInterval_time": delayer(cur => { vue.setInterval("第一财经", cur, vue.dycj_request) }),
-            "configData.xuangubao.setInterval_time": delayer(cur => { vue.setInterval("选股宝", cur, vue.xuangubao_request) }),
-            "configData.yuncaijing.setInterval_time": delayer(cur => { vue.setInterval("云财经", cur, vue.yuncaijing_request) }),
-        },
+        watch: {},
 	    created(){
             vue = this;
 	    },
@@ -114,12 +108,6 @@
                 else if(name == "云财经") vue.yuncaijing_request("refresh")
 
             })
-
-	        if(this.configData.cls.enable) vue.cls_request()
-            if(this.configData.dycj.enable) vue.dycj_request()
-            if(this.configData.hdy.enable) vue.hdy_request()
-            if(this.configData.xuangubao.enable) vue.xuangubao_request()
-            if(this.configData.yuncaijing.enable) vue.yuncaijing_request()
 
         },
         methods: {
@@ -158,7 +146,7 @@
 
             yuncaijing_request(param){
                 vue.yuncaijing.loading = true
-                api_yuncaijing_requestData(param, v => {
+                api_yuncaijing_request(param, v => {
                     if(v) vue.yuncaijing.data = v
                     vue.yuncaijing.loading = false
                 })
