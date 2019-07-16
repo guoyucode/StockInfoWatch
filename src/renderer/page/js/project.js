@@ -75,8 +75,6 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     } else {
         //合并新数据
         mergeData(newRows, data)
-
-        console.log("合并新数据", newRows, data)
     }
 
     //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)

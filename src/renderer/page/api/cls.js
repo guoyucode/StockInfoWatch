@@ -57,7 +57,6 @@ let vue = {
 
 //请求财联社电报数据
 export function api_cls_request(next, callback) {
-    console.log("api_cls_request", next, callback)
 
     vue.loading = true
 
@@ -74,7 +73,6 @@ export function api_cls_request(next, callback) {
     }
 
     if(next && next == "refresh" && vue.data && vue.data.length > 0){
-        console.log("requestUpdateData", vue.data)
         requestUpdateData(next, callback)
         return
     }
@@ -107,8 +105,8 @@ export function api_cls_request(next, callback) {
 function requestUpdateData(next, callback) {
 
     caiLianSheUpdateRequest({last_time: vue.data[0].ctime}).then(function (res) {
-        if(!res || res.error != 0) return;
         console.log("cls-requestUpdateData", res.data)
+        if(!res || res.error != 0) return;
         res = res.data;
         if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
         let rows = res.roll_data

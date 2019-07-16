@@ -62,7 +62,7 @@ export function api_dycj_request(next, callback) {
         let rows = res;
 
         for(let item of rows){
-            item.time = item.datekey + " " + item.hm
+            item.time = item.datekey.replace(new RegExp("\\.",'g'), "-") + " " + item.hm
             item.content = item.newcontent
         }
 

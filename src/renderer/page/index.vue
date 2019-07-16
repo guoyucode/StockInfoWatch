@@ -117,7 +117,6 @@
                 api_cls_request(param, v => {
                     if(v) vue.cls.data = v
 	                vue.cls.loading = false
-	                console.log("cls_request", vue.cls.loading)
                 })
             },
 
