@@ -1,6 +1,34 @@
 <template>
-	<div style="margin-bottom: 15px; ">
-		<label style="color: #393939">关键词订阅: </label>
+
+	<el-card :body-style="{ padding: '0px' }" class="box-card" key="99999998" style="cursor:pointer; margin-bottom: 5px" >
+		<div slot="header" class="clearfix">
+			<span :style="{color: lableColor}" v-text="title"></span>&nbsp;&nbsp;
+			<el-tag
+					:key="tag"
+					v-for="tag in keywords"
+					closable
+					:disable-transitions="false"
+					@close="handleClose(tag)">
+				{{tag}}
+			</el-tag>
+			<span>
+				<el-input
+					class="input-new-tag"
+					v-if="inputVisible"
+					v-model="inputValue"
+					ref="saveTagInput"
+					size="small"
+					@keyup.enter.native="handleInputConfirm"
+					@blur="handleInputConfirm"
+			></el-input>
+				<el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添 加 </el-button>
+			</span>
+		</div>
+
+	</el-card>
+
+	<!--<div style="margin-bottom: 15px; ">
+		<label :style="{color: lableColor}" v-text="title"></label>
 		<el-tag
 				:key="tag"
 				v-for="tag in keywords"
@@ -20,18 +48,20 @@
 		>
 		</el-input>
 		<el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添 加 </el-button>
-	</div>
+	</div>-->
+
 </template>
 
 <script>
-
-	import keywordData from "./js/keyword_subscription_data"
-
     export default {
         name: "keyword-subscription",
+	    props:{
+            lableColor: String,
+            title: String,
+            keywords: Array,
+	    },
         data() {
             return {
-                keywords: keywordData.data,
                 inputVisible: false,
                 inputValue: ''
             };
@@ -75,5 +105,8 @@
 		width: 90px;
 		margin-left: 10px;
 		vertical-align: bottom;
+	}
+	.el-card__body {
+		padding: 0px !important;
 	}
 </style>

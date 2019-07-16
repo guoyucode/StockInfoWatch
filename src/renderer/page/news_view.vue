@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<KeywordSubscription v-if="keywordData.enable"></KeywordSubscription>
+
+		<KeywordSubscription title="关键词订阅: " lable-color="red" :keywords="keywordData.data" v-if="keywordData.enable"></KeywordSubscription>
+		<KeywordSubscription title="数据过滤: " lable-color="darkmagenta" :keywords="filterData.data" v-if="filterData.enable"></KeywordSubscription>
+
 		<el-card class="box-card" v-for="item in data2" :key="item.id">
 			<div slot="header" class="clearfix">
 				<span v-html="'发布时间: ' + item.time"></span>
@@ -43,6 +46,8 @@
 
     import KeywordSubscription from "./keyword_subscription";
     import keywordData from "./js/keyword_subscription_data"
+    import filterData from "./js/filter_data"
+    import {isExistingFilterData, isExistingKeyword} from "./js/project"
 
     export default {
         name: "news_view",
@@ -55,6 +60,7 @@
 	    data(){
           return {
               keywordData: keywordData,
+              filterData: filterData,
           }
 	    },
 	    mounted(){
@@ -63,20 +69,17 @@
 	    computed: {
             data2(){
 
-                if(!this.keywordData.enable) return this.data;
-                let keywordList = this.keywordData.data;
-                for(let keyword of keywordList){
-                    for(let item of this.data){
-                        if(item["handler_keyword_" + keyword]) continue
-                        let clorA = `<a style='color: red'>${keyword}</a>`
-                        item.content = item.content.replace(new RegExp(keyword,'g'), clorA)
-	                    if(item.content2) item.content2 = item.content2.replace(new RegExp(keyword,'g'), clorA)
-	                    if(item.companyShortName) item.companyShortName = item.companyShortName.replace(new RegExp(keyword,'g'), clorA)
-                        item["handler_keyword_" + keyword] = true
-                    }
-                }
+                return this.data.filter(item => {
 
-                return this.data
+                    //显示关键字
+                    isExistingKeyword(item, true)
+
+                    //过滤数据
+                    let isAt2 = isExistingFilterData(item, true);
+                    if(!isAt2) return null;
+
+                    return item
+                })
             }
 	    }
     }

@@ -67,8 +67,15 @@
 						<br/>
 						<div class="text item">
 							<el-row>
-								<label>订阅开关</label>
+								<label>订阅</label>
 								<el-switch class="setting-switch" v-model="keywordData.enable" :active-value="true" :inactive-value="false"></el-switch>
+							</el-row>
+						</div>
+						<br/>
+						<div class="text item">
+							<el-row>
+								<label>数据过滤</label>
+								<el-switch class="setting-switch" v-model="filterData.enable" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -246,6 +253,7 @@
     const packageInfo = require('../../../package.json');
     import configData from "./js/config_data"
     import keywordData from "./js/keyword_subscription_data"
+    import filterData from "./js/filter_data"
 
     let vue = null
 
@@ -253,6 +261,7 @@
         name: "setting",
         data() {
             return {
+                filterData: filterData,
                 keywordData: keywordData,
                 common: configData.common,
 	            cls: configData.cls,

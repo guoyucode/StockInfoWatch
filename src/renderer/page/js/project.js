@@ -1,6 +1,7 @@
 import {getDBStore} from "./db";
 import configData from "./config_data";
 import keywordData from "./keyword_subscription_data"
+import filterData from "./filter_data"
 
 let {ipcRenderer: ipc} = require('electron')
 
@@ -85,6 +86,7 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
             for (let row of newRows) {
 
                 if(!isExistingKeyword(row)) continue;
+                if(!isExistingFilterData(row)) continue;
 
                 //如果有一个a标签, 那么先去掉它
                 let content = row.content + ""
@@ -107,20 +109,55 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     return data
 }
 
-const isExistingKeyword = (row) => {
+//是否存在关键字
+export const isExistingKeyword = (row, isReplace) => {
     if (!keywordData.enable) return true;
 
+    let isAt = false;
     let keywordList = keywordData.data;
     for (let keyword of keywordList) {
+        let clorA = `<a style='color: red'>${keyword}</a>`
+
         if (row.content.indexOf(keyword) != -1 || (row.content2 || "").indexOf(keyword) != -1) {
-            return true
+            if(isReplace) row.content = row.content.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true
         }
+
+        if (row.content2 && row.content2.indexOf(keyword) != -1) {
+            if(isReplace) row.content2 = row.content2.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true
+        }
+
         if(row.companyShortName && row.companyShortName.indexOf(keyword) != -1){
-            return true
+            if(isReplace) row.companyShortName = row.companyShortName.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true
         }
     }
-    return false
+    return isAt
+}
 
+//是否存在过滤词
+export const isExistingFilterData= (item, isReplace) => {
+    if(!filterData.enable) return true;
+
+    let isAt = false;
+    let list = filterData.data;
+    for (let keyword of list) {
+        let clorA = `<a style='color: darkmagenta'>${keyword}</a>`
+        if(item.content.indexOf(keyword) != -1) {
+            if(isReplace) item.content = item.content.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true;
+        };
+        if (item.content2 && item.content2.indexOf(keyword) != -1) {
+            if(isReplace) item.content2 = item.content2.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true;
+        }
+        if (item.companyShortName && item.companyShortName.indexOf(keyword) != -1) {
+            if(isReplace) item.companyShortName = item.companyShortName.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true;
+        }
+    }
+    return isAt
 }
 
 const notification = function(title, body) {
