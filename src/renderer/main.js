@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import vView from 'vue-view-lazy'
 //import store from './store'
 //import configData from "./page/js/config_data"
+
+Vue.use(vView)
 
 //饿了么UI
 import ElementUI from 'element-ui'
