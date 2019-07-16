@@ -56,7 +56,7 @@ export function api_yuncaijing_request(next, callback) {
 
     //定时器, 只执行一次
     if(!vue.onece){
-        let run = delayer(time => { mySetInterval("云财经-定时器", time, api_yuncaijing_request) })
+        let run = delayer(time => { mySetInterval("云财经-定时器", time, ()=>api_yuncaijing_request("setInterval", callback)) })
         configData._watch.push({"yuncaijing.setInterval_time": run});
         configData._watch.push({"yuncaijing.enable": (enable) => {
                 if(enable) run(configData.yuncaijing.setInterval_time);
@@ -92,7 +92,7 @@ export function api_yuncaijing_request(next, callback) {
             vue.data = d
         }
         if(next && next == "next") page+=1
-    })
+    }).finally(() => callback())
 
 }
 

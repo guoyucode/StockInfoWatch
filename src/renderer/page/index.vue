@@ -103,7 +103,7 @@
 	            //vue.$eventBus.$emit(name + "-refresh")
 	            if(name == "财联社电报") vue.cls_request("refresh")
                 else if(name == "深交所互动易问答") vue.hdy_request("refresh")
-                else if(name == "第一财经") vue.dycj_request("refresh")
+                else if(name == "第一财经直播区") vue.dycj_request("refresh")
                 else if(name == "选股宝") vue.xuangubao_request("refresh")
                 else if(name == "云财经") vue.yuncaijing_request("refresh")
 
@@ -117,6 +117,7 @@
                 api_cls_request(param, v => {
                     if(v) vue.cls.data = v
 	                vue.cls.loading = false
+	                console.log("cls_request", vue.cls.loading)
                 })
             },
 

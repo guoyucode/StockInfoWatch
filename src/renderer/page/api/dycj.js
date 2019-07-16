@@ -41,7 +41,7 @@ export function api_dycj_request(next, callback) {
 
     //定时器, 只执行一次
     if(!vue.onece){
-        let run = delayer(time => { mySetInterval("第一财经-定时器", time, api_dycj_request) })
+        let run = delayer(time => { mySetInterval("第一财经-定时器", time, ()=>api_dycj_request("setInterval", callback)) })
         configData._watch.push({"dycj.setInterval_time": run});
         configData._watch.push({"dycj.enable": (enable) => {
                 if(enable) run(configData.dycj.setInterval_time);
@@ -66,13 +66,11 @@ export function api_dycj_request(next, callback) {
             item.content = item.newcontent
         }
 
-        let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false), "content")
+        let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
         callback(d)
-        if(d){
-            vue.data = d
-        }
+        if(d) vue.data = d
         if(next && next == "next") page += 1
-    })
+    }).finally(() => callback())
 }
 
 

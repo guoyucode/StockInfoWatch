@@ -1,18 +1,19 @@
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 //import store from '../renderer/store/index'
 
+
+let isDev = process.env.NODE_ENV === 'development'
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
-if (process.env.NODE_ENV !== 'development') {
+if (!isDev) {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+const winURL = isDev ? `http://localhost:9080` : `file://${__dirname}/index.html`
 
 function createWindow () {
   /**
@@ -20,7 +21,7 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     webPreferences: {
-      devTools: true, //Whether to enable DevTools.
+      devTools: isDev, //Whether to enable DevTools.
       nodeIntegration: true,//是否完整的支持 node. 默认值为true.
       webSecurity: false,
     },
@@ -41,7 +42,7 @@ function createWindow () {
   })
 
   //非开发环境隐藏工具栏
-  if (process.env.NODE_ENV !== 'development'){
+  if (!isDev){
     mainWindow.setMenu(null)
   }
 }

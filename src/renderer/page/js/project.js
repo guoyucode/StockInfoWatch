@@ -75,6 +75,8 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     } else {
         //合并新数据
         mergeData(newRows, data)
+
+        console.log("合并新数据", newRows, data)
     }
 
     //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
@@ -104,7 +106,7 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     //数据长度限制
     dataLenthLimit(data)
 
-    return false
+    return data
 }
 
 const isExistingKeyword = (row) => {
@@ -141,7 +143,6 @@ const notification = function(title, body) {
  * 合并数据, 新数据添加到target, 旧数据移除
  */
 const mergeData = function (src, target) {
-    if (!target) target = []
     if (!src || src.length === 0) return
 
     for (let i = src.length - 1; i >= 0; i--) {
@@ -185,8 +186,6 @@ export function mySetInterval(title = "定时器标题", setInterval_time = 0, r
     }
     if (!setInterval_time) return
     mySetInterval_List[title] = setInterval(function () {
-        reqestFun("setInterval", (d)=>{
-            //console.log(title, setInterval_time)
-        })
+        reqestFun()
     }, setInterval_time * 1000)
 }

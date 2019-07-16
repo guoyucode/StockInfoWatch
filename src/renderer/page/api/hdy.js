@@ -47,7 +47,7 @@ export function api_hdy_request(next, callback) {
 
     //定时器, 只执行一次
     if(!vue.onece){
-        let run = delayer(time => { mySetInterval("互动易-定时器", time, api_hdy_request) })
+        let run = delayer(time => { mySetInterval("互动易-定时器", time, ()=>api_hdy_request("setInterval", callback)) })
         configData._watch.push({"hdy.setInterval_time": run});
         configData._watch.push({"hdy.enable": (enable) => {
                 if(enable) run(configData.hdy.setInterval_time);
@@ -63,7 +63,10 @@ export function api_hdy_request(next, callback) {
     if (next && next == "next") data.page = vue.page+1
     interactiveRequest(data).then(function (res) {
         self.loading = false
-        if(!res || !res.results || res.results.length === 0) return
+        if(!res || !res.results || res.results.length === 0) {
+            callback()
+            return
+        }
         let rows = res.results;
 
         for(let item of rows){
@@ -83,6 +86,6 @@ export function api_hdy_request(next, callback) {
         if(d) {
             vue.data = d
         }
-    })
+    }).finally(() => callback())
 }
 

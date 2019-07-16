@@ -5,7 +5,7 @@ import axios from "axios"
  **/
 export const req = axios.create({
     //baseURL: process.env.BASE_URL,  // api的base_url
-    timeout: 50 * 1000  // 请求超时时间
+    timeout: 10 * 1000  // 请求超时时间
 });
 
 /**
@@ -26,14 +26,15 @@ req.interceptors.request.use(config => {
 req.interceptors.response.use(
     response => {
         //这里根据后端提供的数据进行对应的处理
-        if (response.status === 200) {
+        if (response.status && response.status === 200) {
             return response.data;
         } else {
             console.error(response);
+            return response
         }
     },
     error => {  //响应错误处理
-        console.log('error: ', error)
-        return error
+        console.error('error: ', error)
+        return Promise.reject(error)
     }
 );

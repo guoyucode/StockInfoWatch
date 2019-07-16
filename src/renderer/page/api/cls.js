@@ -57,11 +57,13 @@ let vue = {
 
 //请求财联社电报数据
 export function api_cls_request(next, callback) {
+    console.log("api_cls_request", next, callback)
+
     vue.loading = true
 
     //定时器, 只执行一次
     if(!vue.onece){
-        let run = delayer(time => { mySetInterval("财联社电报-定时器", time, api_cls_request) })
+        let run = delayer(time => { mySetInterval("财联社电报-定时器", time, ()=>api_cls_request("setInterval", callback)) })
         configData._watch.push({"cls.setInterval_time": run});
         configData._watch.push({"cls.enable": (enable) => {
             if(enable) run(configData.cls.setInterval_time);
@@ -71,8 +73,9 @@ export function api_cls_request(next, callback) {
         run(configData.cls.setInterval_time);
     }
 
-    if(next && next == "refresh" && vue.data && vue.data.length != 0){
-        requestUpdateData(next)
+    if(next && next == "refresh" && vue.data && vue.data.length > 0){
+        console.log("requestUpdateData", vue.data)
+        requestUpdateData(next, callback)
         return
     }
 
@@ -84,11 +87,10 @@ export function api_cls_request(next, callback) {
 
     caiLianSheRequest(data).then(function (res) {
         vue.loading = false
-        if(!res || res.error != 0) return;
-        res = res.data;
-        if(!res || !res.roll_data || res.roll_data.length === 0) return
-        let rows = res.roll_data;
+        if(!res || res.error == undefined || res.error != 0 || !res.data) return;
+        if(!res || !res.data.roll_data || res.data.roll_data.length === 0) return;
 
+        let rows = res.data.roll_data;
         for(let item of rows){
             item.time = formatTime(item.ctime * 1000)
             item.content = item.brief
@@ -97,15 +99,12 @@ export function api_cls_request(next, callback) {
         console.log("财联网 res-data", rows)
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "content");
         callback(d)
-        if(d) {
-            vue.data = d
-        }
-
-    })
+        if(d) vue.data = d
+    }).finally(() => callback())
 }
 
 //定时请求
-function requestUpdateData(next) {
+function requestUpdateData(next, callback) {
 
     caiLianSheUpdateRequest({last_time: vue.data[0].ctime}).then(function (res) {
         if(!res || res.error != 0) return;
@@ -117,8 +116,9 @@ function requestUpdateData(next) {
             item.time = formatTime(item.ctime * 1000)
             item.content = item.brief
         }
-        generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "title")
-    })
+        let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false));
+        callback(d)
+    }).finally(() => callback())
 }
 
 //格式化时间方法

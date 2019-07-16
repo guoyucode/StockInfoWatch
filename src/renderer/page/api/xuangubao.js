@@ -40,7 +40,7 @@ export function api_xuangubao_request(next, callback) {
 
     //定时器, 只执行一次
     if(!vue.onece){
-        let run = delayer(time => { mySetInterval("选股宝-定时器", time, api_xuangubao_request) })
+        let run = delayer(time => { mySetInterval("选股宝-定时器", time, ()=>api_xuangubao_request("setInterval", callback)) })
         configData._watch.push({"xuangubao.setInterval_time": run});
         configData._watch.push({"xuangubao.enable": (enable) => {
                 if(enable) run(configData.xuangubao.setInterval_time);
@@ -63,6 +63,7 @@ export function api_xuangubao_request(next, callback) {
         let rows = res.NewMsgs;
 
         for(let item of rows){
+            item.id = item.Id
             item.time = formatTime(item.CreatedAt)
             item.content = item.Title
             item.content2 = item.Summary
@@ -71,11 +72,12 @@ export function api_xuangubao_request(next, callback) {
         console.log("选股宝 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
         callback(d)
-        if(d) {
-            vue.data = d
-        }
-        markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
-    })
+        if(d) vue.data = d
+
+        if(res.TailMsgId)
+         markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
+
+    }).finally(() => callback())
 }
 
 //格式化时间方法
