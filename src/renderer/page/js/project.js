@@ -82,7 +82,7 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
     if (next == "setInterval" && notificationTitle) {
 
-        if (keywordData.enable && newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !")
+        if (!keywordData.enable && newRows.length > 5) notification(notificationTitle, "多于5条消息,请进入应用中查看 !")
         else {
             for (let row of newRows) {
 
