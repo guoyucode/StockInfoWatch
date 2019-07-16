@@ -3,8 +3,8 @@
 		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
 			<!--v-loading.lock="cls.loading" -->
-			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" label="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<news_view :data="cls.data" :loading="cls.loading" :nextPage="cls_request"></news_view>
+			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" :label="'财联社电报' + (unReadNum.cls?'NEW:'+unReadNum.cls:'') " style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<news_view :data="cls.data" :loading="cls.loading" :setUnReadNum="(num)=>unReadNum.cls=num" :nextPage="cls_request"></news_view>
 			</el-tab-pane>
 
 			<el-tab-pane v-if="configData.hdy.enable" v-loading="hdy.loading" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
@@ -55,6 +55,9 @@
         components: {News_view, Setting},
         data() {
             return {
+                unReadNum:{
+                    cls: 0,
+                },
                 cls: {
                     data: [],
 	                loading: true,

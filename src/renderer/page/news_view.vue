@@ -49,7 +49,7 @@
     import keywordData from "./js/keyword_subscription_data"
     import filterData from "./js/filter_data"
     import {isExistingFilterData, isExistingKeyword} from "./js/project"
-    import {clone} from "./js/utils";
+
     let vue = null;
 
     export default {
@@ -59,9 +59,21 @@
             data: Array,
             nextPage: Function,
 	        loading: Boolean,
+	        setUnReadNum: Function,
+	    },
+	    watch: {
+            data2: (cur) => {
+                let num = 0;
+                for (let item of cur) {
+                    if (item.readed == false) num++
+                }
+                vue.unReadNum = num;
+            },
+            unReadNum: cur => vue.setUnReadNum(cur)
 	    },
 	    data(){
           return {
+              unReadNum: 0,
               keywordData: keywordData,
               filterData: filterData,
           }
@@ -74,7 +86,6 @@
 	    },
 	    computed: {
             data2(){
-
                 return this.data.filter(item => {
                     //显示关键字
                     isExistingKeyword(item, true)
@@ -89,7 +100,10 @@
 	    },
 	    methods: {
             lazyView(item){
-                setTimeout(()=>item.readed = true, 1000)
+                setTimeout(()=>{
+                    item.readed = true
+	                vue.unReadNum--
+                }, 1000)
             }
 	    }
     }
