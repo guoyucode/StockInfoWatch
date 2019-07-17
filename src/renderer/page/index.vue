@@ -5,7 +5,7 @@
 			<!--v-loading.lock="cls.loading" -->
 			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
-					<i><img class="tag-logo" src="/static/img/cls.ico"></i>
+					<i><img class="tag-logo" :src="staticPath + '/img/cls.ico'"></i>
 					财联社电报
 					<span class="unread" @click="cls.unReadNum=-1" v-if="cls.unReadNum>0">&nbsp;{{cls.unReadNum}}&nbsp;</span>
 				</span>
@@ -14,7 +14,7 @@
 
 			<el-tab-pane v-if="configData.hdy.enable" v-loading="hdy.loading" name="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
-					<i><img class="tag-logo" src="/static/img/hdy.ico"></i>
+					<i><img class="tag-logo" :src="staticPath + '/img/hdy.ico'"></i>
 					深交所互动易问答
 					<span class="unread" @click="hdy.unReadNum=-1" v-if="hdy.unReadNum>0">&nbsp;{{hdy.unReadNum}}&nbsp;</span>
 				</span>
@@ -23,7 +23,7 @@
 
 			<el-tab-pane v-if="configData.dycj.enable" v-loading="dycj.loading" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
-					<i><img class="tag-logo" src="/static/img/dycj.ico"></i>
+					<i><img class="tag-logo" :src="staticPath + '/img/dycj.ico'"></i>
 					第一财经直播区
 					<span class="unread" @click="dycj.unReadNum=-1" v-if="dycj.unReadNum>0">&nbsp;{{dycj.unReadNum}}&nbsp;</span>
 				</span>
@@ -32,7 +32,7 @@
 
 			<el-tab-pane v-if="configData.xuangubao.enable" v-loading="xuangubao.loading" name="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
-					<i><img class="tag-logo" src="/static/img/xuangubao.png"></i>
+					<i><img class="tag-logo" :src="staticPath + '/img/xuangubao.png'"></i>
 					选股宝
 					<span class="unread" @click="xuangubao.unReadNum=-1" v-if="xuangubao.unReadNum>0">&nbsp;{{xuangubao.unReadNum}}&nbsp;</span>
 				</span>
@@ -41,7 +41,7 @@
 
 			<el-tab-pane v-if="configData.yuncaijing.enable" v-loading="yuncaijing.loading" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
 				<span slot="label">
-					<i><img class="tag-logo" src="/static/img/yuncaijing.ico"></i>
+					<i><img class="tag-logo" :src="staticPath + '/img/yuncaijing.ico'"></i>
 					云财经
 					<span class="unread" @click="yuncaijing.unReadNum=-1" v-if="yuncaijing.unReadNum>0">&nbsp;{{yuncaijing.unReadNum}}&nbsp;</span>
 				</span>
@@ -72,7 +72,7 @@
     import {api_hdy_request} from "./api/hdy";
     import {api_xuangubao_request} from "./api/xuangubao";
     import {api_yuncaijing_request} from "./api/yuncaijing";
-    import readedData from "./data_handler/readed_data"
+    const staticPath = require('path').join(__static);
 
     let vue = null;
 
@@ -81,6 +81,7 @@
         components: {News_view, Setting},
         data() {
             return {
+                staticPath: staticPath,
                 unReadNum:{
                     cls: 0,
 	                hdy: 0,
@@ -110,7 +111,6 @@
                     loading: true,
                     unReadNum: 0,
                 },
-                readedData: readedData,
                 configData: configData,
                 settingClose: true,
                 dbStore: null,
