@@ -2,7 +2,7 @@
 import {req} from "./common";
 import qs from "qs"
 import {generalHandlerData2, mySetInterval} from "../js/project";
-import configData from "../js/config_data";
+import configData from "../data_handler/config_data";
 import {DateFormat, delayer} from "../js/utils";
 
 const url = "http://irm.cninfo.com.cn/ircs/index/search";

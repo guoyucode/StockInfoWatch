@@ -3,7 +3,7 @@ import qs from "qs"
 import {clone, DateFormat, delayer} from "../js/utils";
 import {req} from "./common";
 import {generalHandlerData2, mySetInterval} from "../js/project";
-import configData from "../js/config_data";
+import configData from "../data_handler/config_data";
 
 const url = "https://www.cls.cn/nodeapi/telegraphs?"
 const updateUrl = "https://www.cls.cn/nodeapi/roll/get_update_roll_list?"

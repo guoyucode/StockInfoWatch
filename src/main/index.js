@@ -90,7 +90,7 @@ app.on('ready', () => {
 
 //托盘设置----------------------------------------------------
 const path = require('path');
-let trayIcon = path.join(__static, 'amex.ico');
+let trayIcon = path.join(__static, '/img/amex.ico');
 
 function openWindow(menuItem, browserWindow, event) {
   mainWindow.show()
@@ -106,7 +106,7 @@ app.on('ready', () => {
     { label: '打开主界面', type: 'normal', checked: true, click: openWindow},
     { label: '退出', type: 'normal', checked: true , click: exit},
   ])
-  tray.setToolTip('股票信息观察,右击打开主界面或者退出')
+  tray.setToolTip('股票行情观察,单击打开主界面,或者右击选择退出')
   tray.setContextMenu(contextMenu)
   tray.on("click", function (event, bounds) {
     openWindow()

@@ -1,5 +1,5 @@
 import store from "../../store"
-import configData from "./config_data"
+import configData from "../data_handler/config_data"
 let {ipcRenderer: ipc} = require('electron')
 
 // 对Date的扩展，将 Date 转化为指定格式的String

@@ -3,24 +3,49 @@
 		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
 			<!--v-loading.lock="cls.loading" -->
-			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" :label="'财联社电报' + (unReadNum.cls?'NEW:'+unReadNum.cls:'') " style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<news_view :data="cls.data" :loading="cls.loading" :setUnReadNum="(num)=>unReadNum.cls=num" :nextPage="cls_request"></news_view>
+			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<span slot="label">
+					<i><img class="tag-logo" src="/static/img/cls.ico"></i>
+					财联社电报
+					<span class="unread" @click="cls.unReadNum=-1" v-if="cls.unReadNum>0">&nbsp;{{cls.unReadNum}}&nbsp;</span>
+				</span>
+				<news_view :view-data="cls" :next-page="cls_request" ></news_view>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="configData.hdy.enable" v-loading="hdy.loading" name="深交所互动易问答" label="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<news_view :data="hdy.data" :loading="hdy.loading"  :nextPage="hdy_request"></news_view>
+			<el-tab-pane v-if="configData.hdy.enable" v-loading="hdy.loading" name="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<span slot="label">
+					<i><img class="tag-logo" src="/static/img/hdy.ico"></i>
+					深交所互动易问答
+					<span class="unread" @click="hdy.unReadNum=-1" v-if="hdy.unReadNum>0">&nbsp;{{hdy.unReadNum}}&nbsp;</span>
+				</span>
+				<news_view :view-data="hdy" :next-page="hdy_request" ></news_view>
 			</el-tab-pane>
 
 			<el-tab-pane v-if="configData.dycj.enable" v-loading="dycj.loading" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<news_view :data="dycj.data" :loading="dycj.loading"  :nextPage="dycj_request"></news_view>
+				<span slot="label">
+					<i><img class="tag-logo" src="/static/img/dycj.ico"></i>
+					第一财经直播区
+					<span class="unread" @click="dycj.unReadNum=-1" v-if="dycj.unReadNum>0">&nbsp;{{dycj.unReadNum}}&nbsp;</span>
+				</span>
+				<news_view :view-data="dycj" :loading="dycj.loading" :next-page="dycj_request"  ></news_view>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="configData.xuangubao.enable" v-loading="xuangubao.loading" name="选股宝" label="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<news_view :data="xuangubao.data" :loading="xuangubao.loading"  :nextPage="xuangubao_request"></news_view>
+			<el-tab-pane v-if="configData.xuangubao.enable" v-loading="xuangubao.loading" name="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+				<span slot="label">
+					<i><img class="tag-logo" src="/static/img/xuangubao.png"></i>
+					选股宝
+					<span class="unread" @click="xuangubao.unReadNum=-1" v-if="xuangubao.unReadNum>0">&nbsp;{{xuangubao.unReadNum}}&nbsp;</span>
+				</span>
+				<news_view :view-data="xuangubao" :next-page="xuangubao_request" ></news_view>
 			</el-tab-pane>
 
 			<el-tab-pane v-if="configData.yuncaijing.enable" v-loading="yuncaijing.loading" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
-				<news_view :data="yuncaijing.data" :loading="yuncaijing.loading"  :nextPage="yuncaijing_request"></news_view>
+				<span slot="label">
+					<i><img class="tag-logo" src="/static/img/yuncaijing.ico"></i>
+					云财经
+					<span class="unread" @click="yuncaijing.unReadNum=-1" v-if="yuncaijing.unReadNum>0">&nbsp;{{yuncaijing.unReadNum}}&nbsp;</span>
+				</span>
+				<news_view :view-data="yuncaijing" :next-page="yuncaijing_request" ></news_view>
 			</el-tab-pane>
 
 			<el-tab-pane :closable="true" v-if="configData.setting.enable" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
@@ -39,7 +64,7 @@
 
     import Setting from "./setting";
     import {initAlert, refreshAction} from "./js/project";
-    import configData from "./js/config_data"
+    import configData from "./data_handler/config_data"
     import {api_cls_request} from "./api/cls"
     import News_view from "./news_view";
     import {api_dycj_request} from "./api/dycj";
@@ -47,6 +72,7 @@
     import {api_hdy_request} from "./api/hdy";
     import {api_xuangubao_request} from "./api/xuangubao";
     import {api_yuncaijing_request} from "./api/yuncaijing";
+    import readedData from "./data_handler/readed_data"
 
     let vue = null;
 
@@ -57,27 +83,34 @@
             return {
                 unReadNum:{
                     cls: 0,
+	                hdy: 0,
                 },
                 cls: {
                     data: [],
 	                loading: true,
+                    unReadNum: 0,
                 },
                 hdy: {
                     data: [],
                     loading: true,
+                    unReadNum: 0,
                 },
                 dycj: {
                     data: [],
                     loading: true,
+                    unReadNum: 0,
                 },
                 xuangubao: {
                     data: [],
                     loading: true,
+                    unReadNum: 0,
                 },
                 yuncaijing: {
                     data: [],
                     loading: true,
+                    unReadNum: 0,
                 },
+                readedData: readedData,
                 configData: configData,
                 settingClose: true,
                 dbStore: null,
@@ -86,7 +119,8 @@
         },
 	    computed: {
 	    },
-        watch: {},
+        watch: {
+        },
 	    created(){
             vue = this;
 	    },
@@ -217,5 +251,22 @@
 
 	.el-card__body2 {
 		padding: 13px !important;
+	}
+
+	.tag-logo{
+		height: 18px;
+		margin-bottom: -4px;
+		margin-right: 4px;
+		border-radius: 4px;
+	}
+
+	.unread{
+		color: black;
+		border-radius: 6px;
+		background-color: #e8d6d5;
+		position: absolute;
+		height: 15px;
+		font-size: 10px;
+		line-height: initial;
 	}
 </style>

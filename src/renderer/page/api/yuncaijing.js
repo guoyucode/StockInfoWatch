@@ -4,7 +4,7 @@ import {req} from "./common";
 import {clone, DateFormat, delayer} from "../js/utils";
 import qs from "qs"
 import {generalHandlerData2, mySetInterval} from "../js/project";
-import configData from "../js/config_data";
+import configData from "../data_handler/config_data";
 
 const url = "https://www.yuncaijing.com/news/get_realtime_news/yapi/ajax.html"
 const reqData = {

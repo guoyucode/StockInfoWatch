@@ -26,7 +26,7 @@
 
 						<br/>
 						<div style="color: darkviolet">程序说明:</div>
-						<div>实时查看股票行信息数据</div>
+						<div>实时查看股票行情数据</div>
 						<div>程序设置理念：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
 						<div></div>
 
@@ -251,9 +251,9 @@
 <script>
 
     const packageInfo = require('../../../package.json');
-    import configData from "./js/config_data"
-    import keywordData from "./js/keyword_subscription_data"
-    import filterData from "./js/filter_data"
+    import configData from "./data_handler/config_data"
+    import keywordData from "./data_handler/keyword_subscription_data"
+    import filterData from "./data_handler/filter_data"
 
     let vue = null
 

@@ -3,7 +3,7 @@
 import {req} from "./common";
 import {clone, DateFormat, delayer} from "../js/utils";
 import qs from "qs"
-import configData from "../js/config_data";
+import configData from "../data_handler/config_data";
 import {generalHandlerData2, mySetInterval} from "../js/project";
 import {api_cls_request} from "./cls";
 

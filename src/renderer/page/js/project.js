@@ -1,7 +1,7 @@
 import {getDBStore} from "./db";
-import configData from "./config_data";
-import keywordData from "./keyword_subscription_data"
-import filterData from "./filter_data"
+import configData from "../data_handler/config_data";
+import keywordData from "../data_handler/keyword_subscription_data"
+import filterData from "../data_handler/filter_data"
 
 let {ipcRenderer: ipc} = require('electron')
 
