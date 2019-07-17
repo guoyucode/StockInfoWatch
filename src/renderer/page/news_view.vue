@@ -55,7 +55,6 @@
     import {isExistingFilterData, isExistingKeyword} from "./js/project"
     //import {delayer} from "./js/utils";
 
-
     let vue = null;
 
     export default {
@@ -150,16 +149,6 @@
                     item.readed = true
                     this.viewData.unReadNum--
                 }, 1000)
-            },
-
-            delayer(action, delay = 1500) {
-                let timer = -1;
-                return () => {
-                    clearTimeout(timer);
-                    timer = setTimeout(() => {
-                        action();
-                    }, delay);
-                };
             },
 
             //调整窗口大小时触发此方法

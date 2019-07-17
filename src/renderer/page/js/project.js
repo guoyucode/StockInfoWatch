@@ -61,12 +61,24 @@ export const refreshAction = function (callback) {
  * @param notificationContent_key 通知内容的key
  */
 export const generalHandlerData2 = function (data, next, newRows, notificationTitle) {
-    for(let item of newRows){
-        if(item.readed == undefined) item.readed = false;
+
+    if (next && (next == "setInterval" || next == "refresh")){
+        for(let item of newRows){
+            if(item.readed == undefined) item.readed = false;
+        }
+        for(let item of data){
+            if(item.readed == undefined) item.readed = false;
+        }
+    }else{
+        for(let item of newRows){
+            if(item.readed == undefined) item.readed = true;
+        }
+        for(let item of data){
+            if(item.readed == undefined) item.readed = true;
+        }
     }
-    for(let item of data){
-        if(item.readed == undefined) item.readed = false;
-    }
+
+
 
     if (!next || next == "first") {
         return newRows;
