@@ -16,6 +16,7 @@ export const update = function(_this){
         _this.$confirm(`已经为您下载到新版本,是否现在开始安装?`, '升级提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
+            center: true,
             type: 'warning'
         }).then(() => {
             _this.$electron.ipcRenderer.send("isUpdateNow");
