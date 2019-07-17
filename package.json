@@ -1,6 +1,6 @@
 {
   "name": "StockInfoWatch",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "guoyu",
   "description": "该程序用于股票行情信息的监听及查看,消息是以通知方式送达",
   "license": null,
@@ -22,6 +22,12 @@
     "directories": {
       "output": "build"
     },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://guoyu.link/StockInfoWatch-download/"
+      }
+    ],
     "files": [
       "dist/electron/**/*"
     ],
@@ -52,6 +58,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "electron-updater": "^4.1.2",
     "element-ui": "^2.10.1",
     "qs": "^6.7.0",
     "vue": "^2.6.10",

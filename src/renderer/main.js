@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import vView from 'vue-view-lazy'
+import {update} from "./page/js/update"
 //import store from './store'
 //import configData from "./page/js/config_data"
 
@@ -24,5 +25,8 @@ new Vue({
   components: { App },
   router,
 //  store,
-  template: '<App/>'
+  template: '<App/>',
+  mounted() {
+    update(this);
+  },
 }).$mount('#app')

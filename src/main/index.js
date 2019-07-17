@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
+import {updateHandle} from "./update"
 //import store from '../renderer/store/index'
 
 
@@ -45,6 +46,9 @@ function createWindow () {
   if (!isDev){
     mainWindow.setMenu(null)
   }
+
+  //自动更新方法
+  updateHandle(mainWindow)
 }
 
 app.on('ready', createWindow)
