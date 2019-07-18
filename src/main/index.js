@@ -4,7 +4,8 @@ import {updateHandle} from "./update"
 
 
 let isDev = process.env.NODE_ENV === 'development'
-let openChromeDevTools = process.env.openChromeDevTools?true:false;
+let env_openChromeDevTools = !!process.env.openChromeDevTools;
+let isOpenDevTools = (env_openChromeDevTools || isDev)
 
 /**
  * Set `__static` path to static files in production
@@ -23,7 +24,7 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     webPreferences: {
-      devTools: openChromeDevTools, //Whether to enable DevTools.
+      devTools: isOpenDevTools, //Whether to enable DevTools.
       nodeIntegration: true,//是否完整的支持 node. 默认值为true.
       webSecurity: false,
     },
@@ -44,7 +45,7 @@ function createWindow () {
   })
 
   //非开发环境隐藏工具栏
-  if (!openChromeDevTools){
+  if (!isOpenDevTools){
     mainWindow.setMenu(null)
   }
 
