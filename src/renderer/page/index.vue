@@ -68,10 +68,10 @@
     import {api_cls_request} from "./api/cls"
     import News_view from "./news_view";
     import {api_dycj_request} from "./api/dycj";
-    import {delayer} from "./js/utils"
     import {api_hdy_request} from "./api/hdy";
     import {api_xuangubao_request} from "./api/xuangubao";
     import {api_yuncaijing_request} from "./api/yuncaijing";
+
     const staticPath = require('path').join(__static);
 
     let vue = null;
@@ -260,7 +260,7 @@
 		border-radius: 4px;
 	}
 
-	.unread{
+	.unread {
 		color: black;
 		border-radius: 6px;
 		background-color: #e8d6d5;

@@ -4,6 +4,7 @@ import { autoUpdater } from 'electron-updater'
 // 检测更新，在你想要检查更新的时候执行，renderer事件触发后的操作自行编写
 export function updateHandle(mainWindow) {
 
+    autoUpdater.autoDownload = false
     // 通过main进程发送事件给renderer进程，提示更新信息
     function sendUpdateMessage(text) {
         mainWindow.webContents.send('update-message', text)
@@ -18,19 +19,22 @@ export function updateHandle(mainWindow) {
     const uploadUrl = "https://guoyu.link/StockInfoWatch-download/"; // 下载地址，不加后面的**.exe
     autoUpdater.setFeedURL(uploadUrl);
 
-    autoUpdater.on('error', function (error) {
-        sendUpdateMessage(message.error)
-    });
 
-    /*autoUpdater.on('checking-for-update', function () {
-        sendUpdateMessage(message.checking)
-    });
-    autoUpdater.on('update-available', function (info) {
-        sendUpdateMessage(message.updateAva)
-    });
     autoUpdater.on('update-not-available', function (info) {
         sendUpdateMessage(message.updateNotAva)
-    });*/
+    });
+    autoUpdater.on('checking-for-update', function () {
+        sendUpdateMessage(message.checking)
+    });
+
+
+    autoUpdater.on('error', function (error) {
+        mainWindow.webContents.send('update-message_error', text)
+    });
+    autoUpdater.on('update-available', function (info) {
+        mainWindow.webContents.send('update-message_update-available', info)
+    });
+
 
     // 更新下载进度事件
     autoUpdater.on('download-progress', function (progressObj) {
@@ -39,16 +43,21 @@ export function updateHandle(mainWindow) {
     })
 
     autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
-
-        ipcMain.on('isUpdateNow', () => {
-            autoUpdater.quitAndInstall();
-        });
-
         mainWindow.webContents.send('isUpdateNow')
     });
 
+    //下载完成,开始更新
+    ipcMain.on('isUpdateNow', () => {
+        autoUpdater.quitAndInstall();
+    });
+
+    //执行下载更新
+    ipcMain.on("downloadUpdate",()=>{
+        autoUpdater.downloadUpdate()
+    })
+
+    //执行自动更新检查
     ipcMain.on("checkForUpdate",()=>{
-        //执行自动更新检查
         autoUpdater.checkForUpdates();
     })
 }
