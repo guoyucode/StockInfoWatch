@@ -1,6 +1,8 @@
 import { ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 
+const packageInfo = require('../../package.json');
+
 // 检测更新，在你想要检查更新的时候执行，renderer事件触发后的操作自行编写
 export function updateHandle(mainWindow) {
 
@@ -16,7 +18,7 @@ export function updateHandle(mainWindow) {
         updateAva: '检测到新版本，正在下载……',
         updateNotAva: '现在使用的就是最新版本，不用更新',
     };
-    const uploadUrl = "https://guoyu.link/StockInfoWatch-download/"; // 下载地址，不加后面的**.exe
+    const uploadUrl = packageInfo.build.publish[0].url; // 下载地址，不加后面的**.exe
     autoUpdater.setFeedURL(uploadUrl);
 
 
@@ -29,7 +31,7 @@ export function updateHandle(mainWindow) {
 
 
     autoUpdater.on('error', function (error) {
-        mainWindow.webContents.send('update-message_error', text)
+        mainWindow.webContents.send('update-message_error')
     });
     autoUpdater.on('update-available', function (info) {
         mainWindow.webContents.send('update-message_update-available', info)
