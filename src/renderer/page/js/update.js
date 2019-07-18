@@ -66,6 +66,6 @@ let checkForUpdate = function (_this) {
     function check() {
         _this.$electron.ipcRenderer.send("checkForUpdate");
     }
-    setTimeout(check, 15*1000)
-    setInterval(check, 1000*60*60*6)
+    setTimeout(check, 60*1000)
+    //setInterval(check, 1000*60*60*6)
 }
