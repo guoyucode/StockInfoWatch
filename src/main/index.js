@@ -104,9 +104,14 @@ function openWindow(menuItem, browserWindow, event) {
 function exit(menuItem, browserWindow, event) {
   app.quit()
 }
-const { Menu, Tray } = require("electron")
+const { Menu, Tray} = require("electron")
 let tray = null
 app.on('ready', () => {
+
+  //非windows系统不显示托盘
+  let os = process.env.OS;
+  if(os.indexOf("Windows") == -1) return;
+
   tray = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
     { label: '打开主界面', type: 'normal', checked: true, click: openWindow},
