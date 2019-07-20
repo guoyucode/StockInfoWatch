@@ -15,15 +15,15 @@
 
 				<!--深交所问答易-->
 				<span v-if="item.companyShortName" style="padding-left: 15px;"
-				      v-html="'公司: ' + item.companyShortName + ' [' + item.stockCode + ']'"></span>
-				<span v-if="item.authorName" style="padding-left: 15px;">发布人: {{item.authorName}}</span>
+				      v-html="'公司: ' + formatterKeyword(item, item.companyShortName) + ' [' + item.stockCode + ']'"></span>
+				<span v-if="item.authorName" style="padding-left: 15px;" v-html="'发布人: ' + formatterKeyword(item, item.authorName)" ></span>
 
 			</div>
-			<div class="text item" v-html="item.content">
+			<div class="text item" v-html="formatterKeyword(item, item.content)">
 				列表内容
 			</div>
 			<br v-if="item.content2"/>
-			<div class="text item" v-if="item.content2" v-html="item.content2">
+			<div class="text item" v-if="item.content2" v-html="formatterKeyword(item, item.content2)">
 				列表内容
 			</div>
 		</el-card>
@@ -119,8 +119,6 @@
 
             data2() {
                 return this.viewData.data.filter(item => {
-                    //显示关键字
-                    isExistingKeyword(item, true)
 
                     //过滤数据
                     let isAt2 = isExistingFilterData(item, true);
@@ -141,7 +139,29 @@
         },
         methods: {
 
+            //显示订阅关键词
+            formatterKeyword(item, text){
+                if(!item.keywordEnable || item.keywordList.length == 0 || !text) {
+                    return this.formatterFilterData(item, text);
+                }
+                let rv = text;
+                for (let keyword of item.keywordList) {
+                    let clorA = `<a style='color: red'>${keyword}</a>`
+                    rv = rv.replace(new RegExp(keyword, 'g'), clorA)
+                }
+                return this.formatterFilterData(item, rv);
+            },
 
+	        //显示过滤关键词
+            formatterFilterData(item, text){
+                if(!item.filterEnable || item.filterList.length == 0 || !text) return text;
+                let rv = text
+                for (let keyword of item.filterList) {
+                    let clorA = `<a style='color: darkmagenta'>${keyword}</a>`
+                    rv = rv.replace(new RegExp(keyword, 'g'), clorA)
+                }
+                return rv;
+            },
 
             lazyView(item) {
                 if(this.viewData.unReadNum < 1) return;

@@ -62,18 +62,30 @@ export const refreshAction = function (callback) {
  */
 export const generalHandlerData2 = function (data, next, newRows, notificationTitle) {
 
+    const setConfigData = function (item) {
+        item.keywordEnable = keywordData.enable;
+        item.keywordList = keywordData.data;
+
+        item.filterEnable = filterData.enable;
+        item.filterList = filterData.data;
+    }
+
     if (next && (next == "setInterval" || next == "refresh")){
         for(let item of newRows){
+            setConfigData(item);
             if(item.readed == undefined) item.readed = false;
         }
         for(let item of data){
+            setConfigData(item);
             if(item.readed == undefined) item.readed = false;
         }
     }else{
         for(let item of newRows){
+            setConfigData(item);
             if(item.readed == undefined) item.readed = true;
         }
         for(let item of data){
+            setConfigData(item);
             if(item.readed == undefined) item.readed = true;
         }
     }
@@ -104,8 +116,9 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
         else {
             for (let row of newRows) {
 
-                if(!isExistingKeyword(row)) continue;
-                if(!isExistingFilterData(row)) continue;
+                let b = isExistingKeyword(row);
+                let b1 = isExistingFilterData(row);
+                if(!b || !b1) continue;
 
                 //如果有一个a标签, 那么先去掉它
                 let content = row.content + ""
@@ -129,50 +142,53 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
 }
 
 //是否存在关键字
-export const isExistingKeyword = (row, isReplace) => {
-    if (!keywordData.enable) return true;
+export const isExistingKeyword = (item) => {
+
+    if (!keywordData.enable) {
+        return true;
+    }
 
     let isAt = false;
     let keywordList = keywordData.data;
     for (let keyword of keywordList) {
-        let clorA = `<a style='color: red'>${keyword}</a>`
-
-        if (row.content.indexOf(keyword) != -1 || (row.content2 || "").indexOf(keyword) != -1) {
-            if(isReplace) row.content = row.content.replace(new RegExp(keyword, 'g'), clorA)
+        if (item.content.indexOf(keyword) != -1 || (item.content2 || "").indexOf(keyword) != -1) {
             isAt = true
         }
 
-        if (row.content2 && row.content2.indexOf(keyword) != -1) {
-            if(isReplace) row.content2 = row.content2.replace(new RegExp(keyword, 'g'), clorA)
+        if (item.content2 && item.content2.indexOf(keyword) != -1) {
             isAt = true
         }
 
-        if(row.companyShortName && row.companyShortName.indexOf(keyword) != -1){
-            if(isReplace) row.companyShortName = row.companyShortName.replace(new RegExp(keyword, 'g'), clorA)
+        if(item.companyShortName && item.companyShortName.indexOf(keyword) != -1){
             isAt = true
+        }
+        if(item.authorName && item.authorName.indexOf(keyword) != -1){
+            isAt = true;
         }
     }
     return isAt
 }
 
 //是否存在过滤词
-export const isExistingFilterData= (item, isReplace) => {
-    if(!filterData.enable) return true;
+export const isExistingFilterData= (item) => {
+    if(!filterData.enable || filterData.data.length == 0) {
+        return true;
+    }
 
     let isAt = false;
     let list = filterData.data;
+
     for (let keyword of list) {
-        let clorA = `<a style='color: darkmagenta'>${keyword}</a>`
         if(item.content.indexOf(keyword) != -1) {
-            if(isReplace) item.content = item.content.replace(new RegExp(keyword, 'g'), clorA)
             isAt = true;
         };
         if (item.content2 && item.content2.indexOf(keyword) != -1) {
-            if(isReplace) item.content2 = item.content2.replace(new RegExp(keyword, 'g'), clorA)
             isAt = true;
         }
         if (item.companyShortName && item.companyShortName.indexOf(keyword) != -1) {
-            if(isReplace) item.companyShortName = item.companyShortName.replace(new RegExp(keyword, 'g'), clorA)
+            isAt = true;
+        }
+        if(item.authorName && item.authorName.indexOf(keyword) != -1){
             isAt = true;
         }
     }
