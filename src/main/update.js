@@ -18,9 +18,13 @@ export function updateHandle(mainWindow) {
         updateAva: '检测到新版本，正在下载……',
         updateNotAva: '现在使用的就是最新版本，不用更新',
     };
-    const uploadUrl = packageInfo.build.publish[0].url; // 下载地址，不加后面的**.exe
-    autoUpdater.setFeedURL(uploadUrl);
 
+    //通用服务器的下载方式
+    //const uploadUrl = packageInfo.build.publish[0].url; // 下载地址，不加后面的**.exe
+
+    //github的下载包方式
+    let publish = packageInfo.build.publish[0];
+    autoUpdater.setFeedURL(publish);
 
     autoUpdater.on('update-not-available', function (info) {
         sendUpdateMessage(message.updateNotAva)
@@ -30,8 +34,8 @@ export function updateHandle(mainWindow) {
     });
 
 
-    autoUpdater.on('error', function (error) {
-        mainWindow.webContents.send('update-message_error')
+    autoUpdater.on('error', function (e, msg) {
+        mainWindow.webContents.send('update-message_error', msg)
     });
     autoUpdater.on('update-available', function (info) {
         mainWindow.webContents.send('update-message_update-available', info)
@@ -64,4 +68,8 @@ export function updateHandle(mainWindow) {
     })
 }
 
+/*{
+        "provider": "generic",
+        "url": "https://guoyu.link/StockInfoWatch-download/"
+      }*/
 
