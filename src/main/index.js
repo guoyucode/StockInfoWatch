@@ -109,8 +109,8 @@ let tray = null
 app.on('ready', () => {
 
   //非windows系统不显示托盘
-  let os = process.env.OS;
-  if(os.indexOf("Windows") == -1) return;
+  let os = process.platform;
+  if(os.indexOf("win32") == -1) return;
 
   tray = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
