@@ -62,30 +62,19 @@ export const refreshAction = function (callback) {
  */
 export const generalHandlerData2 = function (data, next, newRows, notificationTitle) {
 
-    const setConfigData = function (item) {
-        item.keywordEnable = keywordData.enable;
-        item.keywordList = keywordData.data;
-
-        item.filterEnable = filterData.enable;
-        item.filterList = filterData.data;
-    }
 
     if (next && (next == "setInterval" || next == "refresh")){
         for(let item of newRows){
-            setConfigData(item);
             if(item.readed == undefined) item.readed = false;
         }
         for(let item of data){
-            setConfigData(item);
             if(item.readed == undefined) item.readed = false;
         }
     }else{
         for(let item of newRows){
-            setConfigData(item);
             if(item.readed == undefined) item.readed = true;
         }
         for(let item of data){
-            setConfigData(item);
             if(item.readed == undefined) item.readed = true;
         }
     }
@@ -170,7 +159,7 @@ export const isExistingKeyword = (item) => {
 }
 
 //是否存在过滤词
-export const isExistingFilterData= (item) => {
+export const isExistingFilterData= function(item) {
     if(!filterData.enable || filterData.data.length == 0) {
         return true;
     }

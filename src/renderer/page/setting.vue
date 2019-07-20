@@ -11,6 +11,10 @@
 							版本信息: {{version}}
 						</template>
 
+						<div style="color: green">当前更新:</div>
+						<div>问题修复: 订阅显示修复,数据过滤如果没有一个关键词那么就不过滤</div>
+						<br/>
+
 						<div style="color: blue">近期更新:</div>
 						<div>新增功能: 标示已读未读功能</div>
 						<div>新增功能: 订阅功能,数据筛选</div>

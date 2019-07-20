@@ -15,15 +15,15 @@
 
 				<!--深交所问答易-->
 				<span v-if="item.companyShortName" style="padding-left: 15px;"
-				      v-html="'公司: ' + formatterKeyword(item, item.companyShortName) + ' [' + item.stockCode + ']'"></span>
-				<span v-if="item.authorName" style="padding-left: 15px;" v-html="'发布人: ' + formatterKeyword(item, item.authorName)" ></span>
+				      v-html="'公司: ' + item.companyShortName_color + ' [' + item.stockCode + ']'"></span>
+				<span v-if="item.authorName" style="padding-left: 15px;" v-html="'发布人: ' + item.authorName_color" ></span>
 
 			</div>
-			<div class="text item" v-html="formatterKeyword(item, item.content)">
+			<div class="text item" v-html="item.content_color">
 				列表内容
 			</div>
 			<br v-if="item.content2"/>
-			<div class="text item" v-if="item.content2" v-html="formatterKeyword(item, item.content2)">
+			<div class="text item" v-if="item.content2" v-html="item.content2_color">
 				列表内容
 			</div>
 		</el-card>
@@ -91,7 +91,13 @@
                 for(let item of this.viewData.data){
                     item.readed = true;
                 }
-            }
+            },
+            keywordData: {
+              deep: true,
+	          handler: function (cur) {
+
+              },
+            },
         },
         data() {
             return {
@@ -121,31 +127,34 @@
                 return this.viewData.data.filter(item => {
 
                     //过滤数据
-                    let isAt2 = isExistingFilterData(item, true);
+                    let isAt2 = isExistingFilterData(item);
                     if (!isAt2) return null;
+
+                    this.fomatKeyword(item);
 
                     return item
                 })
             },
 
-            setUnReadNum(){
-                let unRead = 0;
-                for(let item of this.data2){
-                    if(item.readed == undefined || item.readed == false) unRead++
-                }
-                this.viewData.unReadNum = unRead
-            },
-
         },
         methods: {
 
+            fomatKeyword(item){
+                if(item.companyShortName) item.companyShortName_color = this.formatterKeyword(item, item.companyShortName);
+                if(item.content) item.content_color = this.formatterKeyword(item, item.content);
+                if(item.content2) item.content2_color = this.formatterKeyword(item, item.content2);
+                if(item.authorName) item.authorName_color = this.formatterKeyword(item, item.authorName);
+                if(item.companyShortName) item.companyShortName_color = this.formatterKeyword(item, item.companyShortName);
+                //if(item.companyShortName) item.item.companyShortName_color = this.formatterKeyword(item, item.companyShortName);
+             },
+
             //显示订阅关键词
             formatterKeyword(item, text){
-                if(!item.keywordEnable || item.keywordList.length == 0 || !text) {
+                if(!this.keywordData.enable || this.keywordData.data.length == 0 || !text) {
                     return this.formatterFilterData(item, text);
                 }
-                let rv = text;
-                for (let keyword of item.keywordList) {
+                let rv = text + "";
+                for (let keyword of this.keywordData.data) {
                     let clorA = `<a style='color: red'>${keyword}</a>`
                     rv = rv.replace(new RegExp(keyword, 'g'), clorA)
                 }
@@ -154,9 +163,9 @@
 
 	        //显示过滤关键词
             formatterFilterData(item, text){
-                if(!item.filterEnable || item.filterList.length == 0 || !text) return text;
-                let rv = text
-                for (let keyword of item.filterList) {
+                if(!this.filterData.data || this.filterData.data.length == 0 || !text) return text;
+                let rv = text + "";
+                for (let keyword of this.filterData.data) {
                     let clorA = `<a style='color: darkmagenta'>${keyword}</a>`
                     rv = rv.replace(new RegExp(keyword, 'g'), clorA)
                 }
