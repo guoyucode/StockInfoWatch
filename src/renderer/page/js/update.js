@@ -18,11 +18,15 @@ export const update = function(_this){
 
     _this.$electron.ipcRenderer.on("update-message_error", function(e, msg) {
         console.log("更新消息-发生错误", e, msg);
-        _this.$confirm(`检查新版本出错, 是否重新检测?`, '升级提示', {
+        let html = `<p>检查新版本出错, 是否重新检测?</p>`
+        + `<p style="max-height: 150px; overflow-y: auto; overflow-x: hidden; color: #6d6d6d;">错误信息: ${msg}</p>`;
+        _this.$confirm(html, '升级提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             center: true,
-            type: 'error'
+            type: 'error',
+            closeOnClickModal: false,
+            dangerouslyUseHTMLString: true,
         }).then(function () {
             _this.$electron.ipcRenderer.send("checkForUpdate")
         });
@@ -47,7 +51,21 @@ export const update = function(_this){
 
     _this.$electron.ipcRenderer.on("update-message_update-available", function(e, msg) {
         console.log("更新消息-检测到新版本", e, msg);
+
+        //非windows版本
+        let os = process.platform;
+        if(os.indexOf("win32") == -1){
+            let fullPath = msg["full-path"];
+            if(!fullPath) return;
+            let html = `检测到新版本: ${msg.version}<br/>请点击或者复制下列链接去下载并安装程序 <a href="${fullPath}">${fullPath}</a>`
+            _this.$alert(html, '升级提示', {
+                dangerouslyUseHTMLString: true
+            });
+            return
+        }
+
         _this.$confirm(`检测到新版本: ${msg.version} 是否现在开始下载?`, '升级提示', {
+            closeOnClickModal: false,
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             center: true,
