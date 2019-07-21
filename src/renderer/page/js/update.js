@@ -56,8 +56,15 @@ export const update = function(_this){
         let os = process.platform;
         if(os.indexOf("win32") == -1){
             let fullPath = msg["full-path"];
-            if(!fullPath) return;
-            let html = `检测到新版本: ${msg.version}<br/>请点击或者复制下列链接去下载并安装程序 <a href="${fullPath}">${fullPath}</a>`
+            let html = `检测到新版本: ${msg.version}`
+            if(!fullPath) {
+                html += " 但更新链接不完整,请联系开发者进行维护"
+                _this.$alert(html, '升级提示', {
+                    dangerouslyUseHTMLString: true
+                });
+                return;
+            }
+            html += `<br/>请点击或者复制下列链接去下载并安装程序 <a href="${fullPath}">${fullPath}</a>`
             _this.$alert(html, '升级提示', {
                 dangerouslyUseHTMLString: true
             });
