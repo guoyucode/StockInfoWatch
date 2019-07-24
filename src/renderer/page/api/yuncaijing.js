@@ -5,6 +5,7 @@ import {clone, DateFormat, delayer} from "../js/utils";
 import qs from "qs"
 import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../data_handler/config_data";
+import {mergeViewData} from "../data_handler/view_data";
 
 const url = "https://www.yuncaijing.com/news/get_realtime_news/yapi/ajax.html"
 const reqData = {
@@ -83,6 +84,7 @@ export function api_yuncaijing_request(next, callback) {
             item.time = formatTime(item.inputtime)
             item.content = item.title
             item.content2 = item.description
+            item.src = {str: "云财经", ico: (staticPath + "/img/yuncaijing.ico"), url: "https://www.yuncaijing.com"};
         }
 
         console.log("云财经 res-data", rows)
@@ -90,6 +92,7 @@ export function api_yuncaijing_request(next, callback) {
         callback(d)
         if(d) {
             vue.data = d
+            mergeViewData(d);
         }
         if(next && next == "next") page+=1
     }).finally(() => callback())

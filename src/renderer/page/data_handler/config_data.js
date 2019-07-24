@@ -1,45 +1,33 @@
 /*设置数据仓库管理*/
 import {ipcRenderer} from "electron";
 import {getProxyObject} from "./proxy_util";
+import {clone} from "../js/utils";
 
+const defConfig = {
+    enable: true,
+    setInterval_time: 25,
+    enableNotice: true,
+}
 
 const state = {
 
     common: {
         hotKey: "F5",
-        tabName: "财联社电报", //切换tab名字
+        tabName: "财经新闻", //切换tab名字
         dataLimit: 500,
     },
 
-    cls: {
-        enable: true,
-        setInterval_time: 25,
-        enableNotice: true,
-    },
+    cls: clone(defConfig),
 
-    hdy: {
-        enable: true,
-        setInterval_time: 25,
-        enableNotice: true,
-    },
+    hdy: clone(defConfig),
 
-    dycj: {
-        enable: true,
-        setInterval_time: 25,
-        enableNotice: true,
-    },
+    dycj: clone(defConfig),
 
-    xuangubao: {
-        enable: true,
-        setInterval_time: 25,
-        enableNotice: true,
-    },
+    xuangubao: clone(defConfig),
 
-    yuncaijing: {
-        enable: true,
-        setInterval_time: 25,
-        enableNotice: true,
-    },
+    yuncaijing: clone(defConfig),
+
+    taoguba: clone(defConfig),
 
     setting: {
         enable: true,

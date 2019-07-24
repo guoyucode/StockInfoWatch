@@ -4,6 +4,7 @@ import qs from "qs"
 import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../data_handler/config_data";
 import {DateFormat, delayer} from "../js/utils";
+import {mergeViewDataHdy} from "../data_handler/view_data_hdy";
 
 const url = "http://irm.cninfo.com.cn/ircs/index/search";
 
@@ -70,6 +71,7 @@ export function api_hdy_request(next, callback) {
         let rows = res.results;
 
         for(let item of rows){
+            item.src = {str: "深交所互动易", ico: (staticPath + "/img/hdy.ico"), url: "http://irm.cninfo.com.cn"};
             item.id = item.indexId;
             item.time = formatTime(Number.parseInt(item.pubDate))
             item.content = "<a style=\"color: #0077E6;\">问 </a>" + item.mainContent;
@@ -85,6 +87,7 @@ export function api_hdy_request(next, callback) {
         callback(d)
         if(d) {
             vue.data = d
+            mergeViewDataHdy(d)
         }
     }).finally(() => callback())
 }

@@ -5,6 +5,7 @@ import {clone, DateFormat, delayer} from "../js/utils";
 import qs from "qs"
 import configData from "../data_handler/config_data";
 import {generalHandlerData2, mySetInterval} from "../js/project";
+import {mergeViewData} from "../data_handler/view_data";
 
 const url = "https://api.xuangubao.cn/api/pc/msgs?"
 const reqData = {
@@ -67,12 +68,16 @@ export function api_xuangubao_request(next, callback) {
             item.time = formatTime(item.CreatedAt)
             item.content = item.Title
             item.content2 = item.Summary
+            item.src = {str: "选股宝", ico: (staticPath + "/img/xuangubao.png"), url: "https://xuangubao.cn"};
         }
 
         console.log("选股宝 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
         callback(d)
-        if(d) vue.data = d
+        if(d) {
+            vue.data = d
+            mergeViewData(d);
+        }
 
         if(res.TailMsgId)
          markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据

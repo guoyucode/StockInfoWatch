@@ -1,6 +1,6 @@
 <template>
 
-	<div>
+	<div v-loading="viewData.loading" >
 		<KeywordSubscription title="关键词订阅: " lable-color="red" :keywords="keywordData.data" v-if="keywordData.enable"></KeywordSubscription>
 		<KeywordSubscription title="数据过滤: " lable-color="darkmagenta" :keywords="filterData.data" v-if="filterData.enable"></KeywordSubscription>
 
@@ -8,9 +8,17 @@
 			<div slot="header" class="clearfix">
 				<span v-html="'发布时间: ' + item.time"></span>
 
+				<span v-if="item.src.str" @click="openWindow(item.src.url)"
+				      style="float: right; color: #6d6d6d; cursor:pointer;">
+					<a><img style="margin-bottom: -3px; height: 18px; border-radius: 4px;" :src="item.src.ico"> {{item.src.str}}</a>
+				</span>
+
 				<span @click="item.readed=true" v-show="!item.readed"
-				      style="float: right; padding: 3px 0; color: darkgreen; background-color: darkgrey; border-radius: 6px; cursor:pointer;">
-					<a >&nbsp;NEW&nbsp;</a>
+				      style="float: right; padding: 0px 0;
+				      color: darkgreen; background-color: darkgrey;
+				      border-radius: 6px; cursor:pointer;
+				      position: absolute; right: -17px; margin-top: -17px; font-size: 12px;">
+					<a >&nbsp;新&nbsp;</a>
 				</span>
 
 				<!--深交所问答易-->
@@ -28,7 +36,7 @@
 			</div>
 		</el-card>
 
-		<template v-if="!loading">
+		<template v-if="!viewData.loading">
 			<el-card class="box-card" v-if="viewData.data.length == 0" key="99999998" style="cursor:pointer;" @click.native="nextPage()">
 				<div class="text item">
 					<span style="margin-left: 40%;">网络异常, 点击刷新重试</span>
@@ -53,28 +61,21 @@
     import keywordData from "./data_handler/keyword_subscription_data"
     import filterData from "./data_handler/filter_data"
     import {isExistingFilterData, isExistingKeyword} from "./js/project"
+    import {viewDataHdy} from "./data_handler/view_data_hdy";
+    import {api_hdy_request} from "./api/hdy";
+
     //import {delayer} from "./js/utils";
 
     let vue = null;
 
     export default {
-        name: "news_view",
+        name: "hdy",
         components: {KeywordSubscription},
         props: {
-            viewData: {
-                type: Object,
-                default: {
-                    data: [],
-                    loading: false,
-                    unReadNum: 0,
-                }
-            },
             tabName: {
                 type: String,
                 default: "财联社电报",
             },
-            nextPage: Function,
-            loading: Boolean,
         },
         watch: {
             data2: function(cur){
@@ -101,6 +102,7 @@
         },
         data() {
             return {
+                viewData: viewDataHdy,
                 configData: configData,
                 keywordData: keywordData,
                 filterData: filterData,
@@ -111,7 +113,8 @@
             vue = this;
         },
         mounted() {
-            this.nextPage()
+
+            api_hdy_request("first", vue.requestCallback)
 
             //设置窗口大小
             this.windowsResize()
@@ -138,6 +141,15 @@
 
         },
         methods: {
+
+            nextPage(){
+                this.viewData.loading = true;
+                api_hdy_request("next", vue.requestCallback)
+            },
+
+            requestCallback(v){
+                this.viewData.loading = false
+            },
 
             fomatKeyword(item){
                 if(item.companyShortName) item.companyShortName_color = this.formatterKeyword(item, item.companyShortName);

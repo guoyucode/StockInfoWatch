@@ -6,6 +6,7 @@ import qs from "qs"
 import configData from "../data_handler/config_data";
 import {generalHandlerData2, mySetInterval} from "../js/project";
 import {api_cls_request} from "./cls";
+import {mergeViewData} from "../data_handler/view_data";
 
 const url = "https://www.yicai.com/api/ajax/getbrieflist?"
 const reqData = {
@@ -46,10 +47,13 @@ export function api_dycj_request(next, callback) {
         configData._watch.push({"dycj.enable": (enable) => {
                 if(enable) run(configData.dycj.setInterval_time);
                 else run(0);
+                api_dycj_request(undefined, callback)
             }})
         vue.onece = true;
         run(configData.dycj.setInterval_time);
     }
+
+    if(!configData.dycj.enable) return;
 
     const self = vue
     if(!next || next != "setInterval") self.loading = true
@@ -62,13 +66,17 @@ export function api_dycj_request(next, callback) {
         let rows = res;
 
         for(let item of rows){
+            item.src = {str: "第一财经", ico: (staticPath + "/img/dycj.ico"), url: "https://www.yicai.com"};
             item.time = item.datekey.replace(new RegExp("\\.",'g'), "-") + " " + item.hm
             item.content = item.newcontent
         }
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
         callback(d)
-        if(d) vue.data = d
+        if(d) {
+            vue.data = d
+            mergeViewData(d);
+        }
         if(next && next == "next") page += 1
     }).finally(() => callback())
 }

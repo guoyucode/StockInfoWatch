@@ -153,3 +153,20 @@ export const delayer = function(action, delay = 1500) {
         }, delay);
     };
 }
+
+
+//输入的时间格式为yyyy-MM-dd hh:mm:ss
+export const convertDateFromString = function(dateString) {
+    if(dateString.length == 16) dateString+=":00"
+    let arr1 = dateString.split(" ");
+    let sdate = arr1[0].split('-');
+    let time = arr1[1].split(":");
+    let year = sdate[0] ? Number.parseInt(sdate[0]) : undefined;
+    let month = sdate[0] ? Number.parseInt(sdate[1]) : undefined;
+    let day = sdate[0] ? Number.parseInt(sdate[2]) : undefined;
+    let hours = sdate[0] ? Number.parseInt(time[0]) : undefined;
+    let minutes = sdate[0] ? Number.parseInt(time[1]) : undefined;
+    let seconds = sdate[0] ? Number.parseInt(time[2]) : undefined;
+    let date = new Date(year, month, day, hours, minutes, seconds);
+    return date;
+}

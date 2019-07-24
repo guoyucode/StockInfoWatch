@@ -20,6 +20,8 @@ Vue.prototype.$eventBus = new Vue() //事件总线
 //Vue.prototype.$store = store
 //Vue.prototype.$configData = configData
 
+window.staticPath = require('path').join(__static);
+
 /* eslint-disable no-new */
 new Vue({
   components: { App },

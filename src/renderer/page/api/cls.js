@@ -4,6 +4,7 @@ import {clone, DateFormat, delayer} from "../js/utils";
 import {req} from "./common";
 import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../data_handler/config_data";
+import {mergeViewData, viewData} from "../data_handler/view_data"
 
 const url = "https://www.cls.cn/nodeapi/telegraphs?"
 const updateUrl = "https://www.cls.cn/nodeapi/roll/get_update_roll_list?"
@@ -58,6 +59,7 @@ let vue = {
 //请求财联社电报数据
 export function api_cls_request(next, callback) {
 
+
     vue.loading = true
 
     //定时器, 只执行一次
@@ -67,10 +69,13 @@ export function api_cls_request(next, callback) {
         configData._watch.push({"cls.enable": (enable) => {
             if(enable) run(configData.cls.setInterval_time);
             else run(0);
+            api_cls_request(undefined, callback)
         }})
         vue.onece = true;
         run(configData.cls.setInterval_time);
     }
+
+    if(!configData.cls.enable) return;
 
     if(next && next == "refresh" && vue.data && vue.data.length > 0){
         requestUpdateData(next, callback)
@@ -90,6 +95,7 @@ export function api_cls_request(next, callback) {
 
         let rows = res.data.roll_data;
         for(let item of rows){
+            item.src = {str: "财联杜电报", ico: (staticPath + "/img/cls.ico"), url: "https://www.cls.cn"};
             item.time = formatTime(item.ctime * 1000)
             item.content = item.brief
         }
@@ -97,7 +103,10 @@ export function api_cls_request(next, callback) {
         console.log("财联网 res-data", rows)
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "content");
         callback(d)
-        if(d) vue.data = d
+        if(d) {
+            vue.data=d;
+            mergeViewData(d);
+        }
     }).finally(() => callback())
 }
 
@@ -111,6 +120,7 @@ function requestUpdateData(next, callback) {
         if(!res || !res.update_num ||  !res.roll_data || res.roll_data.length === 0) return
         let rows = res.roll_data
         for(let item of rows){
+            item.src = {str: "财联杜电报", ico: (staticPath + "/img/cls.ico"), url: "https://www.cls.cn"};
             item.time = formatTime(item.ctime * 1000)
             item.content = item.brief
         }

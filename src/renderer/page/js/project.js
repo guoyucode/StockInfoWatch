@@ -95,7 +95,7 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
         }
     } else {
         //合并新数据
-        mergeData(newRows, data)
+        mergeData2(newRows, data)
     }
 
     //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
@@ -125,7 +125,7 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
     }
 
     //数据长度限制
-    dataLenthLimit(data)
+    //dataLenthLimit(data)
 
     return data
 }
@@ -193,7 +193,8 @@ const notification = function(title, body) {
         ipc.send("showWindows")
 
         // 切换tab
-        configData.common.tabName = title
+        let titles = ["财联社电报", "云财经", "第一财经直播区", "选股宝"];
+        if(titles.includes(title)) configData.common.tabName = "财经新闻"
     }
 }
 
@@ -201,7 +202,7 @@ const notification = function(title, body) {
 /**
  * 合并数据, 新数据添加到target, 旧数据移除
  */
-const mergeData = function (src, target) {
+export const mergeData2 = function (src, target) {
     if (!src || src.length === 0) return
 
     for (let i = src.length - 1; i >= 0; i--) {
@@ -211,12 +212,38 @@ const mergeData = function (src, target) {
             continue
         }
         for (let d2 of target) {
-            if (row.id == d2.id) {
+            if (row.src.str == d2.src.str && row.id == d2.id) {
                 src[i] = undefined
             }
         }
         if (src[i]) {
             target.splice(0, 0, src[i])
+        } else {
+            src.splice(i, 1)
+        }
+    }
+}
+
+/**
+ * 合并数据, 新数据添加到target, 旧数据移除
+ * 只做删除,不做合并
+ */
+const mergeData3 = function (src, target) {
+    if (!src || src.length === 0) return
+
+    for (let i = src.length - 1; i >= 0; i--) {
+        let row = src[i];
+        if (!row) {
+            src.splice(i, 1)
+            continue
+        }
+        for (let d2 of target) {
+            if (row.src.str == d2.src.str && row.id == d2.id) {
+                src[i] = undefined
+            }
+        }
+        if (src[i]) {
+            //target.splice(0, 0, src[i])
         } else {
             src.splice(i, 1)
         }

@@ -3,49 +3,22 @@
 		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
 			<!--v-loading.lock="cls.loading" -->
-			<el-tab-pane v-if="configData.cls.enable" v-loading.lock="cls.loading" name="财联社电报" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.cls.enable" name="财经新闻" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
 					<i><img class="tag-logo" :src="staticPath + '/img/cls.ico'"></i>
-					财联社电报
-					<span class="unread" @click="cls.unReadNum=-1" v-if="cls.unReadNum>0">&nbsp;{{cls.unReadNum}}&nbsp;</span>
+					财经新闻
+					<span class="unread" @click="viewData.unReadNum=-1" v-if="viewData.unReadNum>0">&nbsp;{{viewData.unReadNum}}&nbsp;</span>
 				</span>
-				<news_view :view-data="cls" :next-page="cls_request" ></news_view>
+				<news_view></news_view>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="configData.hdy.enable" v-loading="hdy.loading" name="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane v-if="configData.hdy.enable" name="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
 					<i><img class="tag-logo" :src="staticPath + '/img/hdy.ico'"></i>
-					深交所互动易问答
+					互动问答
 					<span class="unread" @click="hdy.unReadNum=-1" v-if="hdy.unReadNum>0">&nbsp;{{hdy.unReadNum}}&nbsp;</span>
 				</span>
-				<news_view :view-data="hdy" :next-page="hdy_request" ></news_view>
-			</el-tab-pane>
-
-			<el-tab-pane v-if="configData.dycj.enable" v-loading="dycj.loading" name="第一财经直播区" label="第一财经直播区" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<span slot="label">
-					<i><img class="tag-logo" :src="staticPath + '/img/dycj.ico'"></i>
-					第一财经直播区
-					<span class="unread" @click="dycj.unReadNum=-1" v-if="dycj.unReadNum>0">&nbsp;{{dycj.unReadNum}}&nbsp;</span>
-				</span>
-				<news_view :view-data="dycj" :loading="dycj.loading" :next-page="dycj_request"  ></news_view>
-			</el-tab-pane>
-
-			<el-tab-pane v-if="configData.xuangubao.enable" v-loading="xuangubao.loading" name="选股宝" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
-				<span slot="label">
-					<i><img class="tag-logo" :src="staticPath + '/img/xuangubao.png'"></i>
-					选股宝
-					<span class="unread" @click="xuangubao.unReadNum=-1" v-if="xuangubao.unReadNum>0">&nbsp;{{xuangubao.unReadNum}}&nbsp;</span>
-				</span>
-				<news_view :view-data="xuangubao" :next-page="xuangubao_request" ></news_view>
-			</el-tab-pane>
-
-			<el-tab-pane v-if="configData.yuncaijing.enable" v-loading="yuncaijing.loading" name="云财经" label="云财经" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}">
-				<span slot="label">
-					<i><img class="tag-logo" :src="staticPath + '/img/yuncaijing.ico'"></i>
-					云财经
-					<span class="unread" @click="yuncaijing.unReadNum=-1" v-if="yuncaijing.unReadNum>0">&nbsp;{{yuncaijing.unReadNum}}&nbsp;</span>
-				</span>
-				<news_view :view-data="yuncaijing" :next-page="yuncaijing_request" ></news_view>
+				<hdy></hdy>
 			</el-tab-pane>
 
 			<el-tab-pane :closable="true" v-if="configData.setting.enable" name="设置" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" :lazy="true">
@@ -66,11 +39,15 @@
     import {initAlert, refreshAction} from "./js/project";
     import configData from "./data_handler/config_data"
     import {api_cls_request} from "./api/cls"
-    import News_view from "./news_view";
+    import Hdy from "./hdy";
+    import News_view from "./new_view";
     import {api_dycj_request} from "./api/dycj";
     import {api_hdy_request} from "./api/hdy";
     import {api_xuangubao_request} from "./api/xuangubao";
     import {api_yuncaijing_request} from "./api/yuncaijing";
+    import {api_taoguba_request} from "./api/taoguba";
+    import {viewData} from "./data_handler/view_data"
+
 
     const staticPath = require('path').join(__static);
 
@@ -78,39 +55,16 @@
 
     export default {
         name: 'index',
-        components: {News_view, Setting},
+        components: {News_view, Setting, Hdy},
         data() {
             return {
-                staticPath: staticPath,
-                unReadNum:{
-                    cls: 0,
-	                hdy: 0,
-                },
-                cls: {
-                    data: [],
-	                loading: true,
-                    unReadNum: 0,
-                },
                 hdy: {
                     data: [],
                     loading: true,
                     unReadNum: 0,
                 },
-                dycj: {
-                    data: [],
-                    loading: true,
-                    unReadNum: 0,
-                },
-                xuangubao: {
-                    data: [],
-                    loading: true,
-                    unReadNum: 0,
-                },
-                yuncaijing: {
-                    data: [],
-                    loading: true,
-                    unReadNum: 0,
-                },
+                viewData: viewData,
+                staticPath: staticPath,
                 configData: configData,
                 settingClose: true,
                 dbStore: null,
@@ -138,54 +92,22 @@
 
                 //发布刷新事件
 	            //vue.$eventBus.$emit(name + "-refresh")
-	            if(name == "财联社电报") vue.cls_request("refresh")
-                else if(name == "深交所互动易问答") vue.hdy_request("refresh")
-                else if(name == "第一财经直播区") vue.dycj_request("refresh")
-                else if(name == "选股宝") vue.xuangubao_request("refresh")
-                else if(name == "云财经") vue.yuncaijing_request("refresh")
+	            if(name == "财联社电报") api_cls_request("refresh")
+                else if(name == "深交所互动易问答") api_hdy_request("refresh")
+                else if(name == "第一财经直播区") api_dycj_request("refresh")
+                else if(name == "选股宝") api_xuangubao_request("refresh")
+                else if(name == "云财经") api_yuncaijing_request("refresh")
 
             })
 
         },
         methods: {
 
-            cls_request(param) {
-                vue.cls.loading = true
-                api_cls_request(param, v => {
-                    if(v) vue.cls.data = v
-	                vue.cls.loading = false
-                })
-            },
-
             hdy_request(param) {
                 vue.hdy.loading = true
                 api_hdy_request(param, v => {
                     if(v) vue.hdy.data = v
                     vue.hdy.loading = false
-                })
-            },
-
-	        dycj_request(param) {
-                vue.dycj.loading = true
-                api_dycj_request(param, v => {
-                    if(v) vue.dycj.data = v
-                    vue.dycj.loading = false
-                })
-            },
-
-            xuangubao_request(param){
-                vue.xuangubao.loading = true
-                api_xuangubao_request(param, v => {
-                    if(v) vue.xuangubao.data = v
-                    vue.xuangubao.loading = false
-                })
-            },
-
-            yuncaijing_request(param){
-                vue.yuncaijing.loading = true
-                api_yuncaijing_request(param, v => {
-                    if(v) vue.yuncaijing.data = v
-                    vue.yuncaijing.loading = false
                 })
             },
 
@@ -227,17 +149,6 @@
 	            alert("全部关闭将不能显示任何数据")
             },
 
-            //定时器
-            setInterval(title = "定时器标题", setInterval_time = 0, reqestFun) {
-                if (!setInterval_time) return
-                if (vue[title]) {
-                    clearInterval(vue[title])
-                    vue[title] = null
-                }
-                vue[title] = setInterval(function () {
-                    reqestFun("setInterval")
-                }, setInterval_time * 1000)
-            }
 
         }
     }
