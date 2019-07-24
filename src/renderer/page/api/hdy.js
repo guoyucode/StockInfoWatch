@@ -21,7 +21,7 @@ const unReadUrl = "http://irm.cninfo.com.cn/ircs/index/unread"
  */
 export const interactiveRequest = data => {
     const d = {}
-    d.searchTypes = "1,11,"
+    d.searchTypes = "11,"
     d.pageSize = 20
     d.pageNo = data.page || 1
     return req({url: url, method: 'POST', data: qs.stringify(d)})

@@ -23,7 +23,7 @@
 
 				<!--深交所问答易-->
 				<span v-if="item.companyShortName" style="padding-left: 15px;"
-				      v-html="'公司: ' + item.companyShortName_color + ' [' + item.stockCode + ']'"></span>
+				      v-html="'公司: ' + item.companyShortName_color + (item.stockCode ? ' (' + item.stockCode + ')' : '')"></span>
 				<span v-if="item.authorName" style="padding-left: 15px;" v-html="'发布人: ' + item.authorName_color" ></span>
 
 			</div>
@@ -63,6 +63,7 @@
     import {isExistingFilterData, isExistingKeyword} from "./js/project"
     import {viewDataHdy} from "./data_handler/view_data_hdy";
     import {api_hdy_request} from "./api/hdy";
+    import {api_ehd_request} from "./api/ehd";
 
     //import {delayer} from "./js/utils";
 
@@ -115,6 +116,7 @@
         mounted() {
 
             api_hdy_request("first", vue.requestCallback)
+            api_ehd_request("first", vue.requestCallback)
 
             //设置窗口大小
             this.windowsResize()

@@ -29,6 +29,8 @@ const state = {
 
     taoguba: clone(defConfig),
 
+    ehd: clone(defConfig),
+
     setting: {
         enable: true,
     },

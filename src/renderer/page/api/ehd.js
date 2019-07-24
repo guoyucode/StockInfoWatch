@@ -8,9 +8,6 @@ import {mergeViewDataHdy} from "../data_handler/view_data_hdy";
 
 const url = "http://sns.sseinfo.com/ajax/feeds.do?";
 
-//查询未读
-const unReadUrl = "http://irm.cninfo.com.cn/ircs/index/unread"
-
 /*
   互动易
   data 数据字段解析:
@@ -22,16 +19,18 @@ const unReadUrl = "http://irm.cninfo.com.cn/ircs/index/unread"
 export const interactiveRequest = data => {
     const d = clone(vue)
     d.pageNo = data.page || 1
-    return req({url: url, method: 'POST', data: qs.stringify(d)})
+    return req({url: url + qs.stringify(d), method: 'GET'})
 }
 
 
 let vue = {
     type: 11,
-    pageSize: 10,
+    pageSize: 20,
     lastid: -1,
     show: 1,
     page: 1,
+    config: configData.ehd,
+    data: [],
 }
 
 
@@ -42,19 +41,19 @@ function formatTime(time) {
     return DateFormat(date)
 }
 
-//互动易请求
-export function api_hdy_request(next, callback) {
+//上证E互动
+export function api_ehd_request(next, callback) {
 
     //定时器, 只执行一次
     if(!vue.onece){
-        let run = delayer(time => { mySetInterval("互动易-定时器", time, ()=>api_hdy_request("setInterval", callback)) })
-        configData._watch.push({"hdy.setInterval_time": run});
-        configData._watch.push({"hdy.enable": (enable) => {
-                if(enable) run(configData.hdy.setInterval_time);
+        let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval", callback)) })
+        configData._watch.push({"ehd.setInterval_time": run});
+        configData._watch.push({"ehd.enable": (enable) => {
+                if(enable) run(configData.ehd.setInterval_time);
                 else run(0);
             }})
         vue.onece = true;
-        run(configData.hdy.setInterval_time);
+        run(configData.ehd.setInterval_time);
     }
 
     const self = vue
@@ -63,25 +62,14 @@ export function api_hdy_request(next, callback) {
     if (next && next == "next") data.page = vue.page+1
     interactiveRequest(data).then(function (res) {
         self.loading = false
-        if(!res || !res.results || res.results.length === 0) {
+        if(!res) {
             callback()
             return
         }
-        let rows = res.results;
+        let rows = convObj(res);
+        console.log("上证E互动parseFromString", rows)
 
-        for(let item of rows){
-            item.src = {str: "深交所互动易", ico: (staticPath + "/img/hdy.ico"), url: "http://irm.cninfo.com.cn"};
-            item.id = item.indexId;
-            item.time = formatTime(Number.parseInt(item.pubDate))
-            item.content = "<a style=\"color: #0077E6;\">问 </a>" + item.mainContent;
-
-            if(item.attachedContent)
-            item.content2 = "<div class=\"text item\" v-if=\"item.attachedContent\">" +
-                " <a style=\"color: orange;\">答 </a>" + item.attachedContent + "</div>";
-        }
-
-        console.log("互动易 res-data", rows)
-        let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"深交所互动易问答":false))
+        let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"上证E互动":false))
         if (next && next == "next") vue.page+=1
         callback(d)
         if(d) {
@@ -91,3 +79,79 @@ export function api_hdy_request(next, callback) {
     }).finally(() => callback())
 }
 
+//
+const convObj = function (res) {
+    var el = document.createElement('html');
+    el.innerHTML = res;
+    let msgList = el.getElementsByClassName("m_feed_item");
+    let rows = []
+    if (!msgList || msgList.length == 0) {
+        el.remove();
+        return rows;
+    }
+    for (let item of msgList) {
+        let row = {};
+        rows.push(row);
+        row.id = "ehd_" + item.getAttribute("id");
+
+        let userElement = item.getElementsByClassName("m_feed_face")[0];
+        let userA = userElement.getElementsByTagName("a")[0];
+        row.uid = userA.getAttribute("uid");
+        row.authorName = userA.getAttribute("title");
+
+        let b = item.getElementsByClassName("m_feed_txt")[0];
+        let b1 = b.getElementsByTagName("a")[0];
+        row.companyShortName = b1.innerText.substring(1)
+        let text = b.innerText;
+        let content = text.substring(text.indexOf(")")).trim().substring(1)
+        row.content = `<a style=\"color: #0077E6;\">问 </a>${content}`
+
+        let content2Ele = item.getElementsByClassName("m_qa")[0].getElementsByClassName("m_feed_txt")[0];
+        let content2 = content2Ele.innerText.trim().substring(1);
+        row.content2 = `<div class='text item' v-if='item.attachedContent'><a style='color: orange;'>答 </a>${content2}</div>`
+
+        row.src = {str: "上证E互动", ico: (staticPath + "/img/ehd.ico"), url: "http://sns.sseinfo.com/"};
+
+        let t = item.getElementsByClassName("m_feed_from")[0].getElementsByTagName("span")[0].innerText;
+        row.t = t;
+        row.time = formartTime(t);
+    }
+    el.remove();
+    return rows;
+}
+
+const formartTime = function (v) {
+
+    let minutesAgo = v.indexOf("分钟前");
+    let hourBefor = v.indexOf("小时前");
+    let yesterday = v.indexOf("昨天");
+
+    if (minutesAgo != -1) {
+        let str = v.substring(0, minutesAgo);
+        let vInt = Number.parseInt(str);
+        let cur = new Date().getTime() - (vInt * 1000);
+        return DateFormat(new Date(cur))
+    } else if (hourBefor != -1) {
+        let str = v.substring(0, hourBefor);
+        let vInt = Number.parseInt(str);
+        let cur = new Date().getTime() - (vInt * 60 * 1000);
+        return DateFormat(new Date(cur))
+    } else if (yesterday != -1) {
+        let str = v.substring(yesterday + 4);
+        let tStrs = str.split(":");
+        let vInt = Number.parseInt(tStrs[0]);
+        let vInt2 = Number.parseInt(tStrs[1]);
+        let cur = new Date().getTime() - (12 * 60 * 1000);
+        let date1 = new Date(cur);
+        let date2 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDay(), vInt, vInt2);
+        return DateFormat(date2);
+    } else if (v.length == 12) {
+        let mouth = v.substring(0, 2);
+        let day = v.substring(3, 5);
+        let hours = v.substring(7, 9);
+        let sece = v.substring(10, 12);
+        let date = new Date(new Date().getFullYear(), mouth, day, hours, sece, 0);
+        return DateFormat(new Date(date))
+    }
+    return v
+}
