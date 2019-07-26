@@ -46,7 +46,8 @@ export const initAlert = function (vue) {
  */
 export const refreshAction = function (callback) {
     ipc.on("refresh-shortcut", function (e, msg) {
-        callback()
+        $EventBus.$emit("refresh")
+        //callback()
     })
 }
 
@@ -54,39 +55,21 @@ export const refreshAction = function (callback) {
 /**
  * 通用处理数据
  * @param self vue实例=this
- * @param next 请求数据类型: "refresh" = 刷新, "setInterval" = 定时器, "next" = 下一页
+ * @param next 请求数据类型: "first" = 第一次执行, "refresh" = 刷新, "setInterval" = 定时器, "next" = 下一页
  * @param newRows 新数据
  * @param dataKey 合并数据时根据哪个key
  * @param notificationTitle 通知标题
  * @param notificationContent_key 通知内容的key
  */
-export const generalHandlerData2 = function (data, next, newRows, notificationTitle) {
+export const generalHandlerData2 = function (data = [], next = "first", newRows = [], notificationTitle = "通知标题") {
 
+    //如果是定时任务,或者是刷新的逻辑,那么设置为未读消息
+    let setReaded = !(next && (next == "setInterval" || next == "refresh"))
+    for(let item of newRows) if(item.readed == undefined) item.readed = setReaded;
+    for(let item of data) if(item.readed == undefined) item.readed = setReaded;
 
-    if (next && (next == "setInterval" || next == "refresh")){
-        for(let item of newRows){
-            if(item.readed == undefined) item.readed = false;
-        }
-        for(let item of data){
-            if(item.readed == undefined) item.readed = false;
-        }
-    }else{
-        for(let item of newRows){
-            if(item.readed == undefined) item.readed = true;
-        }
-        for(let item of data){
-            if(item.readed == undefined) item.readed = true;
-        }
-    }
-
-
-
-    if (!next || next == "first") {
-        return newRows;
-    }
-
-    // 定时刷新的逻辑,手动刷新,下一页
-    // (next && (next == "refresh" || next == "setInterval" || next == "next")
+    //第一次请求时直接返回新数据
+    if (next == "first") return newRows;
 
     //合并数据, 加载更多与别的方式合并数据不一样
     if (next == "next") {
@@ -94,7 +77,7 @@ export const generalHandlerData2 = function (data, next, newRows, notificationTi
             data.push(item)
         }
     } else {
-        //合并新数据
+        //合并新数据,合并在后面
         mergeData2(newRows, data)
     }
 

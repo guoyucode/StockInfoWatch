@@ -7,7 +7,13 @@ export const viewDataHdy = {
     unReadNum: 0,
 }
 
-export const mergeViewDataHdy = function (list) {
+export const init_hdy_data = function () {
+    $EventBus.$on("refresh-hdy-complete", function (isSucces, data) {
+        if(isSucces) mergeViewDataHdy(data)
+    })
+}
+
+const mergeViewDataHdy = function (list) {
     mergeData2(list, viewDataHdy.data);
     viewDataHdy.data = viewDataHdy.data.sort(function (a, b) {
         let aTime = a.time + "";

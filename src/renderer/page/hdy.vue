@@ -61,9 +61,9 @@
     import keywordData from "./data_handler/keyword_subscription_data"
     import filterData from "./data_handler/filter_data"
     import {isExistingFilterData, isExistingKeyword} from "./js/project"
-    import {viewDataHdy} from "./data_handler/view_data_hdy";
-    import {api_hdy_request} from "./api/hdy";
-    import {api_ehd_request} from "./api/ehd";
+    import {init_hdy_data, viewDataHdy} from "./data_handler/view_data_hdy";
+    import {api_hdy_request, init_hdy_api} from "./api/hdy";
+    import {api_ehd_request, init_ehd_api} from "./api/ehd";
 
     //import {delayer} from "./js/utils";
 
@@ -115,12 +115,22 @@
         },
         mounted() {
 
-            api_hdy_request("first", vue.requestCallback)
-            api_ehd_request("first", vue.requestCallback)
+            $EventBus.$on("refresh-hdy-complete", function (isSuccess, data) {
+	            vue.viewData.loading = false;
+            })
 
             //设置窗口大小
             this.windowsResize()
             window.onresize = this.windowsResize
+
+	        //数据初始化
+            init_hdy_data();
+
+            //深交所问答请求初始化
+	        init_hdy_api();
+
+	        //上证问答请求初始化
+	        init_ehd_api();
 
         },
 	    updated(){

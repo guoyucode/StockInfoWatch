@@ -15,8 +15,13 @@ Vue.use(ElementUI)
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
-Vue.config.async = true
-Vue.prototype.$eventBus = new Vue() //事件总线
+
+/**
+ * 事件总线
+ * @type {Vue | CombinedVueInstance<Vue, object, object, object, Record<never, any>>}
+ */
+window.$EventBus = Vue.prototype.$EventBus = new Vue() //事件总线
+
 //Vue.prototype.$store = store
 //Vue.prototype.$configData = configData
 

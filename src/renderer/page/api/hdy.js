@@ -36,27 +36,39 @@ let vue = {
 }
 
 
+//事件接收
+export const init_hdy_api = function () {
 
-//格式化时间方法
-function formatTime(time) {
-    let date = new Date(time)
-    return DateFormat(date)
-}
-
-//互动易请求
-export function api_hdy_request(next, callback) {
+    //刷新
+    $EventBus.$on("refresh", function () {
+        if (configData.common.tabName == "互动问答") api_hdy_request("refresh")
+    })
 
     //定时器, 只执行一次
-    if(!vue.onece){
-        let run = delayer(time => { mySetInterval("互动易-定时器", time, ()=>api_hdy_request("setInterval", callback)) })
-        configData._watch.push({"hdy.setInterval_time": run});
-        configData._watch.push({"hdy.enable": (enable) => {
-                if(enable) run(configData.hdy.setInterval_time);
-                else run(0);
-            }})
-        vue.onece = true;
-        run(configData.hdy.setInterval_time);
-    }
+    let run = delayer(time => {
+        mySetInterval("互动易-定时器", time, () => api_hdy_request("setInterval", () => {
+        }))
+    })
+    configData._watch.push({"hdy.setInterval_time": run});
+    configData._watch.push({
+        "hdy.enable": (enable) => {
+            if (enable) run(configData.hdy.setInterval_time);
+            else run(0);
+        }
+    })
+    run(configData.hdy.setInterval_time);
+
+
+    //执行一次
+    api_hdy_request();
+
+}
+
+
+//互动易请求
+function api_hdy_request(next = "frist") {
+
+    if (!configData.hdy.enable) return
 
     const self = vue
     if (!next || next != "setInterval") self.loading = true
@@ -65,7 +77,7 @@ export function api_hdy_request(next, callback) {
     interactiveRequest(data).then(function (res) {
         self.loading = false
         if(!res || !res.results || res.results.length === 0) {
-            callback()
+            $EventBus.$emit("refresh-hdy-complete", false)
             return
         }
         let rows = res.results;
@@ -73,7 +85,8 @@ export function api_hdy_request(next, callback) {
         for(let item of rows){
             item.src = {str: "深交所互动易", ico: (staticPath + "/img/hdy.ico"), url: "http://irm.cninfo.com.cn"};
             item.id = item.indexId;
-            item.time = formatTime(Number.parseInt(item.pubDate))
+            let time = Number.parseInt(item.pubDate);
+            item.time = DateFormat(new Date(time))
             item.content = "<a style=\"color: #0077E6;\">问 </a>" + item.mainContent;
 
             if(item.attachedContent)
@@ -84,11 +97,8 @@ export function api_hdy_request(next, callback) {
         console.log("互动易 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"深交所互动易问答":false))
         if (next && next == "next") vue.page+=1
-        callback(d)
-        if(d) {
-            vue.data = d
-            mergeViewDataHdy(d)
-        }
-    }).finally(() => callback())
+        $EventBus.$emit("refresh-hdy-complete", true, d)
+        vue.data = d
+    })
 }
 

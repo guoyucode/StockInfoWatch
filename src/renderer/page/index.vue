@@ -87,7 +87,7 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-            refreshAction(function () {
+            refreshAction(/*function () {
                 let name = vue.configData.common.tabName;
 
                 //发布刷新事件
@@ -98,7 +98,7 @@
                 else if(name == "选股宝") api_xuangubao_request("refresh")
                 else if(name == "云财经") api_yuncaijing_request("refresh")
 
-            })
+            }*/)
 
         },
         methods: {

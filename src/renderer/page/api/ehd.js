@@ -35,26 +35,33 @@ let vue = {
 
 
 
-//格式化时间方法
-function formatTime(time) {
-    let date = new Date(time)
-    return DateFormat(date)
+export const init_ehd_api = function () {
+
+    //事件接收
+    $EventBus.$on("refresh", function () {
+        if(configData.common.tabName == "互动问答" && configData.ehd.enable) api_ehd_request("refresh")
+    })
+
+    //定时器, 只执行一次
+    let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval", ()=>{})) })
+    configData._watch.push({"ehd.setInterval_time": run});
+    configData._watch.push({
+        "ehd.enable": (enable) => {
+            if (enable) run(configData.ehd.setInterval_time);
+            else run(0);
+        }
+    })
+    run(configData.ehd.setInterval_time);
+
+    //执行
+    api_ehd_request();
+
 }
 
 //上证E互动
-export function api_ehd_request(next, callback) {
+function api_ehd_request(next = "frist") {
 
-    //定时器, 只执行一次
-    if(!vue.onece){
-        let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval", callback)) })
-        configData._watch.push({"ehd.setInterval_time": run});
-        configData._watch.push({"ehd.enable": (enable) => {
-                if(enable) run(configData.ehd.setInterval_time);
-                else run(0);
-            }})
-        vue.onece = true;
-        run(configData.ehd.setInterval_time);
-    }
+    if (!configData.ehd.enable) return;
 
     const self = vue
     if (!next || next != "setInterval") self.loading = true
@@ -63,7 +70,7 @@ export function api_ehd_request(next, callback) {
     interactiveRequest(data).then(function (res) {
         self.loading = false
         if(!res) {
-            callback()
+            $EventBus.$emit("refresh-hdy-complete", false)
             return
         }
         let rows = convObj(res);
@@ -71,12 +78,9 @@ export function api_ehd_request(next, callback) {
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"上证E互动":false))
         if (next && next == "next") vue.page+=1
-        callback(d)
-        if(d) {
-            vue.data = d
-            mergeViewDataHdy(d)
-        }
-    }).finally(() => callback())
+        $EventBus.$emit("refresh-hdy-complete", true, d);
+        if(d) vue.data = d
+    })
 }
 
 //
@@ -107,7 +111,7 @@ const convObj = function (res) {
         row.content = `<a style=\"color: #0077E6;\">问 </a>${content}`
 
         let content2Ele = item.getElementsByClassName("m_qa")[0].getElementsByClassName("m_feed_txt")[0];
-        let content2 = content2Ele.innerText.trim().substring(1);
+        let content2 = content2Ele.innerText.trim();
         row.content2 = `<div class='text item' v-if='item.attachedContent'><a style='color: orange;'>答 </a>${content2}</div>`
 
         row.src = {str: "上证E互动", ico: (staticPath + "/img/ehd.ico"), url: "http://sns.sseinfo.com/"};
