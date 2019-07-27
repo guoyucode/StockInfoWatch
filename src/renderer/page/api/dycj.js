@@ -36,22 +36,26 @@ let vue = {
 
 let page = 1
 
+/**
+ * 初始化接口
+ */
+export const init_api_dycj = function () {
+
+    //事件接收
+    $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_dycj_request("refresh") })
+
+    //定时器
+    let run = delayer(time => mySetInterval("第一财经-定时器", time, ()=>api_dycj_request("setInterval")))
+    configData._watch.push({"dycj.setInterval_time": run});
+    configData._watch.push({"dycj.enable": enable => run(enable?configData.dycj.setInterval_time:enable)})
+    run(configData.dycj.setInterval_time);
+
+    api_dycj_request();
+}
+
 
 //请求数据
-export function api_dycj_request(next, callback) {
-
-    //定时器, 只执行一次
-    if(!vue.onece){
-        let run = delayer(time => { mySetInterval("第一财经-定时器", time, ()=>api_dycj_request("setInterval", callback)) })
-        configData._watch.push({"dycj.setInterval_time": run});
-        configData._watch.push({"dycj.enable": (enable) => {
-                if(enable) run(configData.dycj.setInterval_time);
-                else run(0);
-                api_dycj_request(undefined, callback)
-            }})
-        vue.onece = true;
-        run(configData.dycj.setInterval_time);
-    }
+function api_dycj_request(next = "first") {
 
     if(!configData.dycj.enable) return;
 
@@ -62,7 +66,10 @@ export function api_dycj_request(next, callback) {
     dycjRequest(data).then(function (res) {
         self.loading = false
         console.log("第一财经 res-data", res)
-        if(!res || !(res instanceof Array) || res.length === 0) return
+        if(!res || !(res instanceof Array) || res.length === 0) {
+            $EventBus.$emit("refresh-news-complete", false);
+            return
+        }
         let rows = res;
 
         for(let item of rows){
@@ -72,13 +79,10 @@ export function api_dycj_request(next, callback) {
         }
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
-        callback(d)
-        if(d) {
-            vue.data = d
-            mergeViewData(d);
-        }
+        $EventBus.$emit("refresh-news-complete", true, d);
+        if(d) vue.data = d;
         if(next && next == "next") page += 1
-    }).finally(() => callback())
+    })
 }
 
 

@@ -45,12 +45,7 @@ export const init_ehd_api = function () {
     //定时器, 只执行一次
     let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval", ()=>{})) })
     configData._watch.push({"ehd.setInterval_time": run});
-    configData._watch.push({
-        "ehd.enable": (enable) => {
-            if (enable) run(configData.ehd.setInterval_time);
-            else run(0);
-        }
-    })
+    configData._watch.push({"ehd.enable": enable => run(enable?configData.ehd.setInterval_time:enable)});
     run(configData.ehd.setInterval_time);
 
     //执行
@@ -59,7 +54,7 @@ export const init_ehd_api = function () {
 }
 
 //上证E互动
-function api_ehd_request(next = "frist") {
+function api_ehd_request(next = "first") {
 
     if (!configData.ehd.enable) return;
 

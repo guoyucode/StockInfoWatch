@@ -61,11 +61,11 @@
     import keywordData from "./data_handler/keyword_subscription_data"
     import filterData from "./data_handler/filter_data"
     import {isExistingFilterData} from "./js/project"
-    import {viewData} from "./data_handler/view_data"
-    import {api_cls_request} from "./api/cls";
-    import {api_dycj_request} from "./api/dycj";
-    import {api_xuangubao_request} from "./api/xuangubao";
-    import {api_yuncaijing_request} from "./api/yuncaijing";
+    import {init_news_data, viewData} from "./data_handler/view_data"
+    import {init_api_cls} from "./api/cls";
+    import {init_api_dycj} from "./api/dycj";
+    import {init_api_xuangubao} from "./api/xuangubao";
+    import {api_yuncaijing_request, init_api_yuncaijing} from "./api/yuncaijing";
 
     //import {delayer} from "./js/utils";
 
@@ -112,14 +112,17 @@
         mounted() {
             //this.nextPage()
 
+	        //初始化数据
+	        init_news_data();
+
             //设置窗口大小
             this.windowsResize()
             window.onresize = this.windowsResize
 
-	        api_cls_request("first", vue.requestCallback)
-	        api_dycj_request("first", vue.requestCallback)
-            api_xuangubao_request("first", vue.requestCallback)
-            api_yuncaijing_request("first", vue.requestCallback)
+	        init_api_cls();
+            init_api_dycj();
+            init_api_xuangubao();
+            init_api_yuncaijing();
 
         },
 	    updated(){

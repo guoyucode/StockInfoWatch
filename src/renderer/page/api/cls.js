@@ -4,7 +4,7 @@ import {clone, DateFormat, delayer} from "../js/utils";
 import {req} from "./common";
 import {generalHandlerData2, mySetInterval} from "../js/project";
 import configData from "../data_handler/config_data";
-import {mergeViewData, viewData} from "../data_handler/view_data"
+import {mergeViewData} from "../data_handler/view_data"
 
 const url = "https://www.cls.cn/nodeapi/telegraphs?"
 const updateUrl = "https://www.cls.cn/nodeapi/roll/get_update_roll_list?"
@@ -55,30 +55,31 @@ let vue = {
     config: configData.cls,
 }
 
+/**
+ * 初始化数据
+ */
+export const init_api_cls = function () {
+
+    //事件接收
+    $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_cls_request("refresh") })
+
+    //定时器
+    let run = delayer(time => mySetInterval("财联社电报-定时器", time, () => api_cls_request("setInterval")))
+    configData._watch.push({"cls.setInterval_time": run});
+    configData._watch.push({"cls.enable": enable => run(enable?configData.cls.setInterval_time:enable)})
+    run(configData.cls.setInterval_time);
+
+    api_cls_request();
+}
+
 
 //请求财联社电报数据
-export function api_cls_request(next, callback) {
-
-
-    vue.loading = true
-
-    //定时器, 只执行一次
-    if(!vue.onece){
-        let run = delayer(time => { mySetInterval("财联社电报-定时器", time, ()=>api_cls_request("setInterval", callback)) })
-        configData._watch.push({"cls.setInterval_time": run});
-        configData._watch.push({"cls.enable": (enable) => {
-            if(enable) run(configData.cls.setInterval_time);
-            else run(0);
-            api_cls_request(undefined, callback)
-        }})
-        vue.onece = true;
-        run(configData.cls.setInterval_time);
-    }
+function api_cls_request(next = "first") {
 
     if(!configData.cls.enable) return;
 
     if(next && next == "refresh" && vue.data && vue.data.length > 0){
-        requestUpdateData(next, callback)
+        requestUpdateData(next)
         return
     }
 
@@ -90,8 +91,14 @@ export function api_cls_request(next, callback) {
 
     caiLianSheRequest(data).then(function (res) {
         vue.loading = false
-        if(!res || res.error == undefined || res.error != 0 || !res.data) return;
-        if(!res || !res.data.roll_data || res.data.roll_data.length === 0) return;
+        if(!res || res.error == undefined || res.error != 0 || !res.data) {
+            $EventBus.$emit("refresh-news-complete", false);
+            return;
+        }
+        if(!res || !res.data.roll_data || res.data.roll_data.length === 0) {
+            $EventBus.$emit("refresh-news-complete", false);
+            return;
+        }
 
         let rows = res.data.roll_data;
         for(let item of rows){
@@ -102,12 +109,9 @@ export function api_cls_request(next, callback) {
 
         console.log("财联网 res-data", rows)
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "content");
-        callback(d)
-        if(d) {
-            vue.data=d;
-            mergeViewData(d);
-        }
-    }).finally(() => callback())
+        $EventBus.$emit("refresh-news-complete", true, d);
+        if(d) vue.data = d;
+    })
 }
 
 //定时请求
@@ -125,8 +129,8 @@ function requestUpdateData(next, callback) {
             item.content = item.brief
         }
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false));
-        callback(d)
-    }).finally(() => callback())
+        $EventBus.$emit("refresh-news-complete", true, d)
+    })
 }
 
 //格式化时间方法

@@ -7,7 +7,13 @@ export const viewData = {
     unReadNum: 0,
 }
 
-export const mergeViewData = function (list) {
+export const init_news_data = function () {
+    $EventBus.$on("refresh-news-complete", function (isSucces, data) {
+        if(isSucces) mergeViewData(data)
+    })
+}
+
+const mergeViewData = function (list) {
     mergeData2(list, viewData.data);
     viewData.data = viewData.data.sort(function (a, b) {
         let aTime = a.time + "";

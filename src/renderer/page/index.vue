@@ -38,18 +38,9 @@
     import Setting from "./setting";
     import {initAlert, refreshAction} from "./js/project";
     import configData from "./data_handler/config_data"
-    import {api_cls_request} from "./api/cls"
     import Hdy from "./hdy";
     import News_view from "./new_view";
-    import {api_dycj_request} from "./api/dycj";
-    import {api_hdy_request} from "./api/hdy";
-    import {api_xuangubao_request} from "./api/xuangubao";
-    import {api_yuncaijing_request} from "./api/yuncaijing";
-    import {api_taoguba_request} from "./api/taoguba";
     import {viewData} from "./data_handler/view_data"
-
-
-    const staticPath = require('path').join(__static);
 
     let vue = null;
 

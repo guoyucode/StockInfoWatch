@@ -53,20 +53,9 @@ let vue = {
 let page = 1
 
 //请求数据
-export function api_yuncaijing_request(next, callback) {
+function api_yuncaijing_request(next) {
 
-    //定时器, 只执行一次
-    if(!vue.onece){
-        let run = delayer(time => { mySetInterval("云财经-定时器", time, ()=>api_yuncaijing_request("setInterval", callback)) })
-        configData._watch.push({"yuncaijing.setInterval_time": run});
-        configData._watch.push({"yuncaijing.enable": (enable) => {
-                if(enable) run(configData.yuncaijing.setInterval_time);
-                else run(0);
-            }})
-        vue.onece = true;
-        run(configData.yuncaijing.setInterval_time);
-    }
-
+    if(!configData.yuncaijing.enable) return;
 
     const self = vue
     if(!next || next != "setInterval") self.loading = true
@@ -75,7 +64,7 @@ export function api_yuncaijing_request(next, callback) {
     yuncaijingRequest(data).then(function (res) {
         self.loading = false
         if(!res || !res.data || res.data.length === 0) {
-            callback()
+            $EventBus.$emit("refresh-news-complete", false);
             return
         }
         let rows = res.data;
@@ -89,13 +78,10 @@ export function api_yuncaijing_request(next, callback) {
 
         console.log("云财经 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"云财经":false))
-        callback(d)
-        if(d) {
-            vue.data = d
-            mergeViewData(d);
-        }
+        $EventBus.$emit("refresh-news-complete", true, d);
+        if(d) vue.data = d;
         if(next && next == "next") page+=1
-    }).finally(() => callback())
+    })
 
 }
 
@@ -103,4 +89,21 @@ export function api_yuncaijing_request(next, callback) {
 function formatTime(inputtime) {
     let d1 = new Date(Number.parseInt(inputtime) * 1000);
     return DateFormat(d1)
+}
+
+/**
+ * 初始化数据
+ */
+export const init_api_yuncaijing = function () {
+
+    //事件接收
+    $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_yuncaijing_request("refresh") })
+
+    //定时器
+    let run = delayer(time => mySetInterval("yuncaijing-定时器", time, () => api_yuncaijing_request("setInterval")))
+    configData._watch.push({"yuncaijing.setInterval_time": run});
+    configData._watch.push({"yuncaijing.enable": enable => run(enable?configData.yuncaijing.setInterval_time:enable)})
+    run(configData.yuncaijing.setInterval_time);
+
+    api_yuncaijing_request();
 }

@@ -254,6 +254,7 @@ export function mySetInterval(title = "定时器标题", setInterval_time = 0, r
         mySetInterval_List[title] = null
     }
     if (!setInterval_time) return
+    reqestFun();
     mySetInterval_List[title] = setInterval(function () {
         reqestFun()
     }, setInterval_time * 1000)
