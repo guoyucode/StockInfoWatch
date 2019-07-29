@@ -65,7 +65,7 @@
     import {init_api_cls} from "./api/cls";
     import {init_api_dycj} from "./api/dycj";
     import {init_api_xuangubao} from "./api/xuangubao";
-    import {api_yuncaijing_request, init_api_yuncaijing} from "./api/yuncaijing";
+    import {init_api_yuncaijing} from "./api/yuncaijing";
 
     //import {delayer} from "./js/utils";
 
