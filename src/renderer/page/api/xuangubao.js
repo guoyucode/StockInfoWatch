@@ -72,6 +72,8 @@ function api_xuangubao_request(next = "first") {
         if(res.TailMsgId)
          markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
 
+    }).catch(e => {
+        $EventBus.$emit("refresh-news-complete", false);
     })
 }
 

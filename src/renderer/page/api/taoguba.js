@@ -75,7 +75,9 @@ export function api_taoguba_request(next, callback) {
         callback(d)
         if(d) vue.data = d
         if(next && next == "next") pageNo += 1
-    }).finally(() => callback())
+    }).catch(e => {
+        $EventBus.$emit("refresh-news-complete", false);
+    })
 }
 
 

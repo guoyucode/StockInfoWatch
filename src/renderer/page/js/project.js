@@ -72,9 +72,7 @@ export const generalHandlerData2 = function (data = [], next = "first", newRows 
 
     //合并数据, 加载更多与别的方式合并数据不一样
     if (next == "next") {
-        for (let item of newRows) {
-            data.push(item)
-        }
+        data.push(...newRows)
     } else {
         //合并新数据,合并在后面
         mergeData2(newRows, data)

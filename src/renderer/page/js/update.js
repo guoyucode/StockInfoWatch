@@ -87,7 +87,10 @@ export const update = function(_this){
 
 let isDev = process.env.NODE_ENV === 'development'
 let checkForUpdate = function (_this) {
-    //if(isDev) return;
+    if(isDev) {
+        console.warn("开发环境不检测更新")
+        return;
+    }
     function check() {
         _this.$electron.ipcRenderer.send("checkForUpdate");
     }

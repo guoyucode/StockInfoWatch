@@ -83,6 +83,8 @@ function api_dycj_request(next = "first") {
         $EventBus.$emit("refresh-news-complete", true, d);
         if(d) vue.data = d;
         if(next && next == "next") page += 1
+    }).catch(e => {
+        $EventBus.$emit("refresh-news-complete", false);
     })
 }
 

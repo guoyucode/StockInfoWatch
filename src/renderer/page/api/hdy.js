@@ -94,6 +94,8 @@ function api_hdy_request(next = "frist") {
         if (next && next == "next") vue.page+=1
         $EventBus.$emit("refresh-hdy-complete", true, d)
         vue.data = d
+    }).catch(e => {
+        $EventBus.$emit("refresh-hdy-complete", false);
     })
 }
 

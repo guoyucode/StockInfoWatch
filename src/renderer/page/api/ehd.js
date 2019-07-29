@@ -83,6 +83,8 @@ function api_ehd_request(next = "first") {
         if (next && next == "next") params.page+=1
         $EventBus.$emit("refresh-hdy-complete", true, d);
         if(d) vue.data = d
+    }).catch(e => {
+        $EventBus.$emit("refresh-hdy-complete", false);
     })
 }
 
