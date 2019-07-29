@@ -43,6 +43,7 @@ export const init_api_dycj = function () {
 
     //事件接收
     $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_dycj_request("refresh") })
+    $EventBus.$on("news-next", () => api_dycj_request("next"));
 
     //定时器
     let run = delayer(time => mySetInterval("第一财经-定时器", time, ()=>api_dycj_request("setInterval")))

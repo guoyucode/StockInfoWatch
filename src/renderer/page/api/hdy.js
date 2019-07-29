@@ -40,9 +40,8 @@ let vue = {
 export const init_hdy_api = function () {
 
     //刷新
-    $EventBus.$on("refresh", function () {
-        if (configData.common.tabName == "互动问答") api_hdy_request("refresh")
-    })
+    $EventBus.$on("refresh", () => {if (configData.common.tabName == "互动问答") api_hdy_request("refresh")})
+    $EventBus.$on("hdy-next", () => api_hdy_request("next"));
 
     //定时器, 只执行一次
     let run = delayer(time => {

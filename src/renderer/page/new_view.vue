@@ -112,6 +112,10 @@
         mounted() {
             //this.nextPage()
 
+            $EventBus.$on("refresh-news-complete", function (isSucces, data) {
+                vue.viewData.loading = false;
+            })
+
 	        //初始化数据
 	        init_news_data();
 
@@ -153,10 +157,7 @@
 
             nextPage(){
                 this.viewData.loading = true;
-                api_cls_request("next", vue.requestCallback)
-                api_dycj_request("next", vue.requestCallback)
-                api_xuangubao_request("next", vue.requestCallback)
-                api_yuncaijing_request("next", vue.requestCallback)
+                $EventBus.$emit("news-next");
             },
 
             openWindow(url) {

@@ -38,9 +38,8 @@ let vue = {
 export const init_ehd_api = function () {
 
     //事件接收
-    $EventBus.$on("refresh", function () {
-        if(configData.common.tabName == "互动问答" && configData.ehd.enable) api_ehd_request("refresh")
-    })
+    $EventBus.$on("refresh", () => {if(configData.common.tabName == "互动问答") api_ehd_request("refresh")})
+    $EventBus.$on("hdy-next", () => api_ehd_request("next"));
 
     //定时器, 只执行一次
     let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval", ()=>{})) })

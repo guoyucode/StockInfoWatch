@@ -98,6 +98,7 @@ export const init_api_yuncaijing = function () {
 
     //事件接收
     $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_yuncaijing_request("refresh") })
+    $EventBus.$on("news-next", () => api_yuncaijing_request("next"));
 
     //定时器
     let run = delayer(time => mySetInterval("yuncaijing-定时器", time, () => api_yuncaijing_request("setInterval")))

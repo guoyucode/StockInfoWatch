@@ -156,7 +156,7 @@
 
             nextPage(){
                 this.viewData.loading = true;
-                api_hdy_request("next", vue.requestCallback)
+                $EventBus.$emit("hdy-next")
             },
 
             requestCallback(v){

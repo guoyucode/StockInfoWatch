@@ -90,6 +90,7 @@ export const init_api_xuangubao = function () {
 
     //事件接收
     $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_xuangubao_request("refresh") })
+    $EventBus.$on("news-next", () => api_xuangubao_request("next"));
 
     //定时器
     let run = delayer(time => mySetInterval("财联社电报-定时器", time, () => api_xuangubao_request("setInterval")))

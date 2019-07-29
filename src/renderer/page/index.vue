@@ -78,19 +78,7 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-            refreshAction(/*function () {
-                let name = vue.configData.common.tabName;
-
-                //发布刷新事件
-	            //vue.$eventBus.$emit(name + "-refresh")
-	            if(name == "财联社电报") api_cls_request("refresh")
-                else if(name == "深交所互动易问答") api_hdy_request("refresh")
-                else if(name == "第一财经直播区") api_dycj_request("refresh")
-                else if(name == "选股宝") api_xuangubao_request("refresh")
-                else if(name == "云财经") api_yuncaijing_request("refresh")
-
-            }*/)
-
+            refreshAction(() =>$EventBus.$emit("refresh"))
         },
         methods: {
 

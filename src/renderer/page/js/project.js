@@ -46,8 +46,7 @@ export const initAlert = function (vue) {
  */
 export const refreshAction = function (callback) {
     ipc.on("refresh-shortcut", function (e, msg) {
-        $EventBus.$emit("refresh")
-        //callback()
+        callback()
     })
 }
 
