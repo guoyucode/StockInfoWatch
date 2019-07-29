@@ -92,13 +92,7 @@
                 for(let item of this.viewData.data){
                     item.readed = true;
                 }
-            },
-            keywordData: {
-              deep: true,
-	          handler: function (cur) {
-
-              },
-            },
+            }
         },
         data() {
             return {
