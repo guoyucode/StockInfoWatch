@@ -17,7 +17,6 @@ const unReadUrl = "http://irm.cninfo.com.cn/ircs/index/unread"
   packageDate: 发布时间
   mainContent: 问题
   attachedContent: 答案
-
  */
 export const interactiveRequest = data => {
     const d = {}
@@ -44,10 +43,7 @@ export const init_hdy_api = function () {
     $EventBus.$on("hdy-next", () => api_hdy_request("next"));
 
     //定时器, 只执行一次
-    let run = delayer(time => {
-        mySetInterval("互动易-定时器", time, () => api_hdy_request("setInterval", () => {
-        }))
-    })
+    let run = delayer(time => { mySetInterval("互动易-定时器", time, () => api_hdy_request("setInterval"))})
     configData._watch.push({"hdy.setInterval_time": run});
     configData._watch.push({
         "hdy.enable": (enable) => {

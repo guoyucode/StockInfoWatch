@@ -24,31 +24,7 @@
 				<el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添 加 </el-button>
 			</span>
 		</div>
-
 	</el-card>
-
-	<!--<div style="margin-bottom: 15px; ">
-		<label :style="{color: lableColor}" v-text="title"></label>
-		<el-tag
-				:key="tag"
-				v-for="tag in keywords"
-				closable
-				:disable-transitions="false"
-				@close="handleClose(tag)">
-			{{tag}}
-		</el-tag>
-		<el-input
-				class="input-new-tag"
-				v-if="inputVisible"
-				v-model="inputValue"
-				ref="saveTagInput"
-				size="small"
-				@keyup.enter.native="handleInputConfirm"
-				@blur="handleInputConfirm"
-		>
-		</el-input>
-		<el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添 加 </el-button>
-	</div>-->
 
 </template>
 

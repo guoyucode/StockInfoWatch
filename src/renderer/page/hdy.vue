@@ -89,7 +89,6 @@
 	        "viewData.unReadNum": function(cur){
                 if(cur != -1) return;
                 this.viewData.unReadNum = 0;
-                console.log("viewData.unReadNum ==-1", this.viewData.data)
                 for(let item of this.viewData.data){
                     item.readed = true;
                 }

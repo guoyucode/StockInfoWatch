@@ -17,9 +17,18 @@ const url = "http://sns.sseinfo.com/ajax/feeds.do?";
 
  */
 export const interactiveRequest = data => {
-    const d = clone(vue)
+    const d = clone(params)
     d.pageNo = data.page || 1
     return req({url: url + qs.stringify(d), method: 'GET'})
+}
+
+let params = {
+    type: 11,
+    pageSize: 20,
+    lastid: -1,
+    show: 1,
+    page: 1,
+    config: configData.ehd,
 }
 
 
@@ -42,7 +51,7 @@ export const init_ehd_api = function () {
     $EventBus.$on("hdy-next", () => api_ehd_request("next"));
 
     //定时器, 只执行一次
-    let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval", ()=>{})) })
+    let run = delayer(time => { mySetInterval("上证E互动-定时器", time, ()=>api_ehd_request("setInterval")) })
     configData._watch.push({"ehd.setInterval_time": run});
     configData._watch.push({"ehd.enable": enable => run(enable?configData.ehd.setInterval_time:enable)});
     run(configData.ehd.setInterval_time);
@@ -60,7 +69,7 @@ function api_ehd_request(next = "first") {
     const self = vue
     if (!next || next != "setInterval") self.loading = true
     var data = {}
-    if (next && next == "next") data.page = vue.page+1
+    if (next && next == "next") data.page = params.page+1
     interactiveRequest(data).then(function (res) {
         self.loading = false
         if(!res) {
@@ -71,7 +80,7 @@ function api_ehd_request(next = "first") {
         console.log("上证E互动parseFromString", rows)
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"上证E互动":false))
-        if (next && next == "next") vue.page+=1
+        if (next && next == "next") params.page+=1
         $EventBus.$emit("refresh-hdy-complete", true, d);
         if(d) vue.data = d
     })
