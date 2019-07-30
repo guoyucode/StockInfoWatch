@@ -70,6 +70,7 @@ function api_yuncaijing_request(next) {
         let rows = res.data;
 
         for(let item of rows){
+            item.id = "yuncaijing_" + item.id;
             item.time = formatTime(item.inputtime)
             item.content = item.title
             item.content2 = item.description

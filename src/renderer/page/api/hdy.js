@@ -79,7 +79,7 @@ function api_hdy_request(next = "frist") {
 
         for(let item of rows){
             item.src = {str: "深交所互动易", ico: (staticPath + "/img/hdy.ico"), url: "http://irm.cninfo.com.cn"};
-            item.id = item.indexId;
+            item.id = "hdy_" + item.indexId;
             let time = Number.parseInt(item.pubDate);
             item.time = DateFormat(new Date(time))
             item.content = item.mainContent;

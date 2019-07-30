@@ -57,7 +57,7 @@ function api_xuangubao_request(next = "first") {
         let rows = res.NewMsgs;
 
         for(let item of rows){
-            item.id = item.Id
+            item.id = "xuangubao_" + item.Id
             item.time = formatTime(item.CreatedAt)
             item.content = item.Title
             item.content2 = item.Summary
@@ -69,8 +69,7 @@ function api_xuangubao_request(next = "first") {
         $EventBus.$emit("refresh-news-complete", true, d);
         if(d) vue.data = d;
 
-        if(res.TailMsgId)
-         markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
+        if(res.TailMsgId) markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
 
     }).catch(e => {
         $EventBus.$emit("refresh-news-complete", false);

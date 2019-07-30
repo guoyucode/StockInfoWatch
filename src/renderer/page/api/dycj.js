@@ -74,6 +74,7 @@ function api_dycj_request(next = "first") {
         let rows = res;
 
         for(let item of rows){
+            item.id = "dycj_" + item.id;
             item.src = {str: "第一财经", ico: (staticPath + "/img/dycj.ico"), url: "https://www.yicai.com"};
             item.time = item.datekey.replace(new RegExp("\\.",'g'), "-") + " " + item.hm
             item.content = item.newcontent

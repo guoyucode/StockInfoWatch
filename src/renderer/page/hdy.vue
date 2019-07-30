@@ -41,13 +41,13 @@
 		</el-card>
 
 		<template v-if="!viewData.loading">
-			<el-card class="box-card" v-if="viewData.data.length == 0" key="99999998" style="cursor:pointer;" @click.native="nextPage()">
+			<el-card class="box-card" v-if="viewData.data.length == 0" key="99999998" style="cursor:pointer;" @click.native="nextPage('refresh')">
 				<div class="text item">
 					<span style="margin-left: 40%;">网络异常, 点击刷新重试</span>
 				</div>
 			</el-card>
 
-			<el-card class="box-card" v-else key="99999999" style="cursor:pointer;" @click.native="nextPage('next')">
+			<el-card class="box-card" v-else key="99999999" style="cursor:pointer;" @click.native="nextPage('hdy-next')">
 				<div class="text item">
 					<span style="margin-left: 40%;">点击加载更多</span>
 				</div>
@@ -153,9 +153,9 @@
 
             openWindow: window.open,
 
-            nextPage(){
-                this.viewData.loading = true;
-                $EventBus.$emit("hdy-next")
+	        //传参: refresh || hdy-next
+            nextPage(next){
+                $EventBus.$emit(next);
             },
 
             requestCallback(v){

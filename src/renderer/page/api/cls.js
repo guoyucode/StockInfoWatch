@@ -103,6 +103,7 @@ function api_cls_request(next = "first") {
 
         let rows = res.data.roll_data;
         for(let item of rows){
+            item.id = "cls_" + item.id;
             item.src = {str: "财联杜电报", ico: (staticPath + "/img/cls.ico"), url: "https://www.cls.cn"};
             item.time = formatTime(item.ctime * 1000)
             item.content = item.brief

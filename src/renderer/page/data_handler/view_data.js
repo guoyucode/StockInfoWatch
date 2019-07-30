@@ -14,7 +14,8 @@ export const init_news_data = function () {
 }
 
 const mergeViewData = function (list) {
-    mergeData2(list, viewData.data);
+    ///mergeData2(list, viewData.data);
+    viewData.data.splice(0, 0, ...list);
     viewData.data = viewData.data.sort(function (a, b) {
         let aTime = a.time + "";
         let bTime = b.time + "";

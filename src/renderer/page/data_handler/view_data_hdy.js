@@ -1,5 +1,6 @@
 import {mergeData2} from "../js/project";
 import {convertDateFromString} from "../js/utils"
+import {viewData} from "./view_data";
 
 export const viewDataHdy = {
     data: [],
@@ -14,7 +15,8 @@ export const init_hdy_data = function () {
 }
 
 const mergeViewDataHdy = function (list) {
-    mergeData2(list, viewDataHdy.data);
+    //mergeData2(list, viewDataHdy.data);
+    viewDataHdy.data.splice(0, 0, ...list);
     viewDataHdy.data = viewDataHdy.data.sort(function (a, b) {
         let aTime = a.time + "";
         let bTime = b.time + "";
