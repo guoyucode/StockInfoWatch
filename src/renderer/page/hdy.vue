@@ -27,12 +27,16 @@
 				<span v-if="item.authorName" style="padding-left: 15px;" v-html="'发布人: ' + item.authorName_color" ></span>
 
 			</div>
-			<div class="text item" v-html="item.content_color">
-				列表内容
+			<div class="text item">
+				<a style="color: #0077E6;">问 </a>
+				<span v-html="item.content_color"></span>
 			</div>
 			<br v-if="item.content2"/>
-			<div class="text item" v-if="item.content2" v-html="item.content2_color">
-				列表内容
+			<div class="text item" v-if="item.content2" >
+				<div class="text item" >
+					<a style="color: orange;">答 </a>
+					<span v-html="item.content2_color"></span>
+				</div>
 			</div>
 		</el-card>
 
@@ -146,6 +150,8 @@
 
         },
         methods: {
+
+            openWindow: window.open,
 
             nextPage(){
                 this.viewData.loading = true;

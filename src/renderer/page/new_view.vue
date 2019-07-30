@@ -160,9 +160,7 @@
                 $EventBus.$emit("news-next");
             },
 
-            openWindow(url) {
-                window.open(url)
-            },
+            openWindow: window.open,
 
             fomatKeyword(item){
                 if(item.companyShortName) item.companyShortName_color = this.formatterKeyword(item, item.companyShortName);

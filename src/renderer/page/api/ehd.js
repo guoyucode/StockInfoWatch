@@ -108,12 +108,10 @@ const convObj = function (res) {
         let b1 = b.getElementsByTagName("a")[0];
         row.companyShortName = b1.innerText.substring(1)
         let text = b.innerText;
-        let content = text.substring(text.indexOf(")")).trim().substring(1)
-        row.content = `<a style=\"color: #0077E6;\">问 </a>${content}`
+        row.content = text.substring(text.indexOf(")")).trim().substring(1)
 
         let content2Ele = item.getElementsByClassName("m_qa")[0].getElementsByClassName("m_feed_txt")[0];
-        let content2 = content2Ele.innerText.trim();
-        row.content2 = `<div class='text item' v-if='item.attachedContent'><a style='color: orange;'>答 </a>${content2}</div>`
+        row.content2 = content2Ele.innerText.trim();
 
         row.src = {str: "上证E互动", ico: (staticPath + "/img/ehd.ico"), url: "http://sns.sseinfo.com/"};
 

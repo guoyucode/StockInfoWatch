@@ -82,11 +82,8 @@ function api_hdy_request(next = "frist") {
             item.id = item.indexId;
             let time = Number.parseInt(item.pubDate);
             item.time = DateFormat(new Date(time))
-            item.content = "<a style=\"color: #0077E6;\">问 </a>" + item.mainContent;
-
-            if(item.attachedContent)
-            item.content2 = "<div class=\"text item\" v-if=\"item.attachedContent\">" +
-                " <a style=\"color: orange;\">答 </a>" + item.attachedContent + "</div>";
+            item.content = item.mainContent;
+            if(item.attachedContent) item.content2 = item.attachedContent;
         }
 
         console.log("互动易 res-data", rows)
