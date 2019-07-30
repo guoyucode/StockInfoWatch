@@ -86,11 +86,10 @@ function api_hdy_request(next = "frist") {
             if(item.attachedContent) item.content2 = item.attachedContent;
         }
 
-        console.log("互动易 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"深交所互动易问答":false))
+        console.log("互动易 res-data", d)
         if (next && next == "next") vue.page+=1
         $EventBus.$emit("refresh-hdy-complete", true, d)
-        vue.data = d
     }).catch(e => {
         $EventBus.$emit("refresh-hdy-complete", false);
     })

@@ -68,15 +68,13 @@ export const generalHandlerData2 = function (data = [], next = "first", newRows 
     for(let item of data) if(item.readed == undefined) item.readed = setReaded;
 
     //第一次请求时直接返回新数据
-    if (next == "first") return newRows;
+    if (next == "first") {
+        data.push(...newRows);
+        return newRows;
+    }
 
     //合并数据, 加载更多与别的方式合并数据不一样
-    if (next == "next") {
-        data.push(...newRows)
-    } else {
-        //合并新数据,合并在后面
-        mergeData2(newRows, data)
-    }
+    mergeData2(newRows, data, (next == "next" ? "after" : "befor"));
 
     //只有定时任务才推送通知,并且有标题(关闭通知开关则不传标题)
     if (next == "setInterval" && notificationTitle) {
@@ -107,7 +105,7 @@ export const generalHandlerData2 = function (data = [], next = "first", newRows 
     //数据长度限制
     //dataLenthLimit(data)
 
-    return data
+    return newRows
 }
 
 //是否存在关键字
@@ -182,7 +180,7 @@ const notification = function(title, body) {
 /**
  * 合并数据, 新数据添加到target, 旧数据移除
  */
-export const mergeData2 = function (src, target) {
+export const mergeData2 = function (src, target, befor_or_after) {
     if (!src || src.length === 0) return
 
     for (let i = src.length - 1; i >= 0; i--) {
@@ -197,7 +195,8 @@ export const mergeData2 = function (src, target) {
             }
         }
         if (src[i]) {
-            target.splice(0, 0, src[i])
+            if(befor_or_after == "befor") target.splice(0, 0, src[i])
+            else if(befor_or_after == "after") target.push(src[i])
         } else {
             src.splice(i, 1)
         }
@@ -251,7 +250,6 @@ export function mySetInterval(title = "定时器标题", setInterval_time = 0, r
         mySetInterval_List[title] = null
     }
     if (!setInterval_time) return
-    reqestFun();
     mySetInterval_List[title] = setInterval(function () {
         reqestFun()
     }, setInterval_time * 1000)

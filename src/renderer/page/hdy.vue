@@ -1,6 +1,6 @@
 <template>
 
-	<div v-loading="viewData.loading" >
+	<div v-loading.lock.fullscreen="viewData.loading" >
 		<KeywordSubscription title="关键词订阅: " lable-color="red" :keywords="keywordData.data" v-if="keywordData.enable"></KeywordSubscription>
 		<KeywordSubscription title="数据过滤: " lable-color="darkmagenta" :keywords="filterData.data" v-if="filterData.enable"></KeywordSubscription>
 
@@ -112,8 +112,14 @@
         },
         mounted() {
 
+            $EventBus.$on("refresh", () => {
+                if (configData.common.tabName == "互动问答") vue.viewData.loading = true;
+            })
+
             $EventBus.$on("refresh-hdy-complete", function (isSuccess, data) {
-	            vue.viewData.loading = false;
+                setTimeout(function () {
+                    vue.viewData.loading = false;
+                }, 600)
             })
 
             //设置窗口大小
@@ -155,6 +161,7 @@
 
 	        //传参: refresh || hdy-next
             nextPage(next){
+                vue.viewData.loading = true;
                 $EventBus.$emit(next);
             },
 

@@ -82,7 +82,6 @@ function api_dycj_request(next = "first") {
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
         $EventBus.$emit("refresh-news-complete", true, d);
-        if(d) vue.data = d;
         if(next && next == "next") page += 1
     }).catch(e => {
         $EventBus.$emit("refresh-news-complete", false);

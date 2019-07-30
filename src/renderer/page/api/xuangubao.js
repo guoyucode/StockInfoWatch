@@ -67,7 +67,6 @@ function api_xuangubao_request(next = "first") {
         console.log("选股宝 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"第一财经直播区":false))
         $EventBus.$emit("refresh-news-complete", true, d);
-        if(d) vue.data = d;
 
         if(res.TailMsgId) markData = {HeadMark: res.HeadMark, TailMark: res.TailMark, TailMsgId: res.TailMsgId}//记号数据
 

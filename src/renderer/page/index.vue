@@ -3,7 +3,7 @@
 		<el-tabs type="border-card" ref="tabs" v-model="configData.common.tabName" @tab-click="tabClick" @tab-remove="tabRemove">
 
 			<!--v-loading.lock="cls.loading" -->
-			<el-tab-pane v-if="configData.cls.enable" name="财经新闻" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane name="财经新闻" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
 					<i><img class="tag-logo" :src="staticPath + '/img/cls.ico'"></i>
 					财经新闻
@@ -12,7 +12,7 @@
 				<news_view></news_view>
 			</el-tab-pane>
 
-			<el-tab-pane v-if="configData.hdy.enable" name="深交所互动易问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
+			<el-tab-pane name="互动问答" style="overflow-y: scroll;" :style="{height: clientHeight + 'px'}" >
 				<span slot="label">
 					<i><img class="tag-logo" :src="staticPath + '/img/hdy.ico'"></i>
 					互动问答

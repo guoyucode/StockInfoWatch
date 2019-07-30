@@ -1,6 +1,6 @@
 <template>
 
-	<div v-loading.lock="viewData.loading">
+	<div v-loading.lock.fullscreen="viewData.loading">
 		<KeywordSubscription title="关键词订阅: " lable-color="red" :keywords="keywordData.data" v-if="keywordData.enable"></KeywordSubscription>
 		<KeywordSubscription title="数据过滤: " lable-color="darkmagenta" :keywords="filterData.data" v-if="filterData.enable"></KeywordSubscription>
 
@@ -113,7 +113,14 @@
             //this.nextPage()
 
             $EventBus.$on("refresh-news-complete", function (isSucces, data) {
-                vue.viewData.loading = false;
+                setTimeout(function () {
+                    vue.viewData.loading = false;
+                }, 600)
+            })
+
+            $EventBus.$on("refresh", () => {
+                if (configData.common.tabName == "财经新闻")
+                    vue.viewData.loading = true;
             })
 
 	        //初始化数据

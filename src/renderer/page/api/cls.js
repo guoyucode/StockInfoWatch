@@ -33,6 +33,7 @@ const caiLianSheRequest = data => {
         d.refresh_type = 1
     }
     let u = url + qs.stringify(d);
+    console.log("cls-url", u)
     return req({url: u, method: 'GET'})
 }
 
@@ -102,6 +103,7 @@ function api_cls_request(next = "first") {
         }
 
         let rows = res.data.roll_data;
+
         for(let item of rows){
             item.id = "cls_" + item.id;
             item.src = {str: "财联杜电报", ico: (staticPath + "/img/cls.ico"), url: "https://www.cls.cn"};
@@ -109,10 +111,9 @@ function api_cls_request(next = "first") {
             item.content = item.brief
         }
 
-        console.log("财联网 res-data", rows)
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "content");
         $EventBus.$emit("refresh-news-complete", true, d);
-        if(d) vue.data = d;
+        console.log("财联网 res-data", d)
     }).catch(e => {
         $EventBus.$emit("refresh-news-complete", false);
     })

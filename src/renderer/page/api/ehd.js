@@ -73,12 +73,11 @@ function api_ehd_request(next = "first") {
             return
         }
         let rows = convObj(res);
-        console.log("上证E互动parseFromString", rows)
 
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"上证E互动":false))
+        console.log("上证E互动parseFromString", d)
         if (next && next == "next") params.page+=1
         $EventBus.$emit("refresh-hdy-complete", true, d);
-        if(d) vue.data = d
     }).catch(e => {
         $EventBus.$emit("refresh-hdy-complete", false);
     })
