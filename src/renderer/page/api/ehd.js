@@ -18,8 +18,10 @@ const url = "http://sns.sseinfo.com/ajax/feeds.do?";
  */
 export const interactiveRequest = data => {
     const d = clone(params)
-    d.pageNo = data.page || 1
-    return req({url: url + qs.stringify(d), method: 'GET'})
+    d.page = data.page || 1
+    let u = url + qs.stringify(d)
+    console.log("ehd-url", u)
+    return req({url: u, method: 'GET'})
 }
 
 let params = {
@@ -28,16 +30,10 @@ let params = {
     lastid: -1,
     show: 1,
     page: 1,
-    config: configData.ehd,
 }
 
 
 let vue = {
-    type: 11,
-    pageSize: 20,
-    lastid: -1,
-    show: 1,
-    page: 1,
     config: configData.ehd,
     data: [],
 }
@@ -67,9 +63,9 @@ function api_ehd_request(next = "first") {
     if (!configData.ehd.enable) return;
 
     const self = vue
-    if (!next || next != "setInterval") self.loading = true
-    var data = {}
-    if (next && next == "next") data.page = params.page+1
+    if (next != "setInterval") self.loading = true
+    let data = {}
+    if (next == "next") data.page = params.page+1
     interactiveRequest(data).then(function (res) {
         self.loading = false
         if(!res) {
