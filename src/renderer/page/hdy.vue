@@ -193,7 +193,7 @@
 
 	        //显示过滤关键词
             formatterFilterData(item, text){
-                if(!this.filterData.data || this.filterData.data.length == 0 || !text) return text;
+                if(!this.filterData.enable || !this.filterData.data || this.filterData.data.length == 0 || !text) return text;
                 let rv = text + "";
                 for (let keyword of this.filterData.data) {
                     let clorA = `<a style='color: darkmagenta'>${keyword}</a>`
