@@ -20,7 +20,6 @@ export const interactiveRequest = data => {
     const d = clone(params)
     d.page = data.page || 1
     let u = url + qs.stringify(d)
-    console.log("ehd-url", u)
     return req({url: u, method: 'GET'})
 }
 
