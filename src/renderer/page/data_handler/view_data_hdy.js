@@ -18,11 +18,11 @@ const mergeViewDataHdy = function (list) {
     //mergeData2(list, viewDataHdy.data);
     viewDataHdy.data.splice(0, 0, ...list);
     viewDataHdy.data = viewDataHdy.data.sort(function (a, b) {
+        if(a.readed == false) return -1;
         let aTime = a.time + "";
         let bTime = b.time + "";
         let date = convertDateFromString(aTime);
         let date1 = convertDateFromString(bTime);
-        if(a.readed == false) return -1;
         return date.getTime() > date1.getTime() ? -1:1
     })
 }

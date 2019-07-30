@@ -5,7 +5,7 @@
 		<KeywordSubscription title="数据过滤: " lable-color="darkmagenta" :keywords="filterData.data" v-if="filterData.enable"></KeywordSubscription>
 
 		<el-card class="box-card" v-for="item in data2" :key="item.id" :item="item" v-view-lazy="()=>lazyView(item)">
-			<div slot="header" class="clearfix">
+			<div slot="header" class="clearfix" style="position: relative;">
 				<span v-html="'发布时间: ' + item.time"></span>
 
 				<span v-if="item.src.str" @click="openWindow(item.src.url)"
@@ -207,7 +207,7 @@
                 setTimeout(() => {
                     item.readed = true
                     this.viewData.unReadNum--
-                }, 1000)
+                }, 1200)
             },
 
             //调整窗口大小时触发此方法

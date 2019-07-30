@@ -41,6 +41,7 @@
     import Hdy from "./hdy";
     import News_view from "./new_view";
     import {viewData} from "./data_handler/view_data"
+    import {viewDataHdy} from "./data_handler/view_data_hdy";
 
     let vue = null;
 
@@ -49,11 +50,7 @@
         components: {News_view, Setting, Hdy},
         data() {
             return {
-                hdy: {
-                    data: [],
-                    loading: true,
-                    unReadNum: 0,
-                },
+                hdy: viewDataHdy,
                 viewData: viewData,
                 staticPath: staticPath,
                 configData: configData,

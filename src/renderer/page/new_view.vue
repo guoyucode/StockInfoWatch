@@ -21,11 +21,6 @@
 					<a >&nbsp;新&nbsp;</a>
 				</span>
 
-				<!--深交所问答易-->
-				<span v-if="item.companyShortName" style="padding-left: 15px;"
-				      v-html="'公司: ' + item.companyShortName_color + ' [' + item.stockCode + ']'"></span>
-				<span v-if="item.authorName" style="padding-left: 15px;" v-html="'发布人: ' + item.authorName_color" ></span>
-
 			</div>
 			<div class="text item" v-html="item.content_color">
 				列表内容
