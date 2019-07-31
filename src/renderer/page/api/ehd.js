@@ -76,7 +76,7 @@ function api_ehd_request(next = "first") {
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"上证E互动":false))
         console.log("上证E互动parseFromString", d)
         if (next && next == "next") params.page+=1
-        $EventBus.$emit("refresh-hdy-complete", true, d);
+        $EventBus.$emit("refresh-hdy-complete", true, {data: d, next: next});
     }).catch(e => {
         $EventBus.$emit("refresh-hdy-complete", false);
     })
