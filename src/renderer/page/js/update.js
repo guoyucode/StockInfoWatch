@@ -1,3 +1,5 @@
+const packageInfo = require('../../../../package.json');
+
 /**
  * 升级方法
  * @param _this
@@ -52,10 +54,14 @@ export const update = function(_this){
     _this.$electron.ipcRenderer.on("update-message_update-available", function(e, msg) {
         console.log("更新消息-检测到新版本", e, msg);
 
-        //非windows版本
+        //非windows版本自已去手动下载
         let os = process.platform;
         if(os.indexOf("win32") == -1){
-            let fullPath = msg["full-path"];
+
+            let publish = packageInfo.build.publish[0];
+            let fullPath = `${publish.url}/${publish.owner}/${publish.repo}/releases/download/v${msg.version}/${msg.path}`
+
+            //let fullPath = msg["full-path"];
             let html = `检测到新版本: ${msg.version}`
             if(!fullPath) {
                 html += " 但更新链接不完整,请联系开发者进行维护"

@@ -27,6 +27,7 @@
     "publish": [
       {
         "provider": "github",
+        "url": "https://github.com",
         "owner": "guoyucode",
         "repo": "StockInfoWatch-package",
         "private": false
