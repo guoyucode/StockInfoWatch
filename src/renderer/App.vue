@@ -19,8 +19,4 @@
     font-family: 'arial', 'Helvetica', 'sans-serif', 'Microsoft YaHei';
   }
 
-  content-css {
-	  font-size: 22px;
-	  font: bolder;
-  }
 </style>
