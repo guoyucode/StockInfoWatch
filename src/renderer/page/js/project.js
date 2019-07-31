@@ -172,7 +172,9 @@ const notification = function(title, body) {
 
         // 切换tab
         let titles = ["财联社电报", "云财经", "第一财经直播区", "选股宝"];
-        if(titles.includes(title)) configData.common.tabName = "财经新闻"
+        if(titles.includes(title)) configData.common.tabName = "财经新闻";
+        else configData.common.tabName = "互动问答";
+        
     }
 }
 
