@@ -52,7 +52,7 @@
       ]
     },
     "mac": {
-      "target": ["zip"],
+      "target": ["dmg"],
       "icon": "build/icons/icon.icns"
     },
     "win": {
