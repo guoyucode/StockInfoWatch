@@ -1,5 +1,6 @@
 import {mergeData2} from "../js/project";
 import {convertDateFromString} from "../js/utils"
+import {viewDataHdy} from "./view_data_hdy";
 
 export const viewData = {
     data: [],
@@ -8,14 +9,18 @@ export const viewData = {
 }
 
 export const init_news_data = function () {
-    $EventBus.$on("refresh-news-complete", function (isSucces, data) {
-        if(isSucces) mergeViewData(data)
+    $EventBus.$on("refresh-news-complete", function (isSucces, {next, data}) {
+        if(isSucces) mergeViewData(next, data)
     })
 }
 
-const mergeViewData = function (list) {
-    ///mergeData2(list, viewData.data);
-    viewData.data.splice(0, 0, ...list);
+const mergeViewData = function (next, list) {
+    if(next == "next") viewData.data.push(...list);
+    else viewData.data.splice(0, 0, ...list);
+
+    //如果是定时任务提交的数据就不用排序了, 直接返回
+    if(next == "setInterval") return;
+
     viewData.data = viewData.data.sort(function (a, b) {
         if(a.readed == false) return -1;
         let aTime = a.time + "";

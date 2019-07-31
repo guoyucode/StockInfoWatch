@@ -112,7 +112,7 @@ function api_cls_request(next = "first") {
         }
 
         let d = generalHandlerData2(vue.data, next, rows, (vue.config.enableNotice?"财联社电报":false), "content");
-        $EventBus.$emit("refresh-news-complete", true, d);
+        $EventBus.$emit("refresh-news-complete", true, {data: d, next: next});
         console.log("财联网 res-data", d)
     }).catch(e => {
         $EventBus.$emit("refresh-news-complete", false);

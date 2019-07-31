@@ -79,7 +79,7 @@ function api_yuncaijing_request(next) {
 
         console.log("云财经 res-data", rows)
         let d = generalHandlerData2(self.data, next, rows, (vue.config.enableNotice?"云财经":false))
-        $EventBus.$emit("refresh-news-complete", true, d);
+        $EventBus.$emit("refresh-news-complete", true, {data: d, next: next});
         if(next && next == "next") page+=1
     }).catch(e => {
         $EventBus.$emit("refresh-news-complete", false);
