@@ -125,6 +125,7 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
+	        //初始化接口
 	        init_api_cls();
             init_api_dycj();
             init_api_xuangubao();
