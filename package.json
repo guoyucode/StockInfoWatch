@@ -52,9 +52,11 @@
       ]
     },
     "mac": {
+      "target": ["zip"],
       "icon": "build/icons/icon.icns"
     },
     "win": {
+      "target": ["nsis"],
       "icon": "build/icons/icon.ico"
     },
     "linux": {
