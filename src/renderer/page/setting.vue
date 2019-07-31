@@ -12,10 +12,12 @@
 						</template>
 
 						<div style="color: green">当前更新:</div>
-						<div>问题修复: 订阅显示修复,数据过滤如果没有一个关键词那么就不过滤</div>
+						<div>功能优化: 财经新闻合并,问答类资讯合并</div>
+						<div>新增功能: 问答类新增上证E互动</div>
 						<br/>
 
 						<div style="color: blue">近期更新:</div>
+						<div>问题修复: 订阅显示修复,数据过滤如果没有一个关键词那么就不过滤</div>
 						<div>新增功能: 标示已读未读功能</div>
 						<div>新增功能: 订阅功能,数据筛选</div>
 						<div>功能优化: 使用es6语法的proxy全局变量做状态管理,去掉vuex</div>
@@ -111,35 +113,6 @@
 							<el-row>
 								<label>通知开关</label>
 								<el-switch class="setting-switch" style="margin-left: 16%;" :disabled="!cls.enable" v-model="cls.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
-							</el-row>
-						</div>
-					</diV>
-				</el-card>
-			</el-col>
-		</el-row>
-
-		<el-row>
-			<el-col :span="cardWidth" :key="2" :offset="cardOffset">
-				<el-card class="box-card">
-					<div slot="header" class="clearfix">
-						<span>
-							互动易问答&nbsp;&nbsp;
-							<el-switch class="setting-switch" v-model="hdy.enable" :active-value="true" :inactive-value="false" active-color="#13ce66">
-							</el-switch>
-						</span>
-					</div>
-					<diV>
-						<div class="text item">
-							<el-row>
-								<label>定时刷新频率(秒)</label>
-								<el-input class="setting-input" :disabled="!hdy.enable" v-model.number.lazy="hdy.setInterval_time" placeholder="请输入内容"></el-input>
-							</el-row>
-						</div>
-						<br/>
-						<div class="text item">
-							<el-row>
-								<label>通知开关</label>
-								<el-switch class="setting-switch" :disabled="!hdy.enable" v-model="hdy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
 							</el-row>
 						</div>
 					</diV>
@@ -249,6 +222,63 @@
 			</el-col>
 		</el-row>
 
+		<el-row>
+			<el-col :span="cardWidth" :key="2" :offset="cardOffset">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>
+							深交所互动易问答&nbsp;&nbsp;
+							<el-switch class="setting-switch" v-model="hdy.enable" :active-value="true" :inactive-value="false" active-color="#13ce66">
+							</el-switch>
+						</span>
+					</div>
+					<diV>
+						<div class="text item">
+							<el-row>
+								<label>定时刷新频率(秒)</label>
+								<el-input class="setting-input" :disabled="!hdy.enable" v-model.number.lazy="hdy.setInterval_time" placeholder="请输入内容"></el-input>
+							</el-row>
+						</div>
+						<br/>
+						<div class="text item">
+							<el-row>
+								<label>通知开关</label>
+								<el-switch class="setting-switch" :disabled="!hdy.enable" v-model="hdy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+							</el-row>
+						</div>
+					</diV>
+				</el-card>
+			</el-col>
+		</el-row>
+
+		<el-row>
+			<el-col :span="cardWidth" :key="2" :offset="cardOffset">
+				<el-card class="box-card">
+					<div slot="header" class="clearfix">
+						<span>
+							上证E互动&nbsp;&nbsp;
+							<el-switch class="setting-switch" v-model="edy.enable" :active-value="true" :inactive-value="false" active-color="#13ce66">
+							</el-switch>
+						</span>
+					</div>
+					<diV>
+						<div class="text item">
+							<el-row>
+								<label>定时刷新频率(秒)</label>
+								<el-input class="setting-input" :disabled="!edy.enable" v-model.number.lazy="edy.setInterval_time" placeholder="请输入内容"></el-input>
+							</el-row>
+						</div>
+						<br/>
+						<div class="text item">
+							<el-row>
+								<label>通知开关</label>
+								<el-switch class="setting-switch" :disabled="!edy.enable" v-model="edy.enableNotice" :active-value="true" :inactive-value="false"></el-switch>
+							</el-row>
+						</div>
+					</diV>
+				</el-card>
+			</el-col>
+		</el-row>
 		<!--</el-dialog>-->
 	</div>
 
@@ -275,6 +305,7 @@
                 dycj: configData.dycj,
                 xuangubao: configData.xuangubao,
                 yuncaijing: configData.yuncaijing,
+                edy: configData.ehd,
                 version: packageInfo.version,
                 cardWidth: 20,
                 cardOffset: 2,
