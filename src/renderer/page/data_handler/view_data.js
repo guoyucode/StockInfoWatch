@@ -9,14 +9,14 @@ export const viewData = {
 }
 
 export const init_news_data = function () {
-    $EventBus.$on("refresh-news-complete", function (isSucces, {next, data}) {
-        if(isSucces) mergeViewData(next, data)
+    $EventBus.$on("refresh-news-complete", function (isSucces, args) {
+        if(isSucces) mergeViewData(args)
     })
 }
 
-const mergeViewData = function (next, list) {
-    if(next == "next") viewData.data.push(...list);
-    else viewData.data.splice(0, 0, ...list);
+const mergeViewData = function ({next, data}) {
+    if(next == "next") viewData.data.push(...data);
+    else viewData.data.splice(0, 0, ...data);
 
     //如果是定时任务提交的数据就不用排序了, 直接返回
     if(next == "setInterval") return;

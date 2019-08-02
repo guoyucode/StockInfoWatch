@@ -9,12 +9,12 @@ export const viewDataHdy = {
 }
 
 export const init_hdy_data = function () {
-    $EventBus.$on("refresh-hdy-complete", function (isSucces, {next, data}) {
-        if(isSucces) mergeViewDataHdy(next, data)
+    $EventBus.$on("refresh-hdy-complete", function (isSucces, args) {
+        if(isSucces) mergeViewDataHdy(args)
     })
 }
 
-const mergeViewDataHdy = function (next, list) {
+const mergeViewDataHdy = function ({next, list}) {
     //mergeData2(list, viewDataHdy.data);
     if(next == "next") viewDataHdy.data.push(...list);
     else viewDataHdy.data.splice(0, 0, ...list);
