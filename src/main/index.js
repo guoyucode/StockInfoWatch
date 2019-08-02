@@ -33,6 +33,7 @@ function createWindow () {
     width: 1000
   })
 
+  console.log("mainWindow.loadURL", winURL)
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
