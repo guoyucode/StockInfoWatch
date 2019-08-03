@@ -14,10 +14,10 @@ export const init_hdy_data = function () {
     })
 }
 
-const mergeViewDataHdy = function ({next, list}) {
+const mergeViewDataHdy = function ({next, data}) {
     //mergeData2(list, viewDataHdy.data);
-    if(next == "next") viewDataHdy.data.push(...list);
-    else viewDataHdy.data.splice(0, 0, ...list);
+    if(next == "next") viewDataHdy.data.push(...data);
+    else viewDataHdy.data.splice(0, 0, ...data);
 }
 
 
