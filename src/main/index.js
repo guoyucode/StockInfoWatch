@@ -7,6 +7,18 @@ let isDev = process.env.NODE_ENV === 'development'
 let env_openChromeDevTools = !!process.env.openChromeDevTools;
 let isOpenDevTools = (env_openChromeDevTools || isDev)
 
+if(isOpenDevTools){
+  app.on('ready', () => {
+    if(isOpenDevTools) {
+      require('electron-debug')({showDevTools: true})//打开开发工具
+      let filePath = ".electron-vue/vue-devtools-4.1.5";
+      console.log("devtool-path:", filePath)
+      BrowserWindow.addDevToolsExtension(filePath)
+    }
+  })
+}
+
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -25,7 +37,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     webPreferences: {
       devTools: isOpenDevTools, //Whether to enable DevTools.
-      nodeIntegration: true,//是否完整的支持 node. 默认值为true.
+      nodeIntegration: true,//是否完整的支持 node
       webSecurity: false,
     },
     height: 563,
