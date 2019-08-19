@@ -18,11 +18,6 @@ let mainConfig = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
         test: /\.node$/,
         use: 'node-loader'
       }

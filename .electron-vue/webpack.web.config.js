@@ -31,12 +31,6 @@ let webConfig = {
         use: 'vue-html-loader'
       },
       {
-        test: /\.js$/,
-        use: 'babel-loader',
-        include: [ path.resolve(__dirname, '../src/renderer') ],
-        exclude: /node_modules/
-      },
-      {
         test: /\.vue$/,
         use: {
           loader: 'vue-loader',
