@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import {updateHandle} from "./update"
+import {checkForUpdates} from "./tray";
 //import store from '../renderer/store/index'
 
 
@@ -82,28 +83,8 @@ app.on('activate', () => {
 
 //监听通知发送过来的消息
 ipcMain.on("showWindows", () => {
-  openWindow()
+  mainWindow.show()
 })
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */
 
 
 
@@ -128,6 +109,7 @@ app.on('ready', () => {
   tray = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
     { label: '打开主界面', type: 'normal', checked: true, click: openWindow},
+    { label: '检查更新', type: 'normal', checked: true, click: checkForUpdates},
     { label: '退出', type: 'normal', checked: true , click: exit},
   ])
   tray.setToolTip('股票行情观察,单击打开主界面,或者右击选择退出')
