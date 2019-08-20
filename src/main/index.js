@@ -8,25 +8,32 @@ let isDev = process.env.NODE_ENV === 'development'
 let env_openChromeDevTools = !!process.env.openChromeDevTools;
 let isOpenDevTools = (env_openChromeDevTools || isDev)
 
-if(isOpenDevTools){
-  app.on('ready', () => {
-    if(isOpenDevTools) {
-      require('electron-debug')({showDevTools: true})//打开开发工具
-      let filePath = ".electron-vue/vue-devtools-4.1.5";
-      console.log("devtool-path:", filePath)
-      BrowserWindow.addDevToolsExtension(filePath)
-    }
-  })
-}
-
-
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
-if (!isDev) {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+/*if (!isDev) {
+    global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+}*/
+
+let staticVar = require('path').join("static")
+if(!isDev) {
+  staticVar = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
+
+if(isOpenDevTools){
+  app.on('ready', () => {
+    if(isDev) {
+      let filePath = ".electron-vue/vue-devtools-4.1.5";
+      console.log("devtool-path:", filePath)
+      BrowserWindow.addDevToolsExtension(filePath)
+    }
+    if(isOpenDevTools){
+      require('electron-debug')({showDevTools: true})//打开开发工具
+    }
+  })
+}
+
 
 let mainWindow
 const winURL = isDev ? `http://localhost:9080` : `file://${__dirname}/index.html`
@@ -89,8 +96,7 @@ ipcMain.on("showWindows", () => {
 
 
 //托盘设置----------------------------------------------------
-const path = require('path');
-let trayIcon = path.join(__static, '/img/amex.ico');
+let trayIcon = staticVar+'/img/amex.ico';
 
 function openWindow(menuItem, browserWindow, event) {
   mainWindow.show()

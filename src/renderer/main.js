@@ -25,7 +25,7 @@ window.$EventBus = Vue.prototype.$EventBus = new Vue() //事件总线
 //Vue.prototype.$store = store
 //Vue.prototype.$configData = configData
 
-window.staticPath = require('path').join(__static);
+window.staticPath = require('path').join("static");
 
 /* eslint-disable no-new */
 new Vue({
