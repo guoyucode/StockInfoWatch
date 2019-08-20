@@ -9,6 +9,7 @@
 					<el-collapse-item name="1"><!--style="max-height: 260px; overflow-y: auto;"-->
 						<template slot="title">
 							版本信息: {{version}}
+							<div v-if="isDev" style="">&nbsp;开发环境</div>
 						</template>
 
 						<div style="color: green">当前更新:</div>
@@ -298,6 +299,7 @@
         name: "setting",
         data() {
             return {
+                isDev: process.env.NODE_ENV === 'development',
                 filterData: filterData,
                 keywordData: keywordData,
                 common: configData.common,
