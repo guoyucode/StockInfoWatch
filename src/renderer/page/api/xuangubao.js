@@ -93,7 +93,7 @@ export const init_api_xuangubao = function () {
     $EventBus.$on("news-next", () => api_xuangubao_request("next"));
 
     //定时器
-    let run = delayer(time => mySetInterval("财联社电报-定时器", time, () => api_xuangubao_request("setInterval")))
+    let run = delayer(time => mySetInterval("选股宝-定时器", time, () => api_xuangubao_request("setInterval")))
     configData._watch.push({"xuangubao.setInterval_time": run});
     configData._watch.push({"xuangubao.enable": enable => run(enable?configData.xuangubao.setInterval_time:enable)})
     run(configData.xuangubao.setInterval_time);

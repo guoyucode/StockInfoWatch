@@ -13,6 +13,7 @@
 						</template>
 
 						<div style="color: green">当前更新:</div>
+						<div>问题修复: 财联杜数据定时刷新失败问题</div>
 						<div>新功能: 托盘处添加检查更新功能</div>
 						<br/>
 
