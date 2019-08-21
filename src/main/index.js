@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import {updateHandle} from "./update"
 import {checkForUpdates} from "./tray";
+import {setHotKeyFun} from "./hotKey";
 //import store from '../renderer/store/index'
 
 
@@ -72,6 +73,9 @@ function createWindow () {
 
   //自动更新方法
   updateHandle(mainWindow)
+
+  //快捷键
+  setHotKeyFun(mainWindow);
 }
 
 app.on('ready', createWindow)
@@ -127,38 +131,4 @@ app.on('ready', () => {
 //托盘设置----------------------------------------------------
 
 
-//设置刷新快捷键
-//监听通知发送过来的消息
-ipcMain.on("setHotKey", (e, v) => {
-  setHotKeyFun(v)
-})
-const state = {}
-const setHotKeyFun = function (hotKey) {
 
-  if (!globalShortcut || !hotKey) return;
-  if (state.hotKey_val && state.hotKey_val == hotKey) return;
-
-  //如果之前注册成功了快捷键,那么解除该快捷键
-  if (state.hotKey_val && state.hotKey_val != "无") globalShortcut.unregister(state.hotKey_val)
-  if (!hotKey || hotKey == "无") return
-
-  //console.log("快捷键注册", hotKey)
-  let bool = globalShortcut.register(hotKey, () => {
-    mainWindow.send("refresh-shortcut", hotKey)
-    if(state.callback){
-      state.callback()
-    }
-  })
-
-  if (bool) {
-    let msg = "设置快捷键成功: " + hotKey
-    if(state.hotKey_val) mainWindow.send("show-success-message", msg)
-    state.hotKey_val = hotKey + "";
-  } else {
-    let msg = "设置刷新快捷键: " + hotKey + " 失败, 请检查是否有软件快捷键冲突, 或者到设置中重新设置一个不同的快捷键."
-    mainWindow.send("alert-message", msg)
-    console.error(msg)
-    //state.hotKey = state.hotKey_val || "无"
-  }
-  state.hotKey_val = hotKey + ""
-}
