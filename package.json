@@ -30,6 +30,16 @@
     "node-native-loader": "1.1.1",
     "webpack-cli": "3.3.7"
   },
+  "vue": {
+    "publicPath": "./",
+    "outputDir": "dist",
+    "assetsDir": "",
+    "lintOnSave": false,
+    "runtimeCompiler": true,
+    "productionSourceMap": false,
+    "parallel": true,
+    "pwa": {}
+  },
   "build": {
     "productName": "股票行情观察",
     "appId": "StockInfoWatch",
