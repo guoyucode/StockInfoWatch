@@ -5,8 +5,6 @@ let {showTray, checkForUpdates} = require("./tray")
 let setHotKeyFun = require("./hotKey")
 //import store from '../renderer/store/index'
 
-console.log("3333")
-
 let isDev = process.env.NODE_ENV && process.env.NODE_ENV == 'development'
 let env_openChromeDevTools = !!process.env.openChromeDevTools;
 let isOpenDevTools = (env_openChromeDevTools || isDev)

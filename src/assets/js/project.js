@@ -31,7 +31,7 @@ export const insertData = function(key, v){
  * 初始化从主进程传递过来的数据
  */
 export const initAlert = function (vue) {
-    let {ipcRenderer: ipc} = require('electron')
+    let {ipcRenderer: ipc} = window.require('electron')
     ipc.on("alert-message", function (e, msg) {
         window.alert(msg)
     })
@@ -45,7 +45,7 @@ export const initAlert = function (vue) {
  * @param callback
  */
 export const refreshAction = function (callback) {
-    let {ipcRenderer: ipc} = require('electron')
+    let {ipcRenderer: ipc} = window.require('electron')
     ipc.on("refresh-shortcut", function (e, msg) {
         callback()
     })
@@ -169,7 +169,7 @@ const notification = function(title, body) {
         body: body
     })
     myNotification.onclick = () => {
-        let {ipcRenderer: ipc} = require('electron')
+        let {ipcRenderer: ipc} = window.require('electron')
         ipc.send("showWindows")
 
         // 切换tab

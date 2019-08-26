@@ -58,7 +58,7 @@ export const notification = function(title, body) {
     })
 
     myNotification.onclick = () => {
-        let {ipcRenderer: ipc} = require('electron')
+        let {ipcRenderer: ipc} = window.require('electron')
         ipc.send("showWindows")
 
         // 切换tab
