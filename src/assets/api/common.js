@@ -1,4 +1,8 @@
-import axios from "axios"
+const axios = require("axios")
+
+// always use Node.js adapter
+// axios使用node.js-API
+axios.defaults.adapter = require('axios/lib/adapters/http');
 
 /**
  * 创建axios实例
