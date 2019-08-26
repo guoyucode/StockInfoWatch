@@ -97,7 +97,10 @@ function formatTime(inputtime) {
  * 初始化数据
  */
 export const init_api_yuncaijing = function () {
-
+    
+    //todo  云财经调用失败
+    return;
+    
     //事件接收
     $EventBus.$on("refresh", () => { if(configData.common.tabName == "财经新闻") api_yuncaijing_request("refresh") })
     $EventBus.$on("news-next", () => api_yuncaijing_request("next"));

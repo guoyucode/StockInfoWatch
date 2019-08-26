@@ -15,6 +15,7 @@ Vue.use(ElementUI)
 
 //if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
+Vue.prototype.$electron = window.require("electron")
 
 /**
  * 事件总线
@@ -34,7 +35,6 @@ new Vue({
   //store,
   //template: '<App/>',
   mounted() {
-    //update(this);
-    console.log("111")
+    update(this);
   },
 }).$mount('#app')

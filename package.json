@@ -29,6 +29,15 @@
     "electron-builder": "21.2.0",
     "webpack-cli": "3.3.7"
   },
+  "vue": {
+    "publicPath": "./",
+    "outputDir": "dist",
+    "assetsDir": "",
+    "lintOnSave": false,
+    "runtimeCompiler": true,
+    "productionSourceMap": false,
+    "parallel": true
+  },
   "build": {
     "productName": "股票行情观察",
     "appId": "StockInfoWatch",

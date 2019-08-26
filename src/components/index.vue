@@ -76,8 +76,6 @@
             window.onresize = this.windowsResize
 
             refreshAction(() =>$EventBus.$emit("refresh"))
-
-	        console.log("222")
         },
         methods: {
 

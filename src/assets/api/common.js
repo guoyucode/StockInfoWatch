@@ -14,7 +14,7 @@ export const req = axios.create({
 req.interceptors.request.use(config => {
     config.headers['Accept'] = '*/*';
     //config.headers['Referer'] = 'https://www.cls.cn/'
-    config.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
+    //config.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
     return config;
 }, error => {  //请求错误处理
     Promise.reject(error)
