@@ -1,7 +1,7 @@
 let { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 const path = require("path");
 let updateHandle = require("./update")
-let checkForUpdates = require("./tray")
+let {showTray, checkForUpdates} = require("./tray")
 let setHotKeyFun = require("./hotKey")
 //import store from '../renderer/store/index'
 
@@ -43,17 +43,15 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     webPreferences: {
       devTools: isOpenDevTools, //Whether to enable DevTools.
-      nodeIntegrationInWorker: true,
       nodeIntegration: true,//是否完整的支持 node
-      webSecurity: false,
+      webSecurity: false, //设置为false则可以跨域
     },
     height: 563,
     useContentSize: true,
     width: 1000
   })
 
-  if(isDev) mainWindow.loadURL(loadUrl)
-  else mainWindow.loadFile("dist/index.html")
+  
 
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -68,6 +66,9 @@ function createWindow () {
   if (!isOpenDevTools){
     mainWindow.setMenu(null)
   }
+  
+  if(isDev) mainWindow.loadURL(loadUrl)
+  else mainWindow.loadFile("dist/index.html")
 
   //自动更新方法
   updateHandle(mainWindow)

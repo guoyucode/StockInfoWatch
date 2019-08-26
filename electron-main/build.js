@@ -1,11 +1,8 @@
 const path = require("path");
 const {dependencies} = require('../package.json')
-const webpack = require("webpack")
 module.exports = {
 	mode: "production",
-	entry: {
-		main1: path.resolve(__dirname, "./main"),
-	},
+	entry: path.resolve(__dirname, "./main"),
 	externals: [
 		...Object.keys(dependencies),
 	],
@@ -16,18 +13,6 @@ module.exports = {
 			'vue$': 'vue/dist/vue.esm.js'
 		},
 		extensions: ['.js', '.json', '.node']
-	},
-	module: {
-		rules: [
-			/*{
-				test: /\.node$/,
-				use: 'node-loader'
-			}*/
-			{
-				test: /\.node$/,
-				loader: 'node-native?from=app',
-			}
-		]
 	},
 	target: 'electron-main',
 	output: { //输出路径和文件名，使用path模块resolve方法将输出路径解析为绝对路径

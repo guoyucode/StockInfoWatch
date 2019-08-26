@@ -4,20 +4,20 @@
   "private": true,
   "main": "./dist/main.js",
   "scripts": {
-    "electron-dev": "cross-env NODE_ENV=development electron electron-main/main.js",
-    "electron build": "vue-cli-service build && webpack --config=electron-main/build.js && electron-builder",
-    "webpack electron-main": "webpack --config=electron-main/build.js",
-    "dev": "cross-env NODE_ENV=development vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "dev-vue": "cross-env NODE_ENV=development vue-cli-service serve",
+    "dev-electron": "cross-env NODE_ENV=development electron electron-main/main.js",
+    "build-electron-vue": "vue-cli-service build && webpack --config=electron-main/build.js && electron-builder",
+    "build-vue": "vue-cli-service build",
+    "webpack-electron-main": "webpack --config=electron-main/build.js"
   },
   "dependencies": {
     "vue": "2.6.10",
-    "vue-router": "3.0.3",
+    "vue-router": "3.1.2",
     "vue-view-lazy": "0.0.6",
     "axios": "0.19.0",
     "echarts": "4.2.1",
     "element-ui": "2.11.1",
-    "qs": "6.7.0"
+    "qs": "6.8.0"
   },
   "devDependencies": {
     "@vue/cli-service": "3.11.0",
@@ -27,18 +27,7 @@
     "electron-updater": "4.1.2",
     "electron-debug": "3.0.1",
     "electron-builder": "21.2.0",
-    "node-native-loader": "1.1.1",
     "webpack-cli": "3.3.7"
-  },
-  "vue": {
-    "publicPath": "./",
-    "outputDir": "dist",
-    "assetsDir": "",
-    "lintOnSave": false,
-    "runtimeCompiler": true,
-    "productionSourceMap": false,
-    "parallel": true,
-    "pwa": {}
   },
   "build": {
     "productName": "股票行情观察",
