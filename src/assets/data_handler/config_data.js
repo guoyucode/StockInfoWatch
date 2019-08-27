@@ -41,6 +41,7 @@ const state = {
     }
 }
 
+let {ipcRenderer} = window.require('electron')
 for (let k in state) {
     let r = localStorage.getItem("config_" + k);
     if (r != null) state[k] = JSON.parse(r)
@@ -49,7 +50,7 @@ for (let k in state) {
     //添加set方法
     v._set = (k2, v2) => {
         if (v2 == undefined) return
-        //if (k2 == "hotKey") require("electron").ipcMain.send("setHotKey", v2)
+        if (k2 == "hotKey") ipcRenderer.send("setHotKey", v2)
         localStorage.setItem("config_" + k, JSON.stringify(state[k]))
     }
 

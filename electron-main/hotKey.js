@@ -6,7 +6,7 @@ let mainWindow = null;
  * 快捷键
  * @param mainWindow_input
  */
-module.exports = setHotKeyFun = (mainWindow_input) => {
+module.exports = mainWindow_input => {
     mainWindow = mainWindow_input
     //设置刷新快捷键
     //监听通知发送过来的消息

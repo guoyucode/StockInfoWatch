@@ -2,7 +2,6 @@ import axios from "axios"
 //import http from "axios/lib/adapters/http"//这是nodejs接口
 import http from "./http"//这是nodejs接口
 import xhr from "axios/lib/adapters/xhr" //浏览器对象
-console.log("http", http)
 // 打印出xhr对象, 什么情况? 怀疑是webpack打包的问题?
 
 //设置默认请求头
