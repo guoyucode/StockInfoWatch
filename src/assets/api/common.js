@@ -1,14 +1,21 @@
-const axios = require("axios")
+import axios from "axios"
+//import http from "axios/lib/adapters/http"//这是nodejs接口
+import http from "./http"//这是nodejs接口
+import xhr from "axios/lib/adapters/xhr" //浏览器对象
+console.log("http", http)
+// 打印出xhr对象, 什么情况? 怀疑是webpack打包的问题?
 
-// always use Node.js adapter
+//设置默认请求头
+axios.defaults.headers['Accept'] = '*/*';
+axios.defaults.headers["Referer"] = "*";
+axios.defaults.headers["Sec-Fetch-Mode"] = "";
+
 // axios使用node.js-API
-axios.defaults.adapter = require('axios/lib/adapters/http');
-
 /**
  * 创建axios实例
  **/
 export const req = axios.create({
-    //baseURL: process.env.BASE_URL,  // api的base_url
+    adapter: http, //axios使用node.js-API
     timeout: 10 * 1000  // 请求超时时间
 });
 
@@ -16,7 +23,7 @@ export const req = axios.create({
  * 请求拦截器
  */
 req.interceptors.request.use(config => {
-    config.headers['Accept'] = '*/*';
+    
     //config.headers['Referer'] = 'https://www.cls.cn/'
     //config.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0'
     return config;

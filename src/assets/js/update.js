@@ -5,8 +5,6 @@ const packageInfo = require('../../../package.json');
  * @param _this
  */
 export const update = function(_this){
-
-    console.log("$electron", _this.$electron)
     
     _this.$electron.ipcRenderer.on("update-message", function(e, msg)  {
         console.log("更新消息", e, msg);
