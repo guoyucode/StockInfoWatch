@@ -35,6 +35,7 @@
 
 <script>
 
+	//import "../assets/js/sqlite-util"
     import Setting from "./setting";
     import {initAlert, refreshAction} from "../assets/js/project";
     import configData from "../assets/data_handler/config_data"

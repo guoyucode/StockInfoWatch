@@ -48,8 +48,10 @@ function createWindow () {
     useContentSize: true,
     width: 1000
   })
-
   
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -73,6 +75,8 @@ function createWindow () {
 
   //快捷键
   setHotKeyFun(mainWindow);
+  
+  
 }
 
 app.on('ready', createWindow)
