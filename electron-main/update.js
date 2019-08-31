@@ -9,7 +9,7 @@ let { autoUpdater } = require('electron-updater')
 const packageInfo = require('../package.json');
 
 // 检测更新，在你想要检查更新的时候执行，renderer事件触发后的操作自行编写
-module.exports = updateHandle = (mainWindow) => {
+module.exports = mainWindow => {
 
     autoUpdater.autoDownload = false
     // 通过main进程发送事件给renderer进程，提示更新信息
