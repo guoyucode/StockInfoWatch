@@ -1,3 +1,6 @@
+/**
+ * 快捷键设置
+ * */
 let { ipcMain, globalShortcut } = require('electron')
 
 let mainWindow = null;

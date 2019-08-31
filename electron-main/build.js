@@ -1,3 +1,6 @@
+/**
+ * webpack编译使用该文件
+ * */
 const path = require("path");
 const {dependencies} = require('../package.json')
 module.exports = {

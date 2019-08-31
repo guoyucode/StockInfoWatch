@@ -1,3 +1,7 @@
+/**
+ * 主进程打开electron调用该文件
+ * */
+
 let { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 const path = require("path");
 let updateHandle = require("./update")

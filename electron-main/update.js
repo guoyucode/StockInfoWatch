@@ -1,3 +1,8 @@
+/**
+ * 更新使用
+ */
+
+
 let { ipcMain } = require('electron')
 let { autoUpdater } = require('electron-updater')
 
