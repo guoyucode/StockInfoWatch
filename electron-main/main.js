@@ -13,13 +13,8 @@ let isDev = process.env.NODE_ENV && process.env.NODE_ENV == 'development'
 let env_openChromeDevTools = !!process.env.openChromeDevTools;
 let isOpenDevTools = (env_openChromeDevTools || isDev)
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
-/*if (!isDev) {
-    global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
-}*/
+if(isDev) global.__static = require('path').join(__dirname, "../public").replace(/\\/g, '\\\\');
+else global.__static = require('path').join(__dirname, "../dist").replace(/\\/g, '\\\\');
 
 let staticVar = require('path').join("static")
 if(!isDev) {
@@ -72,7 +67,7 @@ function createWindow () {
   }
   
   if(isDev) mainWindow.loadURL(loadUrl)
-  else mainWindow.loadFile("dist/index.html")
+  else mainWindow.loadFile(__static + "/index.html")
 
   //自动更新方法
   updateHandle(mainWindow)
@@ -103,11 +98,6 @@ ipcMain.on("showWindows", () => {
   mainWindow.show()
 })
 
-
-
-//托盘设置----------------------------------------------------
-let trayIcon = isDev ? './public/img/amex.ico': path.resolve("./") + "/resources/app.asar/dist/img/amex.ico"
-
 function openWindow(menuItem, browserWindow, event) {
   mainWindow.show()
 }
@@ -121,6 +111,12 @@ app.on('ready', () => {
   //非windows系统不显示托盘
   let os = process.platform;
   if(os.indexOf("win32") == -1) return;
+  
+  /**
+   * 托盘变量定义
+   * @type {string}
+   */
+  const trayIcon = __static + "/img/amex.ico";
 
   tray = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
