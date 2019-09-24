@@ -13,13 +13,7 @@ let isDev = process.env.NODE_ENV && process.env.NODE_ENV == 'development'
 let env_openChromeDevTools = !!process.env.openChromeDevTools;
 let isOpenDevTools = (env_openChromeDevTools || isDev)
 
-if(isDev) global.__static = require('path').join(__dirname, "../public").replace(/\\/g, '\\\\');
-else global.__static = require('path').join(__dirname, "../dist").replace(/\\/g, '\\\\');
-
-let staticVar = require('path').join("static")
-if(!isDev) {
-  staticVar = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
-}
+global.__main = require('path').join(__dirname, "./").replace(/\\/g, '\\\\');
 
 if(isOpenDevTools){
   app.on('ready', () => {
@@ -67,7 +61,7 @@ function createWindow () {
   }
   
   if(isDev) mainWindow.loadURL(loadUrl)
-  else mainWindow.loadFile(__static + "/index.html")
+  else mainWindow.loadFile(__main + "/dist/index.html")
 
   //自动更新方法
   updateHandle(mainWindow)
@@ -116,7 +110,7 @@ app.on('ready', () => {
    * 托盘变量定义
    * @type {string}
    */
-  const trayIcon = __static + "/img/amex.ico";
+  const trayIcon = __main + "/icons/amex.ico";
 
   tray = new Tray(trayIcon)
   const contextMenu = Menu.buildFromTemplate([
