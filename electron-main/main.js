@@ -15,14 +15,6 @@ let isOpenDevTools = (env_openChromeDevTools || isDev)
 
 global.__main = require('path').join(__dirname, "./").replace(/\\/g, '\\\\');
 
-if(isOpenDevTools){
-  app.on('ready', () => {
-    if(isOpenDevTools){
-      require('electron-debug')({showDevTools: true})//打开开发工具
-    }
-  })
-}
-
 
 let mainWindow
 const loadUrl = "http://127.0.0.1:8080"
@@ -58,6 +50,8 @@ function createWindow () {
   //非开发环境隐藏工具栏
   if (!isOpenDevTools){
     mainWindow.setMenu(null)
+  }else{
+    mainWindow.webContents.openDevTools();
   }
   
   if(isDev) mainWindow.loadURL(loadUrl)

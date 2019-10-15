@@ -57,10 +57,6 @@
     import filterData from "../assets/data_handler/filter_data"
     import {isExistingFilterData} from "../assets/js/project"
     import {init_news_data, viewData} from "../assets/data_handler/view_data"
-    import {init_api_cls} from "../assets/api/cls";
-    import {init_api_dycj} from "../assets/api/dycj";
-    import {init_api_xuangubao} from "../assets/api/xuangubao";
-    import {init_api_yuncaijing} from "../assets/api/yuncaijing";
 
     //import {delayer} from "./js/utils";
 
@@ -125,11 +121,8 @@
             this.windowsResize()
             window.onresize = this.windowsResize
 
-	        //初始化接口
-	        init_api_cls();
-            init_api_dycj();
-            init_api_xuangubao();
-            init_api_yuncaijing();
+	        //加载所有接口文件中的 init-api 方法
+	        require('../assets/api/init-news-api')
 
         },
 	    updated(){
