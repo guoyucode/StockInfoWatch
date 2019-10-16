@@ -44,7 +44,7 @@ function createWindow () {
 
   //最小化是隐藏
   mainWindow.on('minimize', () => {
-    mainWindow.hide()
+    mainWindow.minimize()
   })
 
   //非开发环境隐藏工具栏
@@ -115,7 +115,8 @@ app.on('ready', () => {
   tray.setToolTip('股票行情观察,单击打开主界面,或者右击选择退出')
   tray.setContextMenu(contextMenu)
   tray.on("click", function (event, bounds) {
-    openWindow()
+    let visible = mainWindow.isVisible();
+    visible ? mainWindow.hide() : openWindow();
   })
 })
 //托盘设置----------------------------------------------------
